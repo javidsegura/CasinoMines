@@ -280,10 +280,17 @@ class CasinoMines(QWidget, GameStyle):
             return - self.config_panel.getBet()
         else:
             return self.config_panel.getProfit()
+    
+    def calcWin(self):
+        profit = self.calcProfit()
+        print(profit)
+        if profit >= 0:
+            return "Win"
+        return "Loss"
 
     # returning bet and mines for data.py
     def add_user_data(self):
-        self.user_data.add_user_data(self.gamesPlayed, self.config_panel.getBet(), self.config_panel.getBombs(), self.config_panel.getBalanceBeforeChange(), self.calcProfit(), self.config_panel.getBalanceBeforeChange() + self.calcProfit())
+        self.user_data.add_user_data(self.gamesPlayed, self.config_panel.getBet(), self.config_panel.getBombs(), self.config_panel.getBalanceBeforeChange(), self.calcProfit(), self.config_panel.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())
         self.data_tab.populateValues()
 
 

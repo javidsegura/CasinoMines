@@ -8,13 +8,13 @@ class UserData:
     def initialize_csv(self):
         with open(self.file_path, 'w', newline='') as data_file:
             csv_writer = csv.writer(data_file)
-            csv_writer.writerow(["id", "betAmount", "numMines", "balanceBefore", "profit", "balanceAfter"])
+            csv_writer.writerow(["id", "betAmount", "numMines", "balanceBefore", "profit", "balanceAfter", "win"])
     
     # Add user data to the CSV
-    def add_user_data(self, game_id, bet, bombs, balanceBefore, profit, balanceAfter):
+    def add_user_data(self, game_id, bet, bombs, balanceBefore, profit, balanceAfter, win):
         with open(self.file_path, 'a', newline='') as data_file:
             csv_writer = csv.writer(data_file)
-            csv_writer.writerow([game_id, bet, bombs, balanceBefore, profit, balanceAfter])
+            csv_writer.writerow([game_id, bet, bombs, balanceBefore, profit, balanceAfter, win])
             # csv_writer.writerow([game_id, CasinoMines.getBetMain(), CasinoMines.getBombsMain(), profit])
     
     # Display all user data

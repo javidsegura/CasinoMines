@@ -10,12 +10,13 @@ class DataTab(QWidget):
         self.file_path = file_path
 
         self.mapping = {
-            "id": "ID",
+            "id": "Game Number",
             "betAmount": "Bet Amount",
             "numMines": "Number of Mines",
             "balanceBefore": "Balance Before Game",
             "profit": "Profit",
-            "balanceAfter": "Balance After Game"
+            "balanceAfter": "Balance After Game",
+            "win": "Win or Loss"
         }
 
         self.main_layout = QVBoxLayout()
@@ -52,6 +53,10 @@ class DataTab(QWidget):
                 for col, var in enumerate(rowData):
                     if not row == 0:
                         value_label = QLabel(str(var))
+                        if str(var) == "Win":
+                            value_label.setStyleSheet("background-color: Green; color: black; font-weight: bold;")
+                        elif str(var) == "Loss":
+                            value_label.setStyleSheet("background-color: Red; color: black; font-weight: bold;")
                         self.grid_layout.addWidget(value_label, row, col)
         
         self.main_layout.addLayout(self.grid_layout)
