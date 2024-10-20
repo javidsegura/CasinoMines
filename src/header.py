@@ -5,7 +5,6 @@ from PySide6.QtGui import QFont
 
 class Header():
       def __init__(self):
-        self.data_button = QPushButton("Game Data")
         self.wallet_label = QLabel()
         self.multiplier_label = QLabel()
         self.profit_label = QLabel()
@@ -24,10 +23,6 @@ class Header():
         # Spacer
         header_layout.addStretch()
 
-        # Data button
-        header_layout.addWidget(self.data_button)
-        self.data_button.clicked.connect(self.dataWindow)
-
         # Wallet balance
         self.wallet_label.setText("Balance: 1000$")
         header_layout.addWidget(self.wallet_label)
@@ -45,9 +40,6 @@ class Header():
 
         return header_frame
       
-      def dataWindow(self):
-         print("Button clicked!")
-    
       def update_balance(self, new_balance):
         self.wallet_label.setText(f"Balance: {new_balance}$")
 

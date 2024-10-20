@@ -8,7 +8,7 @@ It should mainly be reduced to function calls to other modules.
 import sys,os, json
 
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame, QMessageBox)
+                                QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame, QMessageBox, QTabWidget)
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QWidget
@@ -22,6 +22,7 @@ from configuration_panel import ConfigurationPanel
 from header import Header
 from data import UserData
 from sound_effects import SoundEffects
+from data_tab import DataTab
 
     
 
@@ -43,9 +44,8 @@ class CasinoMines(QWidget, GameStyle):
         self.gamesPlayed = 0
         self.bombHit = False
 
-        
-        
     
+        
         # Set up the main UI window
         self.setWindowTitle("CasinoMines Game")
         self.setGeometry(100, 100, 1000, 700)
@@ -70,8 +70,6 @@ class CasinoMines(QWidget, GameStyle):
         left_widget.setLayout(left_layout)
         left_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         self.game_layout.addWidget(left_widget, 1)
-        self.user_data = UserData()
-        self.user_data.initialize_csv()
 
         # Setup the game grid
         grid_widget = QWidget()
@@ -79,8 +77,24 @@ class CasinoMines(QWidget, GameStyle):
         grid_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.game_layout.addWidget(grid_widget, 2)
 
+
+        # Data Tab
+        self.tabs = QTabWidget()
+        self.tabs.addTab(self.game_container, "CasinoMines Game")
+
+        self.data_tab = DataTab()
+        # self.data_layout = QVBoxLayout()
+        # self.data_label = QLabel("Game Data")
+        # self.data_layout.addWidget(self.data_label)
+        # self.data_tab.setLayout(self.data_layout)
+
+        self.tabs.addTab(self.data_tab, "Game Data")
+
+        self.user_data = UserData()
+        self.user_data.initialize_csv()
+
         # Add the game container to the main layout
-        self.main_layout.addWidget(self.game_container)
+        self.main_layout.addWidget(self.tabs)
 
         self.grid_logic.disable_grid(True)  # Initially disable the grid
         self.show()
@@ -154,7 +168,6 @@ class CasinoMines(QWidget, GameStyle):
         """ Defines behavior after user clicked on a cell with a mine"""
         # adding userData to csv if bomb clicked
         self.add_user_data()
-
 
         self.game_in_progress = False
 
@@ -271,6 +284,7 @@ class CasinoMines(QWidget, GameStyle):
     # returning bet and mines for data.py
     def add_user_data(self):
         self.user_data.add_user_data(self.gamesPlayed, self.config_panel.getBet(), self.config_panel.getBombs(), self.config_panel.getBalanceBeforeChange(), self.calcProfit(), self.config_panel.getBalanceBeforeChange() + self.calcProfit())
+        self.data_tab.populateValues()
 
 
 
