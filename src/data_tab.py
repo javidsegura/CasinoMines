@@ -71,3 +71,6 @@ class DataTab(QWidget):
                 item.widget().deleteLater()
             else:
                 self.main_layout.removeItem(item)
+    
+    def sortByParam(self, header):
+        return
