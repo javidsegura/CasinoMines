@@ -59,7 +59,7 @@ class DataTab(QWidget):
                             value_label.setStyleSheet("background-color: Red; color: black; font-weight: bold;")
                         self.grid_layout.addWidget(value_label, row, col)
         
-        self.mwalain_layout.addLayout(self.grid_layout)
+        self.main_layout.addLayout(self.grid_layout)
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
