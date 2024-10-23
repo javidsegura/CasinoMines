@@ -12,6 +12,7 @@ class DataTab(QWidget):
         self.file_path = file_path
         self.data = []
         self.headerButtons = []
+        self.firstHeaderPop = True
 
         self.mapping = {
             "id": "Game Number",
@@ -39,6 +40,7 @@ class DataTab(QWidget):
     
     # give it a paramter with default none; if its not none then change that button backgorund to blue
     def populateHeaders(self):
+        self.headerButtons = []
         with open(self.file_path, 'r') as data_file:
             csv_reader = csv.reader(data_file)
             for i, row in enumerate(csv_reader):
@@ -47,20 +49,26 @@ class DataTab(QWidget):
                         header_button = QPushButton(self.mapping[var])  # Use QPushButton
                         header_button.setCheckable(True)  # Optional: to make it behave like a toggle button
                         header_button.clicked.connect(lambda _, v=var, btn=header_button: self.headerClicked(v, btn))  # Connect to click event
+                        if col == 0 and self.firstHeaderPop:
+                            header_button.setStyleSheet("background-color: blue; color: white;")
                         self.grid_layout.addWidget(header_button, 0, col)
                         self.headerButtons.append(header_button)
     
     def populateValues(self):
         self.clearData()
-        self.populateHeaders()
+        self.firstHeaderPop = False
+        for i, element in enumerate(self.headerButtons):
+            if i == 0:
+                element.setStyleSheet("background-color: blue; color: white;")
+            else:
+                element.setStyleSheet("background-color: #444444; color: white;")
 
         with open(self.file_path, 'r') as data_file:
             csv_reader = csv.reader(data_file)
+            self.data = []
             self.data = list(csv_reader) #each time something is added to userData, self.data updates
             for row, rowData in enumerate(self.data):
                 for col, var in enumerate(rowData):
-                    print(f"Row {row} col {col} is {var}")
-
                     if not row == 0:
                         value_label = QLabel(str(var))
                         value_label.setAlignment(Qt.AlignCenter)
@@ -71,17 +79,12 @@ class DataTab(QWidget):
                             value_label.setStyleSheet("background-color: lightcoral; color: black;")
                         self.grid_layout.addWidget(value_label, row, col)
         
-        self.main_layout.addLayout(self.grid_layout)
+        # self.main_layout.addLayout(self.grid_layout)
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
 
-        # data sorting testing
-        # header = 'profit'
-        # arr = self.createArr(header)
-        # print(f"Arr float: {arr}")
-        # sorted = self.mergeSort(arr, 0, len(arr) - 1)
-        # print(f"Arr sorted: {sorted}")
+
     
     def populateSortedValues(self, arr):
         sortedOutput = []
@@ -89,7 +92,11 @@ class DataTab(QWidget):
             currIndex = element[0]
             # binary search
             sortedOutput.append(self.data[self.binarySearch(currIndex)])
-            print(f"Index {currIndex} sortedOutput {sortedOutput}") 
+        if sortedOutput is not None:
+            print(f"SortedOutput {sortedOutput}\n")
+            self.displaySortedValues(sortedOutput)
+        return "Error"
+
             
 
     def binarySearch(self, index):
@@ -103,28 +110,43 @@ class DataTab(QWidget):
                 low = mid + 1
             else:
                 high = mid - 1
-        return "error"
+        return "Error"
+    
+    def displaySortedValues(self, arr):
+        self.clearData()
+        for row, rowData in enumerate(arr):
+                for col, var in enumerate(rowData):
+                    value_label = QLabel(var)
+                    value_label.setAlignment(Qt.AlignCenter)
+
+                    if var == "Win":
+                        value_label.setStyleSheet("background-color: lightgreen; color: black;")
+                    elif var == "Loss":
+                        value_label.setStyleSheet("background-color: lightcoral; color: black;")
+                    self.grid_layout.addWidget(value_label, row + 1, col)
+        spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.main_layout.addItem(spacer)
+        self.setLayout(self.main_layout)
+        
 
 
     def headerClicked(self, v, button):
-        for element in self.headerButtons:
-            element.setStyleSheet("background-color: #444444; color: white;")
+        if not self.firstHeaderPop: #meaning there is no data yet
+            for element in self.headerButtons:
+                element.setStyleSheet("background-color: #444444; color: white;")
 
-        print(f"Header {v} has been clicked")
-        button.setStyleSheet("background-color: blue; color: white;")
-        print(f"Self.data is {self.data}")
+            print(f"\nHeader {v} has been clicked")
+            button.setStyleSheet("background-color: blue; color: white;")
 
-        arr = self.createArr(v)
-        print(f"Arr unsorted: {arr}")
-        sorted = self.mergeSort(arr, 0, len(arr) - 1)
-        print(f"Arr sorted: {sorted}")
-        self.populateSortedValues(sorted)
-
-
-
+            arr = self.createArr(v)
+            print(f"Arr unsorted: {arr}")
+            sorted = self.mergeSort(arr, 0, len(arr) - 1)
+            print(f"Arr sorted: {sorted}")
+            self.populateSortedValues(sorted)
 
     def clearData(self):
-        for i in reversed(range(self.main_layout.count())):
+        # self.headerButtons = []
+        for i in reversed(range(self.main_layout.count(), 1)):
             item = self.main_layout.itemAt(i)
             if item.widget() is not None:
                 item.widget().deleteLater()

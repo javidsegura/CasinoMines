@@ -292,7 +292,6 @@ class CasinoMines(QWidget, GameStyle):
     def add_user_data(self):
         self.user_data.add_user_data(self.gamesPlayed, self.config_panel.getBet(), self.config_panel.getBombs(), self.config_panel.getBalanceBeforeChange(), self.calcProfit(), self.config_panel.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())
         self.data_tab.populateValues()
-        print("Add user data clicked")
 
 
 
