@@ -40,8 +40,10 @@ class DataTab(QWidget):
             for i, row in enumerate(csv_reader):
                 for col, var in enumerate(row):
                     if i == 0:
-                        header_label = QLabel(f"<b>{self.mapping[var]}<b>")
-                        self.grid_layout.addWidget(header_label, 0, col)
+                        header_button = QPushButton(self.mapping[var])  # Use QPushButton
+                        header_button.setCheckable(True)  # Optional: to make it behave like a toggle button
+                        header_button.clicked.connect(lambda _, v=var: self.headerClicked(v))  # Connect to click event
+                        self.grid_layout.addWidget(header_button, 0, col)
     
     def populateValues(self):
         self.clearData()
@@ -53,10 +55,12 @@ class DataTab(QWidget):
                 for col, var in enumerate(rowData):
                     if not row == 0:
                         value_label = QLabel(str(var))
+                        value_label.setAlignment(Qt.AlignCenter)
+
                         if str(var) == "Win":
-                            value_label.setStyleSheet("background-color: Green; color: black; font-weight: bold;")
+                            value_label.setStyleSheet("background-color: lightgreen; color: black;")
                         elif str(var) == "Loss":
-                            value_label.setStyleSheet("background-color: Red; color: black; font-weight: bold;")
+                            value_label.setStyleSheet("background-color: red; color: black;")
                         self.grid_layout.addWidget(value_label, row, col)
         
         self.main_layout.addLayout(self.grid_layout)
@@ -71,6 +75,8 @@ class DataTab(QWidget):
         sorted = self.mergeSort(arr, 0, len(arr) - 1)
         print(f"Arr sorted: {sorted}")
 
+    def headerClicked(self, v):
+        print(f"Header {v} has been clicked")
 
     def clearData(self):
         for i in reversed(range(self.main_layout.count())):
