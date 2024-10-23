@@ -1,1 +1,3 @@
 - Opacity is weird for the cells
+- Clicking on close for for pop messages doesnt work
+- Adding time to the game data
