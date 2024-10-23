@@ -64,6 +64,14 @@ class DataTab(QWidget):
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
 
+        # data sorting testing
+        header = 'profit'
+        arr = self.createArr(header)
+        print(f"Arr float: {arr}")
+        sorted = self.mergeSort(arr, 0, len(arr) - 1)
+        print(f"Arr sorted: {sorted}")
+
+
     def clearData(self):
         for i in reversed(range(self.main_layout.count())):
             item = self.main_layout.itemAt(i)
@@ -72,5 +80,77 @@ class DataTab(QWidget):
             else:
                 self.main_layout.removeItem(item)
     
-    def sortByParam(self, header):
-        return
+    def createArr(self, header):
+        arr = []
+        win = False
+        if header == 'win':
+            win = True
+        
+        with open(self.file_path, 'r') as data_file:
+            csv_reader = csv.reader(data_file)
+
+            for row, rowData in enumerate(csv_reader):
+                for col, var in enumerate(rowData):
+                    if row == 0:
+                        if var == header:
+                            ourCol = col
+                    else:
+                        if not ourCol:
+                            return "Could not find specified header"
+                        else:
+                            if col == ourCol:
+                                if win:
+                                    arr.append((row, self.stringToInt(var)))
+                                else:
+                                    arr.append((row, float(var)))
+        return arr
+    
+    def stringToInt(self, element):
+        # only for win as of right now
+        # win = 1
+        # loss = 0
+        if element == 'Win':
+            return 1
+        else:
+            return 0
+
+    def merge(self, arr, start, mid, end):
+        left = arr[start:mid + 1]
+        right = arr[mid + 1:end + 1]
+
+        i = j = 0
+        k = start
+
+        # Merge the two halves
+        while i < len(left) and j < len(right):
+            if left[i][1] <= right[j][1]:  # Compare based on second element of tuple
+                arr[k] = left[i]
+                i += 1
+            else:
+                arr[k] = right[j]
+                j += 1
+            k += 1
+
+        # Copy any remaining elements from the left half
+        while i < len(left):
+            arr[k] = left[i]
+            i += 1
+            k += 1
+
+        # Copy any remaining elements from the right half
+        while j < len(right):
+            arr[k] = right[j]
+            j += 1
+            k += 1
+    
+    def mergeSort(self, arr, start, end):
+        if start < end:
+            mid = (start + end) // 2
+
+            # Recursively split and sort both halves
+            self.mergeSort(arr, start, mid)
+            self.mergeSort(arr, mid + 1, end)
+
+            # Merge the sorted halves
+            self.merge(arr, start, mid, end)
+        return arr
