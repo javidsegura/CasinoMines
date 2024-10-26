@@ -3,7 +3,6 @@ from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from game_css import GameStyle
-from data import UserData
 
 import csv
 
@@ -21,8 +20,8 @@ class LeaderBoardTab(QWidget):
 
         self.headers = []
         self.leaders = []
-        self.firstRowFont = QFont("Arial", 20, QFont.Bold)
-        self.valueFont = QFont("Arial", 20)
+        self.firstRowFont = QFont("Arial", 50, QFont.Bold)
+        self.valueFont = QFont("Arial", 40)
         self.mapping = {
             "rank": "Rank",
             "user": "User",
@@ -33,13 +32,22 @@ class LeaderBoardTab(QWidget):
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(20, 20, 20, 20)
 
-        self.top_layout = QHBoxLayout()
+        self.top_layout = QVBoxLayout()
+        self.title_layout = QHBoxLayout()
         self.populateHeaders()
+        self.top_layout.addWidget(self.small_text, alignment=Qt.AlignCenter)
+
+
+        self.buttonContainer = QVBoxLayout()
+        self.buttonContainer.setAlignment(Qt.AlignTop)
+        self.searchButton = QPushButton("Find my Rank")
+        self.buttonContainer.addWidget(self.searchButton, alignment=Qt.AlignCenter)
+
 
         self.grid_layout = QGridLayout()
         self.grid_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.grid_layout.setHorizontalSpacing(50)
-        self.grid_layout.setVerticalSpacing(30)
+        self.grid_layout.setVerticalSpacing(50)
 
         self.grid_container = QWidget()
         self.grid_container.setLayout(self.grid_layout)
@@ -47,7 +55,7 @@ class LeaderBoardTab(QWidget):
 
         # Set the layout for the DataTab
         self.main_layout.addLayout(self.top_layout)
-
+        self.main_layout.addLayout(self.buttonContainer)
         self.main_layout.addWidget(self.grid_container)
         self.main_layout.addStretch()
 
@@ -58,29 +66,31 @@ class LeaderBoardTab(QWidget):
     def populateHeaders(self):
         title = QLabel("LeaderBoard")
         title.setAlignment(Qt.AlignCenter)
-        titleFont = QFont("Arial", 50, QFont.Bold)
-        title.setFont(titleFont)
+        title.setStyleSheet("font-size: 50px; font-weight: bold;")
 
-        small_text = QLabel(f"Players: {self.numPlayers}")
-        small_font = QFont("Arial", 12)
-        small_text.setFont(small_font)
-        small_text.setAlignment(Qt.AlignRight | Qt.AlignTop)
+        self.small_text = QLabel(f"Players: {self.numPlayers}")
+        self.small_text.setStyleSheet("font-size: 15px;")
+        self.small_text.setAlignment(Qt.AlignRight | Qt.AlignTop)
         # , alignment=Qt.AlignCenter
         # , alignment=Qt.AlignRight
-        self.top_layout.addStretch()
-        self.top_layout.addWidget(title)
-        self.top_layout.addStretch()
-        self.top_layout.addWidget(small_text)
+        self.title_layout.addStretch()
+        self.title_layout.addWidget(title)
+        self.title_layout.addStretch()
+        self.top_layout.addLayout(self.title_layout)
 
     def populateLeaders(self):
         self.leaderData = self.user_data.return_leaderboard_list()
         print(f"LeaderData in populateleaders: {self.leaderData}")
-        for row, rowData in enumerate(self.leaderData):
+
+        self.numPlayers = self.user_data.return_numPlayers()
+        limit = len(self.leaderData)
+        if self.numPlayers > 10:
+            limit = 11 # +1 for label row
+
+        for row in range(0, limit):
+            rowData = self.leaderData[row]
             for col, value in enumerate(rowData):
                 if row == 0:
-                    # if col == 0:
-                    #     value_label = QLabel("Rank")
-                    # else:
                     value_label = QLabel(self.mapping[value])
                     value_label.setAlignment(Qt.AlignCenter)
                     value_label.setFont(self.firstRowFont)
