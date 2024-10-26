@@ -8,7 +8,7 @@ It should mainly be reduced to function calls to other modules.
 import sys,os, json
 
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame, QMessageBox, QTabWidget)
+                                QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame, QMessageBox, QTabWidget, QInputDialog)
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QWidget
@@ -23,9 +23,9 @@ from header import Header
 from data import UserData
 from sound_effects import SoundEffects
 from data_tab import DataTab
+from leaderboard_tab import LeaderBoardTab
 
     
-
 class CasinoMines(QWidget, GameStyle):
     """ Controls the main window of the game"""
     def __init__(self):
@@ -43,6 +43,7 @@ class CasinoMines(QWidget, GameStyle):
         # variables for data
         self.gamesPlayed = 0
         self.bombHit = False
+        self.username = None
 
     
         
@@ -83,12 +84,12 @@ class CasinoMines(QWidget, GameStyle):
         self.tabs.addTab(self.game_container, "CasinoMines Game")
 
         self.data_tab = DataTab()
-        # self.data_layout = QVBoxLayout()
-        # self.data_label = QLabel("Game Data")
-        # self.data_layout.addWidget(self.data_label)
-        # self.data_tab.setLayout(self.data_layout)
-
         self.tabs.addTab(self.data_tab, "Game Data")
+
+        self.leaderboard = LeaderBoardTab()
+        self.tabs.addTab(self.leaderboard, "Leaderboard")
+
+
 
         self.user_data = UserData()
         self.user_data.initialize_csv()
@@ -97,7 +98,10 @@ class CasinoMines(QWidget, GameStyle):
         self.main_layout.addWidget(self.tabs)
 
         self.grid_logic.disable_grid(True)  # Initially disable the grid
+
         self.show()
+        self.username = self.show_userPopup()
+
 
     def configuration_panel(self):
         """ Defines left-most menu. """
@@ -274,6 +278,21 @@ class CasinoMines(QWidget, GameStyle):
         self.grid_logic.disable_grid(True)
         self.config_panel.disable_cash_out_button()
         self.config_panel.restart_cash_out_button()
+    
+    # tried to implement input control; works for , but not \n or \r
+    def show_userPopup(self):
+        username, ok = QInputDialog.getText(self, "Welcome to CasinoMines!", "Please enter your username:")
+        if ok and username.strip():
+            print(f"Username is {username}\n")
+            if "\n" in username or "\r" in username or "," in username:
+                QMessageBox.warning(self, "Please Enter only valid characters", "No commas or newline characters!")
+                return self.show_userPopup()
+
+            QMessageBox.information(self, "Welcome!", f"Good luck, {username}")
+            return username
+        else:
+            QMessageBox.warning(self, "No Username", "You must enter a username to continue!")
+            return self.show_userPopup()
 
     def calcProfit(self):
         if self.bombHit:
