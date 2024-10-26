@@ -23,7 +23,10 @@ class ConfigurationPanel():
         self.numMines = -1
         self.profit = 0
         self.balanceBeforeChange = -1
-        
+    
+    def defineUsername(self, username):
+        self.header.update_user(username)
+
     def set_up_panel(self) -> tuple[QVBoxLayout, QPushButton]:
         """ Invokes the different componenents of the configuration panel"""
         self.bet_panel()

@@ -5,6 +5,7 @@ from PySide6.QtGui import QFont
 
 class Header():
       def __init__(self):
+        self.username_label= QLabel()
         self.wallet_label = QLabel()
         self.multiplier_label = QLabel()
         self.profit_label = QLabel()
@@ -22,6 +23,13 @@ class Header():
 
         # Spacer
         header_layout.addStretch()
+
+        # username
+        self.username_label.setText("User:")
+        header_layout.addWidget(self.username_label)
+
+        header_layout.addSpacing(20)
+
 
         # Wallet balance
         self.wallet_label.setText("Balance: 1000$")
@@ -50,3 +58,7 @@ class Header():
         print(f"Profit is {new_profit}")
         # self.profit = new_profit
         self.profit_label.setText(f"Profit: {round(new_profit,2)}$")
+
+      def update_user(self, user):
+        print(f"Username is {user}")
+        self.username_label.setText(f"User: {user}")

@@ -80,19 +80,19 @@ class CasinoMines(QWidget, GameStyle):
 
 
         # Data Tab
+        self.user_data = UserData()
+        self.user_data.initialize_csv()
+        self.user_data.initialize_leader()
+
         self.tabs = QTabWidget()
         self.tabs.addTab(self.game_container, "CasinoMines Game")
 
         self.data_tab = DataTab()
         self.tabs.addTab(self.data_tab, "Game Data")
 
-        self.leaderboard = LeaderBoardTab()
-        self.tabs.addTab(self.leaderboard, "Leaderboard")
-
-
-
-        self.user_data = UserData()
-        self.user_data.initialize_csv()
+        self.leaderboard = LeaderBoardTab(self.user_data)
+        self.tabs.addTab(self.leaderboard, "Leaderboard") 
+        self.leaderboard.populateLeaders()
 
         # Add the game container to the main layout
         self.main_layout.addWidget(self.tabs)
@@ -101,7 +101,6 @@ class CasinoMines(QWidget, GameStyle):
 
         self.show()
         self.username = self.show_userPopup()
-
 
     def configuration_panel(self):
         """ Defines left-most menu. """
@@ -283,16 +282,20 @@ class CasinoMines(QWidget, GameStyle):
     def show_userPopup(self):
         username, ok = QInputDialog.getText(self, "Welcome to CasinoMines!", "Please enter your username:")
         if ok and username.strip():
-            print(f"Username is {username}\n")
+            # print(f"Username is {username}\n")
             if "\n" in username or "\r" in username or "," in username:
                 QMessageBox.warning(self, "Please Enter only valid characters", "No commas or newline characters!")
                 return self.show_userPopup()
 
-            QMessageBox.information(self, "Welcome!", f"Good luck, {username}")
-            return username
+            QMessageBox.information(self, "Welcome!", f"Good luck, {username.lower()}")
+            self.config_panel.defineUsername(username.lower())
+            return username.lower()
         else:
             QMessageBox.warning(self, "No Username", "You must enter a username to continue!")
             return self.show_userPopup()
+
+    def returnUser(self):
+        return self.username
 
     def calcProfit(self):
         if self.bombHit:
@@ -310,7 +313,9 @@ class CasinoMines(QWidget, GameStyle):
     # returning bet and mines for data.py
     def add_user_data(self):
         self.user_data.add_user_data(self.gamesPlayed, self.config_panel.getBet(), self.config_panel.getBombs(), self.config_panel.getBalanceBeforeChange(), self.calcProfit(), self.config_panel.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())
+        self.user_data.add_leaderboard_data(self.username, self.config_panel.getBalanceBeforeChange() + self.calcProfit())
         self.data_tab.populateValues()
+        self.leaderboard.populateLeaders()
 
 
 
