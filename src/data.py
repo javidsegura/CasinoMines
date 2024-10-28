@@ -22,7 +22,7 @@ class UserData:
             with open(self.leaderboardPath, 'r') as data_file:
                 csv_reader = csv.reader(data_file)
                 self.leaderboardList = list(csv_reader)
-                self.numPlayers = len(self.leaderboardList) - 2 # -1 for labels row
+                self.numPlayers = len(self.leaderboardList) - 1 # -1 for labels row
             print(f"Leaderboard exists: \n{self.leaderboardList}")
 
         else:
