@@ -101,6 +101,7 @@ class CasinoMines(QWidget, GameStyle):
 
         self.show()
         self.username = self.show_userPopup()
+        self.leaderboard.defineUsername(self.username)
 
     def configuration_panel(self):
         """ Defines left-most menu. """
