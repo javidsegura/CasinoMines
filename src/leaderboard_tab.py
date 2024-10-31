@@ -3,12 +3,7 @@ from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
 from game_css import GameStyle
-
 import csv
-
-# implement the searching alg
-# do podium functionality
-# make it look nice
 
 class LeaderBoardTab(QWidget):
     def __init__(self, user_data, file_path="utils/data/userData.csv"):
@@ -31,7 +26,6 @@ class LeaderBoardTab(QWidget):
             "largestBalance": "Top Balance"
         }
 
-
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(20, 20, 20, 20)
 
@@ -40,14 +34,10 @@ class LeaderBoardTab(QWidget):
         self.populateHeaders()
         self.top_layout.addWidget(self.small_text, alignment=Qt.AlignCenter)
 
-
         self.buttonContainer = QVBoxLayout()
-        # self.buttonContainer.setAlignment(Qt.AlignTop) ??
         self.searchButton = QPushButton("Find my Rank")
         self.searchButton.clicked.connect(self.search)  # Connect to click event
         self.buttonContainer.addWidget(self.searchButton, alignment=Qt.AlignCenter)
-
-        
 
         self.grid_container = QWidget()
         self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -66,17 +56,7 @@ class LeaderBoardTab(QWidget):
         self.left_right_layout = QHBoxLayout()
         self.left_right_layout.addLayout(self.left_layout)
         self.left_right_layout.addLayout(self.right_layout)
-        # self.left_right_layout.addStretch()
 
-
-        
-        # self.testingLabel = QLabel("MID")
-        # mid = self.grid_container.width() // 2
-        # print(f"Mid: {mid}")
-        # self.testingLabel.setGeometry(mid, 0, 10, 10)
-
-
-        # Set the layout for the DataTab
         self.grid_container.setLayout(self.left_right_layout)
 
         self.main_layout.addLayout(self.top_layout)
@@ -84,8 +64,6 @@ class LeaderBoardTab(QWidget):
         self.main_layout.addWidget(self.grid_container)
         self.main_layout.addStretch()
 
-        # spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        # self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
     
     def populateHeaders(self):
@@ -96,8 +74,7 @@ class LeaderBoardTab(QWidget):
         self.small_text = QLabel(f"Players: {self.numPlayers}")
         self.small_text.setStyleSheet("font-size: 15px;")
         self.small_text.setAlignment(Qt.AlignRight | Qt.AlignTop)
-        # , alignment=Qt.AlignCenter
-        # , alignment=Qt.AlignRight
+
         self.title_layout.addStretch()
         self.title_layout.addWidget(title)
         self.title_layout.addStretch()
@@ -188,7 +165,6 @@ class LeaderBoardTab(QWidget):
 
         painter.end()
 
-        # self.add_text_to_pixmap(pixmap, "Overlayed Text", x=30, y=30)
         self.image_label.setPixmap(pixmap)
         self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
 
@@ -223,8 +199,8 @@ class LeaderBoardTab(QWidget):
                     item.widget().deleteLater()
         else:
             while self.right_layout.count():
-                item = self.right_layout.takeAt(0)  # Take the item at the top of the layout
-                if item.widget():  # Check if the item is a widget
+                item = self.right_layout.takeAt(0)
+                if item.widget(): 
                     item.widget().deleteLater()
 
 
