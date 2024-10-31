@@ -1,11 +1,14 @@
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
                                 QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame, QMessageBox, QTabWidget, QGridLayout)
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont, QPixmap, QPainter, QPalette
+from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
 from game_css import GameStyle
 
 import csv
 
+# implement the searching alg
+# do podium functionality
+# make it look nice
 
 class LeaderBoardTab(QWidget):
     def __init__(self, user_data, file_path="utils/data/userData.csv"):
@@ -14,9 +17,7 @@ class LeaderBoardTab(QWidget):
 
         self.user_data = user_data
         self.numPlayers = self.user_data.return_numPlayers()
-        print(f"Num Players is {self.numPlayers}")
         self.leaderData = self.user_data.return_leaderboard_list()
-        print(f"Leaderboard is {self.leaderData}")
 
         self.username = None
         self.searched = False
@@ -44,33 +45,40 @@ class LeaderBoardTab(QWidget):
         # self.buttonContainer.setAlignment(Qt.AlignTop) ??
         self.searchButton = QPushButton("Find my Rank")
         self.searchButton.clicked.connect(self.search)  # Connect to click event
-
         self.buttonContainer.addWidget(self.searchButton, alignment=Qt.AlignCenter)
 
+        
 
-        self.grid_layout = QGridLayout()
-        self.grid_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-        self.grid_layout.setHorizontalSpacing(50)
-        self.grid_layout.setVerticalSpacing(40)
+        self.grid_container = QWidget()
+        self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.contWidth = self.grid_container.width()
+
+        self.left_layout = QGridLayout()
+        self.left_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.left_layout.setHorizontalSpacing(50)
+        self.left_layout.setVerticalSpacing(40)
 
         self.right_layout = QVBoxLayout()
-        # self.right_test = QLabel("test")
+        self.right_layout.addStretch()
         self.populatePodium()
-        # self.right_test.setAlignment(Qt.AlignCenter)
-        # self.right_layout.addWidget(self.right_test, alignment=Qt.AlignCenter | Qt.AlignTop)
         self.right_layout.addStretch()
 
         self.left_right_layout = QHBoxLayout()
-        self.left_right_layout.addLayout(self.grid_layout)
+        self.left_right_layout.addLayout(self.left_layout)
         self.left_right_layout.addLayout(self.right_layout)
         # self.left_right_layout.addStretch()
 
 
-        self.grid_container = QWidget()
-        self.grid_container.setLayout(self.left_right_layout)
-        self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        
+        # self.testingLabel = QLabel("MID")
+        # mid = self.grid_container.width() // 2
+        # print(f"Mid: {mid}")
+        # self.testingLabel.setGeometry(mid, 0, 10, 10)
+
 
         # Set the layout for the DataTab
+        self.grid_container.setLayout(self.left_right_layout)
+
         self.main_layout.addLayout(self.top_layout)
         self.main_layout.addLayout(self.buttonContainer)
         self.main_layout.addWidget(self.grid_container)
@@ -113,7 +121,7 @@ class LeaderBoardTab(QWidget):
             value_label = QLabel(self.mapping[value])
             value_label.setAlignment(Qt.AlignCenter)
             value_label.setFont(self.firstRowFont)
-            self.grid_layout.addWidget(value_label, 0, headerCol)
+            self.left_layout.addWidget(value_label, 0, headerCol)
             headerCol += 1
             spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
             self.main_layout.addItem(spacer)
@@ -122,7 +130,6 @@ class LeaderBoardTab(QWidget):
         print(f"Start: {start} {self.leaderData[start]} End: {limit} {self.leaderData[limit]}")
         for row in range(start, limit + 1): # +1 for label row
             rowData = self.leaderData[row]
-            print(f"Row data: {rowData}")
             for col, value in enumerate(rowData):
                 if col == 0:
                     value_label = QLabel(str(value))
@@ -131,27 +138,54 @@ class LeaderBoardTab(QWidget):
                 value_label.setAlignment(Qt.AlignCenter)
                 value_label.setFont(self.valueFont)
                 if row == userRow:
-                    print("Yurrr")
                     value_label.setStyleSheet("background-color: #ffcc00; color: white;")
-                self.grid_layout.addWidget(value_label, row, col)
+                self.left_layout.addWidget(value_label, row, col)
                 
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
+        self.populatePodium()
     
     def populatePodium(self):
+        self.clearData(False)
         ogPixmap = QPixmap("utils/imgs/podium.png")
-        pixmap = ogPixmap.scaled(500, 500, Qt.KeepAspectRatio)
+        pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
         self.image_label = QLabel()
-        
+
+        shiftUnit = self.contWidth // 10 #on freeform there are about 10 equally spaced apart units across the image
+        # not perfect but pretty good
+        top3 = {}
+        for i in range(1, self.numPlayers + 2): #plus two for index change and title row
+            if i > 3:
+                break
+            top3[i] = self.leaderData[i][1]
+
         painter = QPainter(pixmap)
         painter.setPen("white")
-        painter.setFont(QFont("Arial", 30))
-        painter.drawText(80, 25, "2nd")
-        painter.setFont(QFont("Arial", 35))
-        painter.drawText(250, 22, "1st")
-        painter.setFont(QFont("Arial", 20))
-        painter.drawText(410, 32, "3rd")
+
+        if 1 in top3:
+            font = QFont("Arial", 35)
+            fontMetrics = QFontMetrics(font)
+            text = top3[1]
+            textWidth = fontMetrics.horizontalAdvance(text)
+            painter.setFont(font)
+            painter.drawText((shiftUnit * 5) - (textWidth // 2), 25, text) #finding string width in pixels and adjusting position on image
+
+            if 2 in top3:
+                font = QFont("Arial", 30)
+                fontMetrics = QFontMetrics(font)
+                text = top3[2]
+                textWidth = fontMetrics.horizontalAdvance(text)
+                painter.setFont(font)
+                painter.drawText((shiftUnit * 2) - (textWidth // 2), 25, text)
+                if 3 in top3:
+                    font = QFont("Arial", 20)
+                    fontMetrics = QFontMetrics(font)
+                    text = top3[3]
+                    textWidth = fontMetrics.horizontalAdvance(text)
+                    painter.setFont(font)
+                    painter.drawText((shiftUnit*8.5) - (textWidth // 2), 32, text)
+
         painter.end()
 
         # self.add_text_to_pixmap(pixmap, "Overlayed Text", x=30, y=30)
@@ -163,7 +197,7 @@ class LeaderBoardTab(QWidget):
 
     def search(self):
         self.numPlayers = self.user_data.return_numPlayers()
-        print(f"{self.username} clicked the button! Num players: {self.numPlayers}")
+
         for person in self.leaderData:
             if person[1] == self.username:
                 print(f"{self.username} is {person[0]} place!")
@@ -181,12 +215,17 @@ class LeaderBoardTab(QWidget):
         
         QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
 
-    def clearData(self):
-        print("\nDeleting...")
-        while self.grid_layout.count():
-            item = self.grid_layout.takeAt(0)  # Take the item at the top of the layout
-            if item.widget():  # Check if the item is a widget
-                item.widget().deleteLater()
+    def clearData(self, left=True):
+        if left:
+            while self.left_layout.count():
+                item = self.left_layout.takeAt(0)  # Take the item at the top of the layout
+                if item.widget():  # Check if the item is a widget
+                    item.widget().deleteLater()
+        else:
+            while self.right_layout.count():
+                item = self.right_layout.takeAt(0)  # Take the item at the top of the layout
+                if item.widget():  # Check if the item is a widget
+                    item.widget().deleteLater()
 
 
                         
