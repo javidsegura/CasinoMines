@@ -284,8 +284,8 @@ class CasinoMines(QWidget, GameStyle):
         username, ok = QInputDialog.getText(self, "Welcome to CasinoMines!", "Please enter your username:")
         if ok and username.strip():
             # print(f"Username is {username}\n")
-            if "\n" in username or "\r" in username or "," in username:
-                QMessageBox.warning(self, "Please Enter only valid characters", "No commas or newline characters!")
+            if "," in username:
+                QMessageBox.warning(self, "Please Enter only valid characters", "No commas!")
                 return self.show_userPopup()
 
             QMessageBox.information(self, "Welcome!", f"Good luck, {username.lower()}")

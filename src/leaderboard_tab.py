@@ -3,7 +3,8 @@ from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
 from game_css import GameStyle
-import csv
+# import csv
+import math
 
 class LeaderBoardTab(QWidget):
     def __init__(self, user_data, file_path="utils/data/userData.csv"):
@@ -104,19 +105,20 @@ class LeaderBoardTab(QWidget):
             self.main_layout.addItem(spacer)
             self.setLayout(self.main_layout)
 
-        print(f"Start: {start} {self.leaderData[start]} End: {limit} {self.leaderData[limit]}")
+        # print(f"Start: {start} {self.leaderData[start]} End: {limit} {self.leaderData[limit]}")
         for row in range(start, limit + 1): # +1 for label row
-            rowData = self.leaderData[row]
-            for col, value in enumerate(rowData):
-                if col == 0:
-                    value_label = QLabel(str(value))
-                else:
-                    value_label = QLabel(value)
-                value_label.setAlignment(Qt.AlignCenter)
-                value_label.setFont(self.valueFont)
-                if row == userRow:
-                    value_label.setStyleSheet("background-color: #ffcc00; color: white;")
-                self.left_layout.addWidget(value_label, row, col)
+            if row <= self.numPlayers:
+                rowData = self.leaderData[row]
+                for col, value in enumerate(rowData):
+                    if col == 0:
+                        value_label = QLabel(str(value))
+                    else:
+                        value_label = QLabel(value)
+                    value_label.setAlignment(Qt.AlignCenter)
+                    value_label.setFont(self.valueFont)
+                    if row == userRow:
+                        value_label.setStyleSheet("background-color: #ffcc00; color: white;")
+                    self.left_layout.addWidget(value_label, row, col)
                 
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
@@ -133,9 +135,12 @@ class LeaderBoardTab(QWidget):
         # not perfect but pretty good
         top3 = {}
         for i in range(1, self.numPlayers + 2): #plus two for index change and title row
-            if i > 3:
+            if i < len(self.leaderData):
+                if i > 3:
+                    break
+                top3[i] = self.leaderData[i][1]
+            else:
                 break
-            top3[i] = self.leaderData[i][1]
 
         painter = QPainter(pixmap)
         painter.setPen("white")
