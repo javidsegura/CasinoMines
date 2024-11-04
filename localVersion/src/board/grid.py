@@ -58,10 +58,15 @@ class GridLogic:
         cell = self.cells[(row, col)]
         
         if is_bomb:
-            icon = QIcon("utils/imgs/cells/bomb.png")
-            
+            try:
+                icon = QIcon("localVersion/utils/imgs/cells/bomb.png")
+            except:
+                raise Exception("Bomb icon not found")
         else:
-            icon = QIcon("utils/imgs/cells/star.png")
+            try:
+                icon = QIcon("localVersion/utils/imgs/cells/star.png")
+            except:
+                raise Exception("Star icon not found")
            
         cell.setIcon(icon)
         cell.setIconSize(QSize(170, 170))  # Adjust size as needed

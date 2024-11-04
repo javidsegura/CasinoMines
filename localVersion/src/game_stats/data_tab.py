@@ -7,7 +7,7 @@ from PySide6.QtCore import Qt
 import csv
 
 class DataTab(QWidget):
-    def __init__(self, file_path:str="utils/data/userData.csv") -> None:
+    def __init__(self, file_path:str="localVersion/utils/data/userData.csv") -> None:
         super().__init__()
         self.setStyleSheet(GameStyle().get_stylesheet())
         
