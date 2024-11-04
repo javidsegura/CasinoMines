@@ -5,7 +5,7 @@ import os
 import math
 
 class UserData():
-    def __init__(self, file_path:str="utils/data/userData.csv", leaderboardPath:str="utils/data/leaderboard.csv") -> None:
+    def __init__(self, file_path:str="localVersion/utils/data/userData.csv", leaderboardPath:str="localVersion/utils/data/leaderboard.csv") -> None:
         self.file_path = file_path
         self.leaderboardPath = leaderboardPath
         self.rowToModify = None

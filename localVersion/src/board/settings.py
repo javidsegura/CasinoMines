@@ -59,7 +59,7 @@ class Settings():
         bet_input_layout = QHBoxLayout()
 
         dollar_sign = QLabel()
-        dollar_pixmap = QPixmap("utils/imgs/dollar.png")  # Replace with your image path
+        dollar_pixmap = QPixmap("localVersion/utils/imgs/dollar.png")  # Replace with your image path
         scaled_pixmap = dollar_pixmap.scaled(30, 30, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         dollar_sign.setPixmap(scaled_pixmap)
         dollar_sign.setFixedSize(30, 30)  # Adjust size as needed
@@ -153,6 +153,8 @@ class Settings():
             if self.start_button:
                 self.start_button.setDisabled(False)
         except ValueError as e:
+            if str(e).startswith("invalid literal"):
+                e = "You need to specify an amount to bet"
             self.show_confirmation(str(e))
     
     def show_confirmation(self, message :str) -> None:
