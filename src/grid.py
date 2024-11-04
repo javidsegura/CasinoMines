@@ -1,8 +1,6 @@
 from PySide6.QtWidgets import QPushButton, QGridLayout, QVBoxLayout, QSpacerItem, QSizePolicy
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import QSize
-from PySide6.QtGui import QIcon
-from PySide6.QtCore import QSize
 
 class GridLogic:
     def __init__(self, on_cell_click : callable) -> None:
