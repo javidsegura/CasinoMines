@@ -1,5 +1,6 @@
 import csv
 import os
+import math
 
 class UserData:
     def __init__(self, file_path="utils/data/userData.csv", leaderboardPath="utils/data/leaderboard.csv"):
@@ -18,17 +19,19 @@ class UserData:
             csv_writer.writerow(["id", "betAmount", "numMines", "balanceBefore", "profit", "balanceAfter", "win"])
 
     def initialize_leader(self):
-        if os.path.isfile(self.leaderboardPath):
-            with open(self.leaderboardPath, 'r') as data_file:
-                csv_reader = csv.reader(data_file)
-                self.leaderboardList = list(csv_reader)
-                self.numPlayers = len(self.leaderboardList) - 1 # -1 for labels row
-            print(f"Leaderboard exists: \n{self.leaderboardList}")
-
-        else:
+        if not os.path.isfile(self.leaderboardPath):
             with open(self.leaderboardPath, 'w', newline='') as data_file:
                 csv_writer = csv.writer(data_file)
                 csv_writer.writerow(["rank", "user", "largestBalance"])
+                
+        with open(self.leaderboardPath, 'r') as data_file:
+            csv_reader = csv.reader(data_file)
+            self.leaderboardList = list(csv_reader)
+            self.numPlayers = len(self.leaderboardList) - 1 # -1 for labels row
+        print(f"Leaderboard exists: \n{self.leaderboardList}")
+
+
+            
     
     def return_leaderboard_list(self):
         return self.leaderboardList    
@@ -40,7 +43,7 @@ class UserData:
     def add_user_data(self, game_id, bet, bombs, balanceBefore, profit, balanceAfter, win):
         with open(self.file_path, 'a', newline='') as data_file:
             csv_writer = csv.writer(data_file)
-            csv_writer.writerow([game_id, bet, bombs, balanceBefore, profit, balanceAfter, win])
+            csv_writer.writerow([game_id, math.floor(bet * 100) / 100, bombs, math.floor(balanceBefore * 100) / 100, math.floor(profit * 100) / 100, math.floor(balanceAfter * 100) / 100, win])
 
 
 
@@ -48,11 +51,11 @@ class UserData:
         print(f"\nLeaderboard data is first: {self.leaderboardList}")
 
         if self.find_highest_balance(user, balance): #user exists and this balance is its highscore
-            self.leaderboardList[self.rowToModify] = [0, user, str(balance)]
+            self.leaderboardList[self.rowToModify] = [0, str(user), str(math.floor(balance * 100) / 100)]
             # sort leaderboard again
         elif not self.userExists: #user does not exist yet
             self.numPlayers += 1
-            self.leaderboardList.append([0, user, str(balance)])
+            self.leaderboardList.append([0, str(user), str(math.floor(balance * 100) / 100)])
             # sort leaderboard again
 
         print(f"\nLeaderboard data is then: {self.leaderboardList}")
@@ -116,13 +119,7 @@ class UserData:
         while j < len(right):
             arr[k] = [k + 1] + right[j][1::]
             j += 1
-            k += 1
-    
-    # def mergeSort(self, arr, start, end):
-        
-
-
-
+            k += 1    
 
     # Display all user data
     def print_all_user_data(self):
@@ -130,6 +127,3 @@ class UserData:
             csv_reader = csv.reader(data_file)
             for row in csv_reader:
                 print(row)
-
-
-

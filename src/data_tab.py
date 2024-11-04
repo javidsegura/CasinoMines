@@ -3,6 +3,7 @@ from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, 
 from PySide6.QtCore import Qt
 from game_css import GameStyle
 import csv
+import math
 
 class DataTab(QWidget):
     def __init__(self, file_path="utils/data/userData.csv"):
