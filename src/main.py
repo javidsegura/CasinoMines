@@ -8,7 +8,7 @@ It should mainly be reduced to function calls to other modules.
 import sys,os, json
 
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame, QMessageBox)
+                                QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame, QMessageBox, QTabWidget, QInputDialog)
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QWidget
@@ -22,9 +22,10 @@ from configuration_panel import ConfigurationPanel
 from header import Header
 from data import UserData
 from sound_effects import SoundEffects
+from data_tab import DataTab
+from leaderboard_tab import LeaderBoardTab
 
     
-
 class CasinoMines(QWidget, GameStyle):
     """ Controls the main window of the game"""
     def __init__(self):
@@ -42,10 +43,10 @@ class CasinoMines(QWidget, GameStyle):
         # variables for data
         self.gamesPlayed = 0
         self.bombHit = False
+        self.username = None
 
-        
-        
     
+        
         # Set up the main UI window
         self.setWindowTitle("CasinoMines Game")
         self.setGeometry(100, 100, 1000, 700)
@@ -70,8 +71,6 @@ class CasinoMines(QWidget, GameStyle):
         left_widget.setLayout(left_layout)
         left_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         self.game_layout.addWidget(left_widget, 1)
-        self.user_data = UserData()
-        self.user_data.initialize_csv()
 
         # Setup the game grid
         grid_widget = QWidget()
@@ -79,11 +78,30 @@ class CasinoMines(QWidget, GameStyle):
         grid_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.game_layout.addWidget(grid_widget, 2)
 
+
+        # Data Tab
+        self.user_data = UserData()
+        self.user_data.initialize_csv()
+        self.user_data.initialize_leader()
+
+        self.tabs = QTabWidget()
+        self.tabs.addTab(self.game_container, "CasinoMines Game")
+
+        self.data_tab = DataTab()
+        self.tabs.addTab(self.data_tab, "Game Data")
+
+        self.leaderboard = LeaderBoardTab(self.user_data)
+        self.tabs.addTab(self.leaderboard, "Leaderboard") 
+        self.leaderboard.populateLeaders()
+
         # Add the game container to the main layout
-        self.main_layout.addWidget(self.game_container)
+        self.main_layout.addWidget(self.tabs)
 
         self.grid_logic.disable_grid(True)  # Initially disable the grid
+
         self.show()
+        self.username = self.show_userPopup()
+        self.leaderboard.defineUsername(self.username)
 
     def configuration_panel(self):
         """ Defines left-most menu. """
@@ -154,7 +172,6 @@ class CasinoMines(QWidget, GameStyle):
         """ Defines behavior after user clicked on a cell with a mine"""
         # adding userData to csv if bomb clicked
         self.add_user_data()
-
 
         self.game_in_progress = False
 
@@ -261,16 +278,45 @@ class CasinoMines(QWidget, GameStyle):
         self.grid_logic.disable_grid(True)
         self.config_panel.disable_cash_out_button()
         self.config_panel.restart_cash_out_button()
+    
+    # tried to implement input control; works for , but not \n or \r
+    def show_userPopup(self):
+        username, ok = QInputDialog.getText(self, "Welcome to CasinoMines!", "Please enter your username:")
+        if ok and username.strip():
+            # print(f"Username is {username}\n")
+            if "," in username:
+                QMessageBox.warning(self, "Please Enter only valid characters", "No commas!")
+                return self.show_userPopup()
+
+            QMessageBox.information(self, "Welcome!", f"Good luck, {username.lower()}")
+            self.config_panel.defineUsername(username.lower())
+            return username.lower()
+        else:
+            QMessageBox.warning(self, "No Username", "You must enter a username to continue!")
+            return self.show_userPopup()
+
+    def returnUser(self):
+        return self.username
 
     def calcProfit(self):
         if self.bombHit:
             return - self.config_panel.getBet()
         else:
             return self.config_panel.getProfit()
+    
+    def calcWin(self):
+        profit = self.calcProfit()
+        print(profit)
+        if profit >= 0:
+            return "Win"
+        return "Loss"
 
     # returning bet and mines for data.py
     def add_user_data(self):
-        self.user_data.add_user_data(self.gamesPlayed, self.config_panel.getBet(), self.config_panel.getBombs(), self.config_panel.getBalanceBeforeChange(), self.calcProfit(), self.config_panel.getBalanceBeforeChange() + self.calcProfit())
+        self.user_data.add_user_data(self.gamesPlayed, self.config_panel.getBet(), self.config_panel.getBombs(), self.config_panel.getBalanceBeforeChange(), self.calcProfit(), self.config_panel.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())
+        self.user_data.add_leaderboard_data(self.username, self.config_panel.getBalanceBeforeChange() + self.calcProfit())
+        self.data_tab.populateValues()
+        self.leaderboard.populateLeaders()
 
 
 
