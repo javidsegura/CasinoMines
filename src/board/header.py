@@ -5,7 +5,7 @@ from PySide6.QtGui import QFont
 
 class Header():
       """ Defines the header element of the game"""
-      def __init__(self):
+      def __init__(self) -> None:
         self.username_label= QLabel()
         self.wallet_label = QLabel()
         self.multiplier_label = QLabel()
@@ -31,7 +31,6 @@ class Header():
 
         header_layout.addSpacing(20)
 
-
         # Wallet balance
         self.wallet_label.setText("Balance: 1000$")
         header_layout.addWidget(self.wallet_label)
@@ -40,26 +39,26 @@ class Header():
         header_layout.addSpacing(20)
 
         # Current multiplier
-        self.multiplier_label.setText("Multiplier: 1x")
+        self.multiplier_label.setText("Multiplier: ")
         header_layout.addWidget(self.multiplier_label)
 
         # Profit
-        self.profit_label.setText("Profit: 0$")
+        self.profit_label.setText("Profit: ")
         header_layout.addWidget(self.profit_label)
 
         return header_frame
       
-      def update_balance(self, new_balance):
-        self.wallet_label.setText(f"Balance: {new_balance}$")
+      def update_balance(self, new_balance:float) -> None:
+        self.wallet_label.setText(f"Balance: {round(new_balance,2)}$")
 
-      def update_multiplier(self, new_multiplier):
-        self.multiplier_label.setText(f"Multiplier: {new_multiplier}x")
+      def update_multiplier(self, new_multiplier:float) -> None:
+        """Writes to header prior multiplier"""
+        self.multiplier_label.setText(f"Multiplier: {round(new_multiplier,2)}x")
 
-      def update_profit(self, new_profit):
+      def update_profit(self, new_profit:float) -> None:
         #print(f"Profit is {new_profit}")
         # self.profit = new_profit
         self.profit_label.setText(f"Profit: {round(new_profit,2)}$")
 
-      def update_user(self, user):
+      def update_user(self, user:str) -> None:
         self.username_label.setText(f"Username: {user}")
-        self.username_label.setStyleSheet("color: #00FF00;") 

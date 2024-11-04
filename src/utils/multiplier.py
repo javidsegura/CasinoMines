@@ -59,19 +59,14 @@ class MultiplierFunc():
         
         return self.results_table.round(2) # Round up all cols' values to 2 decimals
     
-    def get_next_multiplier(self):
+    def get_next_multiplier(self,index) -> float:
         """ maybe just load the whole thing at once to save time?"""
         self.stop = False
         frequency_table = self.frequency_table()[1:]
 
-        for index, row in frequency_table.iterrows():   
-            if self.stop:
-                break
-            yield row["Multiplier"]
+        return frequency_table.iloc[index]["Multiplier"]
     
-    def stop_generator(self):
-        """ Stop multiplier func prematurely"""
-        self.stop = True
+  
 
 
 

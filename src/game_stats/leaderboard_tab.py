@@ -7,7 +7,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
 
 class LeaderBoardTab(QWidget):
-    def __init__(self, user_data):
+    def __init__(self, user_data) -> None:
         super().__init__()
         self.setStyleSheet(GameStyle().get_stylesheet())
 
@@ -67,7 +67,7 @@ class LeaderBoardTab(QWidget):
 
         self.setLayout(self.main_layout)
     
-    def populateHeaders(self):
+    def populateHeaders(self) -> None:
         title = QLabel("LeaderBoard")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("font-size: 50px; font-weight: bold;")
@@ -81,7 +81,7 @@ class LeaderBoardTab(QWidget):
         self.title_layout.addStretch()
         self.top_layout.addLayout(self.title_layout)
 
-    def populateLeaders(self, start=1, limit=0, userRow=None):
+    def populateLeaders(self, start=1, limit=0, userRow=None) -> None:
         self.clearData()
         self.leaderData = self.user_data.return_leaderboard_list()
         #print(f"LeaderData in populated leaders: {self.leaderData}")
@@ -125,7 +125,7 @@ class LeaderBoardTab(QWidget):
         self.setLayout(self.main_layout)
         self.populatePodium()
     
-    def populatePodium(self):
+    def populatePodium(self) -> None:
         self.clearData(False)
         ogPixmap = QPixmap("utils/imgs/podium.png")
         pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
@@ -173,10 +173,10 @@ class LeaderBoardTab(QWidget):
         self.image_label.setPixmap(pixmap)
         self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
 
-    def defineUsername(self, user: str):
+    def defineUsername(self, user: str) -> None:
         self.username = user
 
-    def search(self):
+    def search(self) -> None:
         self.numPlayers = self.user_data.return_numPlayers()
 
         for person in self.leaderData:
@@ -196,7 +196,7 @@ class LeaderBoardTab(QWidget):
         
         QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
 
-    def clearData(self, left=True):
+    def clearData(self, left=True) -> None:
         if left:
             while self.left_layout.count():
                 item = self.left_layout.takeAt(0)  # Take the item at the top of the layout

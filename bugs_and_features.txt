@@ -1,24 +1,15 @@
 
 BUGS:
 1) Opacity is weird for the cells
-2) Clicking on close for for pop messages doesnt work
 3)  Adding time to the game data
-4) Too advanced streak stop captures profit
-5) Adding time to execute functions 
-6) Remove good luck window
-7) Replace all mentioning of "bombs" to "mines 
 8) Fix the width of the header elements
 9) Simulate the game and see if the math holds
-10) Add docstrings to all methods
-11) All annotations on methods
-12) Logger for all errors
 13) Sorting algo is O(n) space complexity
 14) Debuggin error when no bet provided
 15) Winning effects
 16) Maybe animations?
 
 FEATURES:
-1. Throw money when cashing out lands you in the ranking
 2. When about to log in create a new window that ask for log in and then show stats and current balance
 3. Add gradient to elements!!!
 

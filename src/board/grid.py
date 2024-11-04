@@ -13,7 +13,7 @@ class GridLogic:
         self.cells = {} # Set of all cells in the grid
         self.on_cell_click = on_cell_click # function to call when ...
 
-    def setup_grid(self):
+    def setup_grid(self) -> QVBoxLayout:
         self.grid_layout = QGridLayout()
         self.grid_layout.setSpacing(10)  # Spacing between cells
 
@@ -65,8 +65,6 @@ class GridLogic:
            
         cell.setIcon(icon)
         cell.setIconSize(QSize(170, 170))  # Adjust size as needed
-        
-
 
     def disable_button(self, row:int, col:int) -> None:
         self.cells[(row, col)].setDisabled(True)

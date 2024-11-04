@@ -3,9 +3,7 @@ Major remark: most of the elements have been styled with the attribute .setStyle
 This file contains the styling of common elements 
 """
 class GameStyle:
-    def __init__(self):
-        None
-    def get_stylesheet(self):
+    def get_stylesheet(self) -> str:
         """
         Def: sets CSS for UI widgets
         Question: which widget is which? 

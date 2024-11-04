@@ -13,11 +13,12 @@ from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, 
                                 QSizePolicy, QMessageBox, QTabWidget, QInputDialog)
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget
+from utils.confetty import ConfettiEffect
 
     
 class CasinoMines(QWidget, GameStyle):
     """ Controls the main window of the game"""
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         # vars for game components
@@ -80,10 +81,13 @@ class CasinoMines(QWidget, GameStyle):
 
         # Show the window and get the username
         self.show()
+        self.confetti = ConfettiEffect(self)
+        self.confetti.resize(self.size())
+        self.confetti.hide()
         self.username = self.show_userPopup()
         self.leaderboard.defineUsername(self.username)
 
-    def start_game(self):
+    def start_game(self) -> None:
         """Function executed when the user clicks on the start button"""
         self.num_mines = self.settingsClass.get_num_mines()
         self.game_in_progress = True 
@@ -118,21 +122,21 @@ class CasinoMines(QWidget, GameStyle):
             self.gridClass.set_button_state(row, col, False, revealed=False)
             self.bombHit = False
             self.gridClass.disable_button(row, col)
-            self.settingsClass.update_multiplier()
+            self.settingsClass.update_multiplier(len(self.clicked_cells)-1)
             self.settingsClass.update_profit()
 
             if len(self.clicked_cells) > 0:
                 self.settingsClass.activate_cash_out_button()
                 self.settingsClass.increase_cash_out_button()
             
-            self.settingsClass.update_multiplier()
+            self.settingsClass.update_multiplier(len(self.clicked_cells)-1)
             self.settingsClass.update_profit()
 
             if len(self.clicked_cells) > 0:
                 self.settingsClass.activate_cash_out_button()
                 self.settingsClass.increase_cash_out_button()
     
-    def configuration_panel(self):
+    def configuration_panel(self) -> QVBoxLayout:
         """ Defines left-most menu. """
         left_layout, self.cash_out_button = self.settingsClass.set_up_panel()
         self.cash_out_button.clicked.connect(self.handle_cash_out)
@@ -147,7 +151,7 @@ class CasinoMines(QWidget, GameStyle):
 
         return left_layout
 
-    def handle_cash_out(self):
+    def handle_cash_out(self) -> None:
         """ Controls what happens when the user clicks on the cash out button"""
         self.add_user_data()
         if self.game_in_progress and len(self.clicked_cells) > 0:
@@ -156,7 +160,7 @@ class CasinoMines(QWidget, GameStyle):
             self.settingsClass.cash_out()
             self.game_in_progress = False
             
-    def game_over(self):
+    def game_over(self) -> None:
         """ Defines behavior after user clicked on a cell with a mine"""
         self.game_in_progress = False
         # Revealing cells
@@ -166,8 +170,12 @@ class CasinoMines(QWidget, GameStyle):
         self.add_user_data()
         self.show_GameOver_screen()
 
-    def show_CashOut_screen(self):
+    def show_CashOut_screen(self) -> None:
         """ Shows a game over pop-up and resets the game when dismissed """
+        self.confetti.resize(self.size())
+        self.confetti.raise_()
+        self.confetti.start_animation()
+        
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("You win!")
         self.sound_effectsClass.play_win() 
@@ -194,7 +202,7 @@ class CasinoMines(QWidget, GameStyle):
         msg_box.buttonClicked.connect(self.reset_game_after_cash_out)
         msg_box.exec()
 
-    def reset_game_after_cash_out(self):
+    def reset_game_after_cash_out(self) -> None:
         """ Resets the game after cashing out """
         self.game_in_progress = False
         self.start_button.setDisabled(True)
@@ -205,7 +213,7 @@ class CasinoMines(QWidget, GameStyle):
         self.settingsClass.reset_for_new_game()
         self.settingsClass.disable_cash_out_button()
 
-    def show_GameOver_screen(self):
+    def show_GameOver_screen(self) -> None:
         """ Shows a game over pop-up and resets the game when dismissed """
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("You clicked on a bomb!")
@@ -226,7 +234,7 @@ class CasinoMines(QWidget, GameStyle):
         msg_box.buttonClicked.connect(self.reset_game_after_gameover)
         msg_box.exec()
 
-    def reset_game_after_gameover(self):
+    def reset_game_after_gameover(self) -> None:
         """ Resets the game after the pop-up is dismissed """
         self.settingsClass.activate_btns()
         self.settingsClass.reset_bet()
@@ -253,23 +261,23 @@ class CasinoMines(QWidget, GameStyle):
             QMessageBox.warning(self, "No Username", "You must enter a username to continue!")
             return self.show_userPopup()
 
-    def returnUser(self):
+    def returnUser(self) -> str:
         return self.username
 
-    def calcProfit(self):
+    def calcProfit(self) -> float:
         if self.bombHit:
             return - self.settingsClass.getBet()
         else:
             return self.settingsClass.getProfit()
     
-    def calcWin(self):
+    def calcWin(self) -> str:
         profit = self.calcProfit()
         #print(profit)
         if profit >= 0:
             return "Win"
         return "Loss"
 
-    def add_user_data(self):
+    def add_user_data(self) -> None:
         """ Add user stats to csv files"""
         self.user_data.add_user_data(self.gamesPlayed, self.settingsClass.getBet(), self.settingsClass.getBombs(), self.settingsClass.getBalanceBeforeChange(), self.calcProfit(), self.settingsClass.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())
         self.user_data.add_leaderboard_data(self.username, self.settingsClass.getBalanceBeforeChange() + self.calcProfit())

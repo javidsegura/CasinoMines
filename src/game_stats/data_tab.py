@@ -7,7 +7,7 @@ from PySide6.QtCore import Qt
 import csv
 
 class DataTab(QWidget):
-    def __init__(self, file_path="utils/data/userData.csv"):
+    def __init__(self, file_path:str="utils/data/userData.csv") -> None:
         super().__init__()
         self.setStyleSheet(GameStyle().get_stylesheet())
         
@@ -41,7 +41,7 @@ class DataTab(QWidget):
         self.setLayout(self.main_layout)
     
     # give it a paramter with default none; if its not none then change that button backgorund to blue
-    def populateHeaders(self):
+    def populateHeaders(self) -> None:
         self.headerButtons = []
         with open(self.file_path, 'r') as data_file:
             csv_reader = csv.reader(data_file)
@@ -56,7 +56,7 @@ class DataTab(QWidget):
                         self.grid_layout.addWidget(header_button, 0, col)
                         self.headerButtons.append(header_button)
     
-    def populateValues(self):
+    def populateValues(self) -> None:
         """ Populate the values of the data tab"""
         self.clearData()
         self.firstHeaderPop = False
@@ -89,7 +89,7 @@ class DataTab(QWidget):
 
 
     
-    def populateSortedValues(self, arr):
+    def populateSortedValues(self, arr:list) -> None:
         sortedOutput = []
         for element in arr:
             currIndex = element[0]
@@ -102,7 +102,7 @@ class DataTab(QWidget):
 
             
 
-    def binarySearch(self, index):
+    def binarySearch(self, index:int) -> int:
         low = 1 #skip headers
         high = len(self.data) - 1
         while low <= high:
@@ -115,7 +115,7 @@ class DataTab(QWidget):
                 high = mid - 1
         return "Error"
     
-    def displaySortedValues(self, arr):
+    def displaySortedValues(self, arr:list) -> None:
         self.clearData()
         for row, rowData in enumerate(arr):
                 for col, var in enumerate(rowData):
@@ -133,7 +133,7 @@ class DataTab(QWidget):
         
 
 
-    def headerClicked(self, v, button):
+    def headerClicked(self, v:str, button:QPushButton) -> None:
         if not self.firstHeaderPop: #meaning there is no data yet
             for element in self.headerButtons:
                 element.setStyleSheet("background-color: #444444; color: white;")
@@ -147,7 +147,7 @@ class DataTab(QWidget):
             #print(f"Arr sorted: {sorted}")
             self.populateSortedValues(sorted)
 
-    def clearData(self):
+    def clearData(self) -> None:
         # self.headerButtons = []
         for i in reversed(range(self.main_layout.count(), 1)):
             item = self.main_layout.itemAt(i)
@@ -156,7 +156,7 @@ class DataTab(QWidget):
             else:
                 self.main_layout.removeItem(item)
     
-    def createArr(self, header):
+    def createArr(self, header:str) -> list:
         arr = []
         ourCol = None
         win = False
@@ -182,14 +182,14 @@ class DataTab(QWidget):
                                     arr.append((row, float(var)))
         return arr
     
-    def stringToInt(self, element):
+    def stringToInt(self, element:str) -> int:
         # only for win as of right now
         if element == 'Win':
             return 1
         else:
             return 0
 
-    def merge(self, arr, start, mid, end):
+    def merge(self, arr:list, start:int, mid:int, end:int) -> None:
         left = arr[start:mid + 1]
         right = arr[mid + 1:end + 1]
 
@@ -218,7 +218,7 @@ class DataTab(QWidget):
             j += 1
             k += 1
     
-    def mergeSort(self, arr, start, end):
+    def mergeSort(self, arr:list, start:int, end:int) -> list:
         if start < end:
             mid = (start + end) // 2
 
