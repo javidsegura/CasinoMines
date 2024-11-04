@@ -1,13 +1,13 @@
-from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame, QMessageBox, QTabWidget, QGridLayout)
+""" Controls the leaderboard tab of the game """
+
+from design.game_css import GameStyle
+from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
+                                QSpacerItem, QSizePolicy, QMessageBox, QGridLayout)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
-from game_css import GameStyle
-# import csv
-import math
 
 class LeaderBoardTab(QWidget):
-    def __init__(self, user_data, file_path="utils/data/userData.csv"):
+    def __init__(self, user_data) -> None:
         super().__init__()
         self.setStyleSheet(GameStyle().get_stylesheet())
 
@@ -67,7 +67,7 @@ class LeaderBoardTab(QWidget):
 
         self.setLayout(self.main_layout)
     
-    def populateHeaders(self):
+    def populateHeaders(self) -> None:
         title = QLabel("LeaderBoard")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("font-size: 50px; font-weight: bold;")
@@ -81,10 +81,10 @@ class LeaderBoardTab(QWidget):
         self.title_layout.addStretch()
         self.top_layout.addLayout(self.title_layout)
 
-    def populateLeaders(self, start=1, limit=0, userRow=None):
+    def populateLeaders(self, start=1, limit=0, userRow=None) -> None:
         self.clearData()
         self.leaderData = self.user_data.return_leaderboard_list()
-        print(f"LeaderData in populateleaders: {self.leaderData}")
+        #print(f"LeaderData in populated leaders: {self.leaderData}")
 
         self.numPlayers = self.user_data.return_numPlayers()
 
@@ -125,7 +125,7 @@ class LeaderBoardTab(QWidget):
         self.setLayout(self.main_layout)
         self.populatePodium()
     
-    def populatePodium(self):
+    def populatePodium(self) -> None:
         self.clearData(False)
         ogPixmap = QPixmap("utils/imgs/podium.png")
         pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
@@ -173,15 +173,15 @@ class LeaderBoardTab(QWidget):
         self.image_label.setPixmap(pixmap)
         self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
 
-    def defineUsername(self, user):
+    def defineUsername(self, user: str) -> None:
         self.username = user
 
-    def search(self):
+    def search(self) -> None:
         self.numPlayers = self.user_data.return_numPlayers()
 
         for person in self.leaderData:
             if person[1] == self.username:
-                print(f"{self.username} is {person[0]} place!")
+                #print(f"{self.username} is {person[0]} place!")
                 
                 start = 1
                 if int(person[0]) > 5:
@@ -196,7 +196,7 @@ class LeaderBoardTab(QWidget):
         
         QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
 
-    def clearData(self, left=True):
+    def clearData(self, left=True) -> None:
         if left:
             while self.left_layout.count():
                 item = self.left_layout.takeAt(0)  # Take the item at the top of the layout

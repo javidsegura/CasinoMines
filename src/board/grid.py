@@ -1,29 +1,21 @@
+""" Controls the grid of the game """
+
 from PySide6.QtWidgets import QPushButton, QGridLayout, QVBoxLayout, QSpacerItem, QSizePolicy
-import os 
-from PySide6.QtGui import QIcon
-from PySide6.QtCore import QSize
-import os 
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import QSize
 
 class GridLogic:
-    def __init__(self, grid_size : int, on_cell_click : callable) -> None:
-        """
-        Parameters:
-            - grid_size: int
-            - on_button_click: function
-        """
-        self.grid_size = grid_size
+    def __init__(self, on_cell_click : callable) -> None:
+        """ Defines the logic for the grid """
+        self.grid_size = 5
         self.cells = {} # Set of all cells in the grid
         self.on_cell_click = on_cell_click # function to call when ...
         self.cells = {} # Set of all cells in the grid
         self.on_cell_click = on_cell_click # function to call when ...
 
-    def setup_grid(self):
+    def setup_grid(self) -> QVBoxLayout:
         self.grid_layout = QGridLayout()
         self.grid_layout.setSpacing(10)  # Spacing between cells
-
-
 
         for row in range(self.grid_size):
             for col in range(self.grid_size):
@@ -53,8 +45,7 @@ class GridLogic:
             cell.setDisabled(disable)
 
     def reset_buttons(self) -> None:
-        """ Reset the grid to its initial state for a new game
-        TOdo: create a condition to only execute if not already empty"""
+        """ Reset the grid to its initial state for a new game"""
 
         for cell in self.cells.values():
             cell.setIcon(QIcon())  # Clear the icon
@@ -74,8 +65,6 @@ class GridLogic:
            
         cell.setIcon(icon)
         cell.setIconSize(QSize(170, 170))  # Adjust size as needed
-        
-
 
     def disable_button(self, row:int, col:int) -> None:
         self.cells[(row, col)].setDisabled(True)
