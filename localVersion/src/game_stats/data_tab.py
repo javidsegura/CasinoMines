@@ -86,8 +86,6 @@ class DataTab(QWidget):
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
-
-
     
     def populateSortedValues(self, arr:list) -> None:
         sortedOutput = []
@@ -98,9 +96,7 @@ class DataTab(QWidget):
         if sortedOutput is not None:
             #print(f"SortedOutput {sortedOutput}\n")
             self.displaySortedValues(sortedOutput)
-        return "Error"
-
-            
+        return "Error" 
 
     def binarySearch(self, index:int) -> int:
         low = 1 #skip headers
@@ -130,8 +126,6 @@ class DataTab(QWidget):
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
-        
-
 
     def headerClicked(self, v:str, button:QPushButton) -> None:
         if not self.firstHeaderPop: #meaning there is no data yet

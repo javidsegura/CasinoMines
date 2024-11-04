@@ -163,12 +163,10 @@ class CasinoMines(QWidget, GameStyle):
     def game_over(self) -> None:
         """ Defines behavior after user clicked on a cell with a mine"""
         self.game_in_progress = False
-        # Revealing cells
-        self.gridClass.reveal_cells(self.minesClass.set_of_mines(), self.clicked_cells)
-        self.gridClass.disable_grid(True)
-        # Auxiliary functions
-        self.add_user_data()
-        self.show_GameOver_screen()
+        if self.bombHit:
+            self.gridClass.reveal_cells(self.minesClass.set_of_mines(), self.clicked_cells)
+            self.show_GameOver_screen()
+            self.add_user_data()
 
     def show_CashOut_screen(self) -> None:
         """ Shows a game over pop-up and resets the game when dismissed """

@@ -54,7 +54,7 @@ class GameStyle:
                 background-color: #888888;
                 color: #aaaaaa;
             }
-            QPushButton.grid-cell:e { 
+            QPushButton.grid-cell:enabled { 
                 border-radius: 10px;
             }
             QPushButton.grid-cell:disabled {
