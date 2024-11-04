@@ -91,6 +91,7 @@ class CasinoMines(QWidget, GameStyle):
 
     def start_game(self):
         """Function executed when the user clicks on the start button"""
+        self.num_mines = self.settingsClass.get_num_mines()
         self.game_in_progress = True 
         self.gamesPlayed += 1
         self.settingsClass.reset_for_new_game()
@@ -111,6 +112,8 @@ class CasinoMines(QWidget, GameStyle):
         if not self.game_in_progress:
             raise Exception("Game is not in progress. You cannot click on cells")
         self.clicked_cells.add((row, col))
+
+        print(f"Just clicked a cell")
 
         # If clicked cell is a mine
         if self.minesClass.is_mine(row, col):
@@ -154,7 +157,6 @@ class CasinoMines(QWidget, GameStyle):
 
     def handle_cash_out(self):
         """ Controls what happens when the user clicks on the cash out button"""
-        self.game_in_progress = False
         self.add_user_data()
 
         if self.game_in_progress and len(self.clicked_cells) > 0:
@@ -174,6 +176,7 @@ class CasinoMines(QWidget, GameStyle):
 
     def show_CashOut_screen(self):
         """ Shows a game over pop-up and resets the game when dismissed """
+        print("Showing cash out screen")
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("You win!")
 

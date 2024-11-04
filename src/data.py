@@ -30,7 +30,7 @@ class UserData():
             csv_reader = csv.reader(data_file)
             self.leaderboardList = list(csv_reader)
             self.numPlayers = len(self.leaderboardList) - 1 # -1 for labels row
-        print(f"Leaderboard exists: \n{self.leaderboardList}")
+        #print(f"Leaderboard exists: \n{self.leaderboardList}")
 
     # Adding data to the CSV files
     def add_user_data(self, game_id, bet, bombs, balanceBefore, profit, balanceAfter, win):
@@ -41,7 +41,7 @@ class UserData():
 
     def add_leaderboard_data(self, user, balance):
         """ Add user data to the leaderboard csv"""
-        print(f"\nLeaderboard data is first: {self.leaderboardList}")
+        #print(f"\nLeaderboard data is first: {self.leaderboardList}")
 
         if self.find_highest_balance(user, balance): #user exists and this balance is its highscore
             self.leaderboardList[self.rowToModify] = [0, str(user), str(math.floor(balance * 100) / 100)]
@@ -50,9 +50,9 @@ class UserData():
             self.numPlayers += 1
             self.leaderboardList.append([0, str(user), str(math.floor(balance * 100) / 100)])
 
-        print(f"\nLeaderboard data is then: {self.leaderboardList}")
+        #print(f"\nLeaderboard data is then: {self.leaderboardList}")
         self.leaderboardList = [['rank','user','largestBalance']] + self.mergeSort_leaderboard_data(self.leaderboardList[1::], 0, len(self.leaderboardList) - 1)
-        print(f"\nSorted leaderboard data is: {self.leaderboardList}")
+        #print(f"\nSorted leaderboard data is: {self.leaderboardList}")
 
         # Rewriting the leaderboard csv with ordered data
         with open(self.leaderboardPath, 'w', newline='') as data_file:
@@ -117,6 +117,7 @@ class UserData():
 
     # Display all user data
     def print_all_user_data(self):
+        """ is this called at any time? """
         with open(self.file_path, 'r') as data_file:
             csv_reader = csv.reader(data_file)
             for row in csv_reader:
