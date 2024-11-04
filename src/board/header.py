@@ -56,7 +56,7 @@ class Header():
         self.multiplier_label.setText(f"Multiplier: {new_multiplier}x")
 
       def update_profit(self, new_profit):
-        print(f"Profit is {new_profit}")
+        #print(f"Profit is {new_profit}")
         # self.profit = new_profit
         self.profit_label.setText(f"Profit: {round(new_profit,2)}$")
 

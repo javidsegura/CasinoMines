@@ -5,10 +5,9 @@ from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, Q
                                 QSpacerItem, QSizePolicy, QMessageBox, QGridLayout)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
-# import csv
 
 class LeaderBoardTab(QWidget):
-    def __init__(self, user_data, file_path="utils/data/userData.csv"):
+    def __init__(self, user_data):
         super().__init__()
         self.setStyleSheet(GameStyle().get_stylesheet())
 
@@ -85,7 +84,7 @@ class LeaderBoardTab(QWidget):
     def populateLeaders(self, start=1, limit=0, userRow=None):
         self.clearData()
         self.leaderData = self.user_data.return_leaderboard_list()
-        print(f"LeaderData in populateleaders: {self.leaderData}")
+        #print(f"LeaderData in populated leaders: {self.leaderData}")
 
         self.numPlayers = self.user_data.return_numPlayers()
 
@@ -182,7 +181,7 @@ class LeaderBoardTab(QWidget):
 
         for person in self.leaderData:
             if person[1] == self.username:
-                print(f"{self.username} is {person[0]} place!")
+                #print(f"{self.username} is {person[0]} place!")
                 
                 start = 1
                 if int(person[0]) > 5:

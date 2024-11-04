@@ -14,8 +14,14 @@ BUGS:
 12) Logger for all errors
 13) Sorting algo is O(n) space complexity
 14) Debuggin error when no bet provided
+15) Winning effects
+16) Maybe animations?
 
 FEATURES:
 1. Throw money when cashing out lands you in the ranking
 2. When about to log in create a new window that ask for log in and then show stats and current balance
 3. Add gradient to elements!!!
+
+
+QUESTIONS:
+1) was print_all_user_data coded for debugging purposes?

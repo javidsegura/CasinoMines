@@ -107,8 +107,6 @@ class CasinoMines(QWidget, GameStyle):
             raise Exception("Game is not in progress. You cannot click on cells")
         self.clicked_cells.add((row, col))
 
-        print(f"Just clicked a cell")
-
         # If clicked cell is a mine
         if self.minesClass.is_mine(row, col):
             self.gridClass.set_button_state(row, col,True, revealed=False)
@@ -266,7 +264,7 @@ class CasinoMines(QWidget, GameStyle):
     
     def calcWin(self):
         profit = self.calcProfit()
-        print(profit)
+        #print(profit)
         if profit >= 0:
             return "Win"
         return "Loss"

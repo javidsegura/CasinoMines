@@ -128,8 +128,8 @@ class Settings():
         try:
             bet_amount = int(self.bet_input.text())
             self.num_mines = self.mines_slider.value()
-            print("\n\n\033[1mConfiguration:\033[0m\n")
-            print(f"Current balance is {self.wallet.get_balance()}")
+            #print("\n\n\033[1mConfiguration:\033[0m\n")
+            #print(f"Current balance is {self.wallet.get_balance()}")
             self.balanceBeforeChange = self.wallet.get_balance()
 
             if self.num_mines < 1 or self.num_mines > 24:

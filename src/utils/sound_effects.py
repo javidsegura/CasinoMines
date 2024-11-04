@@ -28,9 +28,9 @@ class SoundEffects():
                 sound.play()
                 QTimer.singleShot(100, lambda: None)
             else:
-                print(f"Sound effect '{sound_name}' not loaded properly")
+                raise Exception(f"Sound effect '{sound_name}' not loaded properly")
         else:
-            print(f"Sound effect '{sound_name}' not found")
+            raise Exception(f"Sound effect '{sound_name}' not found")
 
     def play_click(self):
         self.play_sound('click')

@@ -9,8 +9,8 @@ class Wallet:
         self.prior_multiplier = 1 # Prior multiplier
 
     def place_bet(self, amount):
-        print(f"Placing bet of {amount}")
-        print(f"Placing bet of {amount}")
+        #print(f"Placing bet of {amount}")
+        #print(f"Placing bet of {amount}")
         self.current_bet = amount
         self.balance -= amount
 
@@ -47,7 +47,7 @@ class Wallet:
         return abs(self.balance) * (percentage / 100)
     
     def calculate_profit(self):
-        print(f"Calculating profit: {self.current_bet} * {self.current_multiplier}")
+        #print(f"Calculating profit: {self.current_bet} * {self.current_multiplier}")
         self.profit = self.current_bet * self.current_multiplier - self.current_bet
-        print(f"Profit: {self.profit}\n")
+        #print(f"Profit: {self.profit}\n")
         return self.profit

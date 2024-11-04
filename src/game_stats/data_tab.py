@@ -96,7 +96,7 @@ class DataTab(QWidget):
             # binary search
             sortedOutput.append(self.data[self.binarySearch(currIndex)])
         if sortedOutput is not None:
-            print(f"SortedOutput {sortedOutput}\n")
+            #print(f"SortedOutput {sortedOutput}\n")
             self.displaySortedValues(sortedOutput)
         return "Error"
 
@@ -138,13 +138,13 @@ class DataTab(QWidget):
             for element in self.headerButtons:
                 element.setStyleSheet("background-color: #444444; color: white;")
 
-            print(f"\nHeader {v} has been clicked")
+            #print(f"\nHeader {v} has been clicked")
             button.setStyleSheet("background-color: blue; color: white;")
 
             arr = self.createArr(v)
-            print(f"Arr unsorted: {arr}")
+            #print(f"Arr unsorted: {arr}")
             sorted = self.mergeSort(arr, 0, len(arr) - 1)
-            print(f"Arr sorted: {sorted}")
+            #print(f"Arr sorted: {sorted}")
             self.populateSortedValues(sorted)
 
     def clearData(self):
