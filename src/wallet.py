@@ -1,16 +1,6 @@
-from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QLineEdit, QSpacerItem, QSizePolicy, QSlider)
-from PySide6.QtCore import QTimer, Qt
-
-from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QLineEdit, QSpacerItem, QSizePolicy, QSlider)
-from PySide6.QtCore import QTimer, Qt
-
 class Wallet:
     def __init__(self, initial_balance=1000):
-        """
-        Initializes the wallet class
-        """
+        """ Defines payment logic of the game"""
         self.balance = initial_balance # Money in the account
         self.current_bet = 0 # Current bet
         self.current_multiplier = 1 # Current multiplier

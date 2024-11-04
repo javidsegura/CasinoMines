@@ -1,9 +1,8 @@
 from PySide6.QtCore import QUrl, QTimer
 from PySide6.QtMultimedia import QSoundEffect
 
-import os
-
 class SoundEffects():
+    """ Controls the sound effects of the game """
     def __init__(self):
         self.sounds = {
             'click': self.load_sound("utils/sound_effects/click.wav"),
@@ -20,6 +19,7 @@ class SoundEffects():
         return sound
 
     def play_sound(self, sound_name):
+        """ Plays a sound effect among the collection of sounds"""
         if sound_name in self.sounds:
             sound = self.sounds[sound_name]
             if sound.isLoaded():
@@ -30,7 +30,6 @@ class SoundEffects():
         else:
             print(f"Sound effect '{sound_name}' not found")
 
-    # Convenience methods for specific sounds
     def play_click(self):
         self.play_sound('click')
 

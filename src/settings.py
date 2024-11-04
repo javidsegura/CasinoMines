@@ -1,14 +1,18 @@
-from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QLineEdit, QSpacerItem, QSizePolicy, QSlider)
-from PySide6.QtCore import QTimer, Qt
-from PySide6.QtGui import QPixmap 
-
+""" 
+Contains functions for the settings and the header elements
+"""
 import wallet 
 import header
 import multiplier
 
-class ConfigurationPanel():
-    """ Controls the configuration panel of the game. 
+from PySide6.QtWidgets import (QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
+                                QLineEdit, QSpacerItem, QSizePolicy, QSlider)
+from PySide6.QtCore import QTimer, Qt
+from PySide6.QtGui import QPixmap 
+
+
+class Settings():
+    """ Controls the settings panel of the game. 
     All wallet elements's value in the header are also controlled here"""
     def __init__(self):
         super().__init__()
@@ -18,7 +22,8 @@ class ConfigurationPanel():
         self.num_mines = 1
         self.start_button = None
         self.cash_out_button = None
-        # vars for data
+
+        # vars for csv
         self.betAmount = -1
         self.numMines = -1
         self.profit = 0

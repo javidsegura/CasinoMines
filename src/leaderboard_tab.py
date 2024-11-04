@@ -1,10 +1,10 @@
-from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame, QMessageBox, QTabWidget, QGridLayout)
+from game_css import GameStyle
+
+from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
+                                QSpacerItem, QSizePolicy, QMessageBox, QGridLayout)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
-from game_css import GameStyle
 # import csv
-import math
 
 class LeaderBoardTab(QWidget):
     def __init__(self, user_data, file_path="utils/data/userData.csv"):

@@ -1,9 +1,8 @@
-from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QLineEdit, QSpacerItem, QSizePolicy, QSlider, QFrame)
-from PySide6.QtCore import QTimer, Qt
+from PySide6.QtWidgets import (QHBoxLayout, QLabel, QFrame)
 from PySide6.QtGui import QFont
 
 class Header():
+      """ Defines the header element of the game"""
       def __init__(self):
         self.username_label= QLabel()
         self.wallet_label = QLabel()

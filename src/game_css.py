@@ -1,4 +1,3 @@
-
 class GameStyle:
     def __init__(self):
         None

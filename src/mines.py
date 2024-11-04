@@ -4,8 +4,9 @@ Controls all the logic related to the bombs
 
 import random
 
-class BombsLogic():
-    def __init__(self, grid_size:int) -> None:
+class MinesLogic():
+    """ Controls the logic of the mines """
+    def __init__(self, grid_size:int=5) -> None:
         self.grid_size = grid_size
         self.mines = set() # Here we will set the coordinates of the mines
 

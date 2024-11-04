@@ -1,0 +1,13 @@
+
+BUGS:
+1) Opacity is weird for the cells
+2) Clicking on close for for pop messages doesnt work
+3)  Adding time to the game data
+4) Too advanced streak stop captures profit
+5) Adding time to execute functions 
+6) Remove good luck window
+7) Replace all mentioning of "bombs" to "mines
+
+
+FEATURES:
+1. Throw money when cashing out lands you in the ranking
