@@ -1,3 +1,5 @@
+""" Controls the grid of the game """
+
 from PySide6.QtWidgets import QPushButton, QGridLayout, QVBoxLayout, QSpacerItem, QSizePolicy
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import QSize
@@ -14,8 +16,6 @@ class GridLogic:
     def setup_grid(self):
         self.grid_layout = QGridLayout()
         self.grid_layout.setSpacing(10)  # Spacing between cells
-
-
 
         for row in range(self.grid_size):
             for col in range(self.grid_size):

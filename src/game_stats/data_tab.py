@@ -1,5 +1,6 @@
-from game_css import GameStyle
+""" Controls the data tab of the game """
 
+from design.game_css import GameStyle
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel,
                                 QSpacerItem, QSizePolicy, QGridLayout)
 from PySide6.QtCore import Qt

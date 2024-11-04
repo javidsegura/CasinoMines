@@ -1,23 +1,18 @@
 """ Controls the flow of the game. Start game running this file"""
 
-from game_css import GameStyle
-from mines import MinesLogic
-from grid import GridLogic
-from wallet import Wallet
-from settings import Settings
-from data import UserData
-from sound_effects import SoundEffects
-from data_tab import DataTab
-from leaderboard_tab import LeaderBoardTab
-
+from design.game_css import GameStyle
+from board.mines import MinesLogic
+from board.grid import GridLogic
+from board.settings import Settings
+from game_stats.data import UserData
+from utils.sound_effects import SoundEffects
+from game_stats.data_tab import DataTab
+from game_stats.leaderboard_tab import LeaderBoardTab
 import sys
-
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
                                 QSizePolicy, QMessageBox, QTabWidget, QInputDialog)
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget
-
-
 
     
 class CasinoMines(QWidget, GameStyle):
@@ -245,12 +240,11 @@ class CasinoMines(QWidget, GameStyle):
         self.settingsClass.disable_cash_out_button()
         self.settingsClass.restart_cash_out_button()
     
-    # tried to implement input control; works for , but not \n or \r
     def show_userPopup(self) -> str:
         """ Defines log in element popup"""
         username, ok = QInputDialog.getText(self, "Welcome to CasinoMines!", "Please enter your username:") 
         if ok and username.strip():
-            if "," in username:
+            if not username.isalnum():
                 QMessageBox.warning(self, "Please Enter only valid characters", "No commas!")
                 return self.show_userPopup() # try again
             else:
@@ -277,7 +271,6 @@ class CasinoMines(QWidget, GameStyle):
             return "Win"
         return "Loss"
 
-    # returning bet and mines for data.py
     def add_user_data(self):
         """ Add user stats to csv files"""
         self.user_data.add_user_data(self.gamesPlayed, self.settingsClass.getBet(), self.settingsClass.getBombs(), self.settingsClass.getBalanceBeforeChange(), self.calcProfit(), self.settingsClass.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())

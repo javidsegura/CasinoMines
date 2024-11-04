@@ -1,3 +1,5 @@
+""" Controls the sound effects of the game """
+
 from PySide6.QtCore import QUrl, QTimer
 from PySide6.QtMultimedia import QSoundEffect
 

@@ -1,3 +1,5 @@
+""" Controls the header element of the game """
+
 from PySide6.QtWidgets import (QHBoxLayout, QLabel, QFrame)
 from PySide6.QtGui import QFont
 

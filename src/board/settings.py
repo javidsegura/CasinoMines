@@ -1,9 +1,9 @@
 """ 
 Contains functions for the settings and the header elements
 """
-import wallet 
-import header
-import multiplier
+import utils.wallet as wallet 
+import board.header as header
+import utils.multiplier as multiplier
 
 from PySide6.QtWidgets import (QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
                                 QLineEdit, QSpacerItem, QSizePolicy, QSlider)

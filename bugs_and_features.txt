@@ -13,6 +13,7 @@ BUGS:
 11) All annotations on methods
 12) Logger for all errors
 13) Sorting algo is O(n) space complexity
+14) Debuggin error when no bet provided
 
 FEATURES:
 1. Throw money when cashing out lands you in the ranking

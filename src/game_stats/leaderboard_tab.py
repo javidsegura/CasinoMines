@@ -1,5 +1,6 @@
-from game_css import GameStyle
+""" Controls the leaderboard tab of the game """
 
+from design.game_css import GameStyle
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
                                 QSpacerItem, QSizePolicy, QMessageBox, QGridLayout)
 from PySide6.QtCore import Qt

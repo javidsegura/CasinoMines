@@ -1,3 +1,5 @@
+""" Controls the data of the game """
+
 import csv
 import os
 import math
