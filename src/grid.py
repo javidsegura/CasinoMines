@@ -47,8 +47,7 @@ class GridLogic:
             cell.setDisabled(disable)
 
     def reset_buttons(self) -> None:
-        """ Reset the grid to its initial state for a new game
-        T"""
+        """ Reset the grid to its initial state for a new game"""
 
         for cell in self.cells.values():
             cell.setIcon(QIcon())  # Clear the icon

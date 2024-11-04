@@ -111,13 +111,14 @@ class CasinoMines(QWidget, GameStyle):
         if not self.game_in_progress:
             raise Exception("Game is not in progress. You cannot click on cells")
         self.clicked_cells.add((row, col))
+
         # If clicked cell is a mine
         if self.minesClass.is_mine(row, col):
             self.gridClass.set_button_state(row, col,True, revealed=False)
             self.bombHit = True
             self.sound_effectsClass.play_lose()
             self.game_over()
-        else: # If clicked cell is not a mine
+        else: 
             self.sound_effectsClass.play_click()
             self.gridClass.set_button_state(row, col, False, revealed=False)
             self.bombHit = False
@@ -153,6 +154,7 @@ class CasinoMines(QWidget, GameStyle):
 
     def handle_cash_out(self):
         """ Controls what happens when the user clicks on the cash out button"""
+        self.game_in_progress = False
         self.add_user_data()
 
         if self.game_in_progress and len(self.clicked_cells) > 0:
@@ -162,16 +164,12 @@ class CasinoMines(QWidget, GameStyle):
             
     def game_over(self):
         """ Defines behavior after user clicked on a cell with a mine"""
-        # adding userData to csv if bomb clicked
-        self.add_user_data()
-
         self.game_in_progress = False
-
-        # Reveling unclicked cells
+        # Revealing cells
         self.gridClass.reveal_cells(self.minesClass.set_of_mines(), self.clicked_cells)
-
-        # Deactivate corresponding widgets of the GUI
         self.gridClass.disable_grid(True)
+        # Auxiliary functions
+        self.add_user_data()
         self.show_GameOver_screen()
 
     def show_CashOut_screen(self):
@@ -292,6 +290,7 @@ class CasinoMines(QWidget, GameStyle):
 
     # returning bet and mines for data.py
     def add_user_data(self):
+        """ Add user stats to csv files"""
         self.user_data.add_user_data(self.gamesPlayed, self.settingsClass.getBet(), self.settingsClass.getBombs(), self.settingsClass.getBalanceBeforeChange(), self.calcProfit(), self.settingsClass.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())
         self.user_data.add_leaderboard_data(self.username, self.settingsClass.getBalanceBeforeChange() + self.calcProfit())
         self.data_tab.populateValues()

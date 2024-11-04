@@ -56,6 +56,7 @@ class DataTab(QWidget):
                         self.headerButtons.append(header_button)
     
     def populateValues(self):
+        """ Populate the values of the data tab"""
         self.clearData()
         self.firstHeaderPop = False
         for i, element in enumerate(self.headerButtons):
