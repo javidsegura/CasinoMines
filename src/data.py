@@ -2,23 +2,25 @@ import csv
 import os
 import math
 
-class UserData:
+class UserData():
     def __init__(self, file_path="utils/data/userData.csv", leaderboardPath="utils/data/leaderboard.csv"):
         self.file_path = file_path
         self.leaderboardPath = leaderboardPath
         self.rowToModify = None
         self.userExists = False
         self.numPlayers = 0
-
         self.leaderboardList = []
+        self.initialize_game_stats()
+        self.initialize_leaderboard()
     
     # Initialize the CSV with headers
-    def initialize_csv(self):
+    def initialize_game_stats(self):
+        """ Create game stats csv"""
         with open(self.file_path, 'w', newline='') as data_file:
             csv_writer = csv.writer(data_file)
             csv_writer.writerow(["id", "betAmount", "numMines", "balanceBefore", "profit", "balanceAfter", "win"])
 
-    def initialize_leader(self):
+    def initialize_leaderboard(self):
         if not os.path.isfile(self.leaderboardPath):
             with open(self.leaderboardPath, 'w', newline='') as data_file:
                 csv_writer = csv.writer(data_file)
@@ -30,9 +32,6 @@ class UserData:
             self.numPlayers = len(self.leaderboardList) - 1 # -1 for labels row
         print(f"Leaderboard exists: \n{self.leaderboardList}")
 
-
-            
-    
     def return_leaderboard_list(self):
         return self.leaderboardList    
 
@@ -44,7 +43,6 @@ class UserData:
         with open(self.file_path, 'a', newline='') as data_file:
             csv_writer = csv.writer(data_file)
             csv_writer.writerow([game_id, math.floor(bet * 100) / 100, bombs, math.floor(balanceBefore * 100) / 100, math.floor(profit * 100) / 100, math.floor(balanceAfter * 100) / 100, win])
-
 
 
     def add_leaderboard_data(self, user, balance):

@@ -48,7 +48,7 @@ class GridLogic:
 
     def reset_buttons(self) -> None:
         """ Reset the grid to its initial state for a new game
-        TOdo: create a condition to only execute if not already empty"""
+        T"""
 
         for cell in self.cells.values():
             cell.setIcon(QIcon())  # Clear the icon

@@ -59,5 +59,5 @@ class Header():
         self.profit_label.setText(f"Profit: {round(new_profit,2)}$")
 
       def update_user(self, user):
-        print(f"Username is {user}")
-        self.username_label.setText(f"User: {user}")
+        self.username_label.setText(f"Username: {user}")
+        self.username_label.setStyleSheet("color: #00FF00;") 

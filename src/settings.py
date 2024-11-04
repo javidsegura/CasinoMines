@@ -19,6 +19,7 @@ class Settings():
         self.setup_layout = QVBoxLayout()
         self.wallet = wallet.Wallet()
         self.header = header.Header()
+        
         self.num_mines = 1
         self.start_button = None
         self.cash_out_button = None

@@ -173,7 +173,7 @@ class LeaderBoardTab(QWidget):
         self.image_label.setPixmap(pixmap)
         self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
 
-    def defineUsername(self, user):
+    def defineUsername(self, user: str):
         self.username = user
 
     def search(self):
