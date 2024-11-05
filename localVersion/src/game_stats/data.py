@@ -86,6 +86,7 @@ class UserData():
             self.merge(arr, start, mid, end)
         return arr
     
+    
     def merge(self, arr, start, mid, end):
         left_index = start
         right_index = mid + 1
@@ -95,7 +96,32 @@ class UserData():
             if float(arr[left_index][2]) >= float(arr[right_index][2]):
                 arr[left_index][0] = str(left_index + 1) #changing rank value
                 left_index += 1
+        left_index = start
+        right_index = mid + 1
+
+        while left_index <= mid and right_index <= end:
+            # If the left element is in the right place, move on
+            if float(arr[left_index][2]) >= float(arr[right_index][2]):
+                arr[left_index][0] = str(left_index + 1) #changing rank value
+                left_index += 1
             else:
+                # Element in left is smaller, so we need to insert right at the left element and shift the array
+                value = arr[right_index]
+                index = right_index
+
+                # Shift all elements between left_index and right_index to the right
+                while index > left_index:
+                    arr[index] = arr[index - 1]
+                    arr[index][0] = str(index + 1) #changing rank value
+                    index -= 1
+
+                arr[left_index] = value
+                arr[left_index][0] = str(left_index + 1) #changing rank value
+                
+                # Update all pointers
+                left_index += 1
+                right_index += 1
+                mid += 1  # Adjust mid since we shifted the elements
                 # Element in left is smaller, so we need to insert right at the left element and shift the array
                 value = arr[right_index]
                 index = right_index
