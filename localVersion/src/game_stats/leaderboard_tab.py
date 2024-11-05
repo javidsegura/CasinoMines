@@ -127,9 +127,12 @@ class LeaderBoardTab(QWidget):
     
     def populatePodium(self) -> None:
         self.clearData(False)
-        ogPixmap = QPixmap("utils/imgs/podium.png")
-        pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
-        self.image_label = QLabel()
+        try:
+            ogPixmap = QPixmap("localVersion/utils/imgs/podium.png")
+            pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
+            self.image_label = QLabel()
+        except FileNotFoundError:
+            print("Podium image not found")
 
         shiftUnit = self.contWidth // 10 #on freeform there are about 10 equally spaced apart units across the image
         # not perfect but pretty good
