@@ -8,12 +8,15 @@ from game_stats.data import UserData
 from utils.sound_effects import SoundEffects
 from game_stats.data_tab import DataTab
 from game_stats.leaderboard_tab import LeaderBoardTab
+from utils.login_dialog import show_login_dialog
+
 import sys
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QSizePolicy, QMessageBox, QTabWidget, QInputDialog)
-from PySide6.QtCore import Qt
+                                QSizePolicy, QMessageBox, QTabWidget, QInputDialog, QDialog, QLineEdit)
 from PySide6.QtWidgets import QWidget
 from utils.confetty import ConfettiEffect
+from PySide6.QtGui import QPixmap, QPainter, QFont
+from PySide6.QtCore import Qt
 
     
 class CasinoMines(QWidget, GameStyle):
@@ -163,12 +166,10 @@ class CasinoMines(QWidget, GameStyle):
     def game_over(self) -> None:
         """ Defines behavior after user clicked on a cell with a mine"""
         self.game_in_progress = False
-        # Revealing cells
-        self.gridClass.reveal_cells(self.minesClass.set_of_mines(), self.clicked_cells)
-        self.gridClass.disable_grid(True)
-        # Auxiliary functions
-        self.add_user_data()
-        self.show_GameOver_screen()
+        if self.bombHit:
+            self.gridClass.reveal_cells(self.minesClass.set_of_mines(), self.clicked_cells)
+            self.show_GameOver_screen()
+            self.add_user_data()
 
     def show_CashOut_screen(self) -> None:
         """ Shows a game over pop-up and resets the game when dismissed """
@@ -248,18 +249,9 @@ class CasinoMines(QWidget, GameStyle):
     
     def show_userPopup(self) -> str:
         """ Defines log in element popup"""
-        username, ok = QInputDialog.getText(self, "Welcome to CasinoMines!", "Please enter your username:") 
-        if ok and username.strip():
-            if not username.isalnum():
-                QMessageBox.warning(self, "Please Enter only valid characters", "No commas!")
-                return self.show_userPopup() # try again
-            else:
-                # Maybe create a whole page here
-                self.settingsClass.defineUsername(username)
-                return username
-        else:
-            QMessageBox.warning(self, "No Username", "You must enter a username to continue!")
-            return self.show_userPopup()
+        username = show_login_dialog(self)
+        self.settingsClass.defineUsername(username)
+        return username
 
     def returnUser(self) -> str:
         return self.username

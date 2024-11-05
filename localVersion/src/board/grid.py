@@ -8,10 +8,9 @@ class GridLogic:
     def __init__(self, on_cell_click : callable) -> None:
         """ Defines the logic for the grid """
         self.grid_size = 5
-        self.cells = {} # Set of all cells in the grid
-        self.on_cell_click = on_cell_click # function to call when ...
-        self.cells = {} # Set of all cells in the grid
-        self.on_cell_click = on_cell_click # function to call when ...
+        self.cells = {} # Set of all cells in the grid. Each element is a tuple of (row, col)
+        self.on_cell_click = on_cell_click # function to call when a cell is clicked
+        
 
     def setup_grid(self) -> QVBoxLayout:
         self.grid_layout = QGridLayout()
@@ -24,7 +23,6 @@ class GridLogic:
                 cell.clicked.connect(lambda _, r=row, c=col: self.on_cell_click(r, c))
                 cell.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
                 cell.setProperty("class", "grid-cell")
-                # Ensure the button has no text or icon
                 self.grid_layout.addWidget(cell, row, col)
                 self.cells[(row, col)] = cell
 
@@ -55,7 +53,7 @@ class GridLogic:
 
     def set_button_state(self, row: int, col: int, is_bomb: bool, revealed: bool = False) -> None:
         """ Changes the image and style of a cell accessing its buttons via its coordinates """
-        cell = self.cells[(row, col)]
+        cell = self.cells[(row, col)] # return the button at the given coordinates
         
         if is_bomb:
             try:
@@ -75,6 +73,7 @@ class GridLogic:
         self.cells[(row, col)].setDisabled(True)
 
     def reveal_cells(self, set_of_mines: set, clicked_cells: set) -> None:
+        """ Reveals all cells that are not clicked"""
         # Showing all other mines
         non_clicked_cells = set(self.cells.keys()).difference(clicked_cells)
         # Revealing unclicked cells
@@ -84,12 +83,3 @@ class GridLogic:
             else:
                 self.set_button_state(row, col, False, revealed=True)
 
-    def reveal_cells(self, set_of_mines: set, clicked_cells: set) -> None:
-        # Showing all other mines
-        non_clicked_cells = set(self.cells.keys()).difference(clicked_cells)
-        # Revealing unclicked cells
-        for row, col in non_clicked_cells:
-            if (row, col) in set_of_mines:
-                self.set_button_state(row, col, True)
-            else:
-                self.set_button_state(row, col, False)
