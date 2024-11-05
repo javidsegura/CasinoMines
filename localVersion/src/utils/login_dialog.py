@@ -36,62 +36,36 @@ class LoginDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Welcome to CasinoMines!")
-        self.setFixedSize(800, 600)  # Bigger size
-        self.setWindowFlags(Qt.FramelessWindowHint)
-        
-        # Set background image
-        background = QPixmap("localVersion/utils/imgs/login_bg.jpg")
-        background = background.scaled(self.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
-        
-        palette = self.palette()
-        palette.setBrush(QPalette.Window, QBrush(background))
-        self.setPalette(palette)
-        self.setAutoFillBackground(True)
+        self.setFixedSize(400, 300)
         
         # Main layout
         layout = QVBoxLayout(self)
-        layout.setSpacing(30)  # Increased spacing
-        layout.setContentsMargins(100, 60, 100, 60)  # Increased margins
-
-        # Create a semi-transparent container
-        container = QFrame(self)
-        container.setStyleSheet("""
-            QFrame {
-                background-color: rgba(0, 0, 0, 0.7);
-                border-radius: 15px;
-                padding: 20px;
-            }
-        """)
-        container_layout = QVBoxLayout(container)
-        container_layout.setSpacing(30)
-        layout.addWidget(container)
+        layout.setSpacing(30)
+        layout.setContentsMargins(20, 20, 20, 20)
 
         # Title
-        title = ShimmerButton("CASINO MINES")
-        title.setFixedHeight(80)  # Bigger title
-        container_layout.addWidget(title)
-
-        # Subtitle
-        subtitle = QLabel("STILL IN DEVELOPMENT")
-        subtitle.setStyleSheet("""
+        title = QLabel("CASINO MINES")
+        title.setFixedHeight(80)
+        title.setStyleSheet("""
             QLabel {
                 color: white;
-                font-size: 20px;  /* Bigger font */
+                font-size: 24px;
+                font-weight: bold;
             }
         """)
-        subtitle.setAlignment(Qt.AlignCenter)
-        container_layout.addWidget(subtitle)
+        title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title)
 
         # Username input
         self.username_input = QLineEdit()
-        self.username_input.setFixedHeight(50)  # Bigger input
+        self.username_input.setFixedHeight(50)
         self.username_input.setPlaceholderText("Username")
         self.username_input.setStyleSheet("""
             QLineEdit {
                 padding: 12px;
                 border: 2px solid #FFD700;
                 border-radius: 10px;
-                background: rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.2);
                 color: white;
                 font-size: 18px;
             }
@@ -99,11 +73,11 @@ class LoginDialog(QDialog):
                 border: 2px solid #FFA500;
             }
         """)
-        container_layout.addWidget(self.username_input)
+        layout.addWidget(self.username_input)
 
         # Login button with shimmer effect
         self.login_button = ShimmerButton("START PLAYING")
-        self.login_button.setFixedHeight(60)  # Bigger button
+        self.login_button.setFixedHeight(60)
         self.login_button.setStyleSheet("""
             QPushButton {
                 padding: 12px;
@@ -120,11 +94,21 @@ class LoginDialog(QDialog):
                                           stop:0 #FFA500, stop:1 #FF4500);
             }
         """)
-        container_layout.addWidget(self.login_button)
+        layout.addWidget(self.login_button)
         
-        # Add some spacing at the bottom
-        container_layout.addStretch()
-
+        layout.addStretch()
+        
+        # Set dialog background
+        self.setStyleSheet("""
+            QDialog {
+                background-image: url(localVersion/utils/imgs/login_bg.jpg);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: rgba(0, 0, 0, 0.8);
+                border-radius: 15px;
+            }
+        """)
+        
         self.login_button.clicked.connect(self.accept)
 
     def get_username(self):
