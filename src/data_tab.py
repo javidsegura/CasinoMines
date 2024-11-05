@@ -187,36 +187,34 @@ class DataTab(QWidget):
         else:
             return 0
 
-    def merge(self, arr, start, mid, end):
-        left = arr[start:mid + 1]
-        right = arr[mid + 1:end + 1]
+    def merge(self, arr, start, mid, end): 
+        # Start indexes for the two halves
+        left_index = start
+        right_index = mid + 1
 
-        i = j = 0
-        k = start
-
-        # Merge the two halves
-        while i < len(left) and j < len(right):
-            if left[i][1] <= right[j][1]:  # Compare based on second element of tuple
-                arr[k] = left[i]
-                i += 1
+        # Iterate over the array and merge in place
+        while left_index <= mid and right_index <= end:
+            # If the left element is in the right place, move on
+            if arr[left_index][1] <= arr[right_index][1]:
+                left_index += 1
             else:
-                arr[k] = right[j]
-                j += 1
-            k += 1
+            # Right element is smaller, so we need to insert it before the left element
+                value = arr[right_index]
+                index = right_index
 
-        # Copy any remaining elements from the left half
-        while i < len(left):
-            arr[k] = left[i]
-            i += 1
-            k += 1
+                # Shift all elements between left_index and right_index to the right
+                while index > left_index:
+                    arr[index] = arr[index - 1]
+                    index -= 1
 
-        # Copy any remaining elements from the right half
-        while j < len(right):
-            arr[k] = right[j]
-            j += 1
-            k += 1
+                arr[left_index] = value
+
+                # Update all indexes, including mid since we shifted the elements
+                left_index += 1
+                right_index += 1
+                mid += 1
     
-    def mergeSort(self, arr, start, end):
+    def mergeSort(self, arr, start, end): # **sorts from smallest --> largest**
         if start < end:
             mid = (start + end) // 2
 
