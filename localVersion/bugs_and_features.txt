@@ -6,6 +6,8 @@ BUGS:
 9) Simulate the game and see if the math holds
 13) Sorting algo is O(n) space complexity
 14) Debuggin error when no bet provided
+15) Make height of game screen relative (and not absolute)
+16) Make the game palette closer to a luxury black-yellow theme
 
 FEATURES:
 2. When about to log in create a new window that ask for log in and then show stats and current balance

@@ -60,20 +60,20 @@ class LoginDialog(QDialog):
         left_panel.setStyleSheet("background: rgba(0, 0, 0, 0);")  # Semi-transparent black background
         left_layout = QVBoxLayout(left_panel)
 
+        # Add stretch to push content to center vertically
+        left_layout.addStretch()
+
         # Title
-        title = QLabel("Welcome!")
+        title = QLabel("Welcome to CasinoMines!")
         title.setStyleSheet("""
             QLabel {
                 color: white;
-                font-size: 36px;
+                font-size: 30px;
                 font-weight: bold;
             }
         """)
         title.setAlignment(Qt.AlignCenter)
         left_layout.addWidget(title)
-
-        # Add stretch to push content to center vertically
-        left_layout.addStretch()
 
         # Username input
         self.username_input = QLineEdit()
@@ -82,21 +82,21 @@ class LoginDialog(QDialog):
         self.username_input.setPlaceholderText("Username")
         self.username_input.setStyleSheet("""
             QLineEdit {
-                padding: 12px;
-                border: 2px solid #FFD700;
+                padding: 10px;
+                border: 2px solid #000000;
                 border-radius: 10px;
-                background: rgba(255, 255, 255, 0.2);
+                background: rgba(255, 255, 255, 0.3);
                 color: white;
-                font-size: 18px;
+                font-size: 20px;
             }
             QLineEdit:focus {
-                border: 2px solid #FFA500;
+                border: 2px solid #666666;
             }
         """)
         left_layout.addWidget(self.username_input, 0, Qt.AlignCenter)
 
         # Login button with shimmer effect
-        self.login_button = ShimmerButton("START PLAYING")
+        self.login_button = ShimmerButton("Start Playing")
         self.login_button.setFixedHeight(60)
         self.login_button.setFixedWidth(400)  # Match input width
         self.login_button.setStyleSheet("""
@@ -106,9 +106,9 @@ class LoginDialog(QDialog):
                                           stop:0 #FFD700, stop:1 #FFA500);
                 border: none;
                 border-radius: 10px;
-                color: black;
+                color: white;
                 font-weight: bold;
-                font-size: 20px;
+                font-size: 17px;
             }
             QPushButton:hover {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
@@ -124,6 +124,16 @@ class LoginDialog(QDialog):
         right_panel = QFrame()
         right_panel.setFixedWidth(self.width() // 2)
         right_panel.setStyleSheet("background: transparent;")
+
+        # Add image to right panel
+        right_layout = QVBoxLayout(right_panel)
+        image_label = QLabel()
+        pixmap = QPixmap("localVersion/utils/imgs/gambling_icon.png")  # Replace with your image path
+        
+        scaled_pixmap = pixmap.scaled(550, 550, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        image_label.setPixmap(scaled_pixmap)
+        image_label.setAlignment(Qt.AlignCenter)
+        right_layout.addWidget(image_label)
 
         # Add panels to main layout
         main_layout.addWidget(left_panel)
