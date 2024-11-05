@@ -77,7 +77,7 @@ class UserData():
     def mergeSort_leaderboard_data(self, arr, start, end): # **sorts from largest --> smallest**
         if start < end:
             mid = (start + end) // 2
-            print(f"\n{mid}: {arr}")
+
             # Recursively split and sort both halves
             self.mergeSort_leaderboard_data(arr, start, mid)
             self.mergeSort_leaderboard_data(arr, mid + 1, end)
