@@ -1,7 +1,7 @@
-from PySide6.QtWidgets import (QDialog, QVBoxLayout, QLineEdit, 
+from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, 
                              QPushButton, QLabel, QFrame)
-from PySide6.QtGui import QPixmap, QPainter, QLinearGradient, QColor, QFont, QPalette, QBrush
-from PySide6.QtCore import Qt, QPoint, QTimer
+from PySide6.QtGui import QPixmap, QPainter, QLinearGradient, QColor
+from PySide6.QtCore import Qt, QTimer
 
 class ShimmerButton(QPushButton):
     def __init__(self, text, parent=None):
@@ -35,30 +35,50 @@ class ShimmerButton(QPushButton):
 class LoginDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Welcome to CasinoMines!")
-        self.setFixedSize(400, 300)
+        self.setWindowTitle("Log-in")
+        self.setFixedSize(1000, 600)
+
+        self.setStyleSheet("""
+            QDialog {
+                background-image: url(localVersion/utils/imgs/log_in.png);
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+            QFrame {
+                background: transparent;
+            }
+        """)
         
-        # Main layout
-        layout = QVBoxLayout(self)
-        layout.setSpacing(30)
-        layout.setContentsMargins(20, 20, 20, 20)
+        # Main layout changed to horizontal
+        main_layout = QHBoxLayout(self)
+        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Left panel container
+        left_panel = QFrame()
+        left_panel.setFixedWidth(self.width() // 2)
+        left_panel.setStyleSheet("background: rgba(0, 0, 0, 0);")  # Semi-transparent black background
+        left_layout = QVBoxLayout(left_panel)
 
         # Title
-        title = QLabel("CASINO MINES")
-        title.setFixedHeight(80)
+        title = QLabel("Welcome!")
         title.setStyleSheet("""
             QLabel {
                 color: white;
-                font-size: 24px;
+                font-size: 36px;
                 font-weight: bold;
             }
         """)
         title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title)
+        left_layout.addWidget(title)
+
+        # Add stretch to push content to center vertically
+        left_layout.addStretch()
 
         # Username input
         self.username_input = QLineEdit()
         self.username_input.setFixedHeight(50)
+        self.username_input.setFixedWidth(400)  # Fixed width for better appearance
         self.username_input.setPlaceholderText("Username")
         self.username_input.setStyleSheet("""
             QLineEdit {
@@ -73,11 +93,12 @@ class LoginDialog(QDialog):
                 border: 2px solid #FFA500;
             }
         """)
-        layout.addWidget(self.username_input)
+        left_layout.addWidget(self.username_input, 0, Qt.AlignCenter)
 
         # Login button with shimmer effect
         self.login_button = ShimmerButton("START PLAYING")
         self.login_button.setFixedHeight(60)
+        self.login_button.setFixedWidth(400)  # Match input width
         self.login_button.setStyleSheet("""
             QPushButton {
                 padding: 12px;
@@ -94,25 +115,25 @@ class LoginDialog(QDialog):
                                           stop:0 #FFA500, stop:1 #FF4500);
             }
         """)
-        layout.addWidget(self.login_button)
-        
-        layout.addStretch()
-        
-        # Set dialog background
-        self.setStyleSheet("""
-            QDialog {
-                background-image: url(localVersion/utils/imgs/login_bg.jpg);
-                background-position: center;
-                background-repeat: no-repeat;
-                background-color: rgba(0, 0, 0, 0.8);
-                border-radius: 15px;
-            }
-        """)
+        left_layout.addWidget(self.login_button, 0, Qt.AlignCenter)
+
+        # Add stretch to push content to center vertically
+        left_layout.addStretch()
+
+        # Right panel (transparent)
+        right_panel = QFrame()
+        right_panel.setFixedWidth(self.width() // 2)
+        right_panel.setStyleSheet("background: transparent;")
+
+        # Add panels to main layout
+        main_layout.addWidget(left_panel)
+        main_layout.addWidget(right_panel)
         
         self.login_button.clicked.connect(self.accept)
 
     def get_username(self):
         return self.username_input.text().strip()
+
 
 def show_login_dialog(parent=None) -> str:
     """Show login dialog and return username"""
