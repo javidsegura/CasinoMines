@@ -51,10 +51,11 @@ class UserData():
         elif not self.userExists: #user does not exist yet
             self.numPlayers += 1
             self.leaderboardList.append([0, str(user), str(math.floor(balance * 100) / 100)])
-        
-        #print(f"\nLeaderboard data is then: {self.leaderboardList}")
-        self.leaderboardList = [['rank','user','largestBalance']] + self.mergeSort_leaderboard_data(self.leaderboardList[1::], 0, len(self.leaderboardList) - 1)
-        #print(f"\nSorted leaderboard data is: {self.leaderboardList}")
+            # sort leaderboard again
+
+        # print(f"\nLeaderboard data is then: {self.leaderboardList}")
+        self.leaderboardList = [['rank','user','largestBalance']] + self.mergeSort_leaderboard_data(self.leaderboardList[1::], 0, len(self.leaderboardList[1::]) - 1)
+        # print(f"\nSorted leaderboard data is: {self.leaderboardList}")
 
         # Rewriting the leaderboard csv with ordered data
         with open(self.leaderboardPath, 'w', newline='') as data_file:
@@ -73,11 +74,7 @@ class UserData():
                 self.userExists = True #this only exectues if the user exists but the current balance is not its highscore
         return False
 
-    def mergeSort_leaderboard_data(self, arr:list, start:int, end:int) -> list:
-        """ Sorting algorithm. 
-        O(n log n) time complexity 
-        O(n) space complexity: ERROR!!!!!!!
-        """
+    def mergeSort_leaderboard_data(self, arr, start, end): # **sorts from largest --> smallest**
         if start < end:
             mid = (start + end) // 2
 
@@ -89,33 +86,34 @@ class UserData():
             self.merge(arr, start, mid, end)
         return arr
     
-    def merge(self, arr:list, start:int, mid:int, end:int) -> None:
-        left = arr[start:mid + 1]
-        right = arr[mid + 1:end + 1]
-        i = j = 0
-        k = start
+    
+    def merge(self, arr, start, mid, end):
+        left_index = start
+        right_index = mid + 1
 
-        # Merge the two halves
-        while i < len(left) and j < len(right):
-            if float(left[i][2]) >= float(right[j][2]):  # Compare based on third element (balance)
-                arr[k] = [k + 1] + left[i][1::]
-                i += 1
+        while left_index <= mid and right_index <= end:
+            # If the left element is in the right place, move on
+            if float(arr[left_index][2]) >= float(arr[right_index][2]):
+                arr[left_index][0] = str(left_index + 1) #changing rank value
+                left_index += 1
             else:
-                arr[k] = [k + 1] + right[j][1::] #assinging rank
-                j += 1
-            k += 1
+                # Element in left is smaller, so we need to insert right at the left element and shift the array
+                value = arr[right_index]
+                index = right_index
 
-        # Copy any remaining elements from the left half
-        while i < len(left):
-            arr[k] = [k + 1] + left[i][1::]
-            i += 1
-            k += 1
+                # Shift all elements between left_index and right_index to the right
+                while index > left_index:
+                    arr[index] = arr[index - 1]
+                    arr[index][0] = str(index + 1) #changing rank value
+                    index -= 1
 
-        # Copy any remaining elements from the right half
-        while j < len(right):
-            arr[k] = [k + 1] + right[j][1::]
-            j += 1
-            k += 1    
+                arr[left_index] = value
+                arr[left_index][0] = str(left_index + 1) #changing rank value
+                
+                # Update all pointers
+                left_index += 1
+                right_index += 1
+                mid += 1  # Adjust mid since we shifted the elements
 
     # Display all user data
     def print_all_user_data(self) -> None:

@@ -1,0 +1,4 @@
+id,betAmount,numMines,balanceBefore,profit,balanceAfter,win
+1,500.0,1,1000.0,50.0,1050.0,Win
+1,500.0,1,1000.0,50.0,1050.0,Win
+2,525.0,1,1050.0,110.25,1160.25,Win
