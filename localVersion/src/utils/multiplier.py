@@ -60,13 +60,13 @@ class MultiplierFunc():
         return self.results_table.round(2) # Round up all cols' values to 2 decimals
     
     def get_next_multiplier(self,index) -> float:
-        """ maybe just load the whole thing at once to save time?"""
-        self.stop = False
+        """
+        Get the next multiplier for the given index.
+        """
         frequency_table = self.frequency_table()[1:]
 
         return frequency_table.iloc[index]["Multiplier"]
     
   
-
 
 
