@@ -8,6 +8,7 @@ from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
 
 class LeaderBoardTab(QWidget):
     def __init__(self, user_data) -> None:
+        
         super().__init__()
         self.setStyleSheet(GameStyle().get_stylesheet())
 
@@ -68,6 +69,7 @@ class LeaderBoardTab(QWidget):
         self.setLayout(self.main_layout)
     
     def populateHeaders(self) -> None:
+
         title = QLabel("LeaderBoard")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("font-size: 50px; font-weight: bold;")

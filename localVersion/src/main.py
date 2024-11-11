@@ -5,16 +5,17 @@ from board.mines import MinesLogic
 from board.grid import GridLogic
 from board.settings import Settings
 from game_stats.data import UserData
-from utils.sound_effects import SoundEffects
+from others.sound_effects import SoundEffects
 from game_stats.data_tab import DataTab
 from game_stats.leaderboard_tab import LeaderBoardTab
-from utils.login_dialog import show_login_dialog
+from others.login_dialog import show_login_dialog
+from others.confetty import ConfettiEffect
 
 import sys
+
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
                                 QSizePolicy, QMessageBox, QTabWidget, QInputDialog, QDialog, QLineEdit)
 from PySide6.QtWidgets import QWidget
-from utils.confetty import ConfettiEffect
 from PySide6.QtGui import QPixmap, QPainter, QFont
 from PySide6.QtCore import Qt
 
@@ -270,8 +271,10 @@ class CasinoMines(QWidget, GameStyle):
         return "Loss"
 
     def add_user_data(self) -> None:
-        """ Add user stats to csv files"""
-        self.user_data.add_user_data(self.gamesPlayed, self.settingsClass.getBet(), self.settingsClass.getBombs(), self.settingsClass.getBalanceBeforeChange(), self.calcProfit(), self.settingsClass.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())
+        """ Add user data to GAME STATS and LEADERBOARD csv files"""
+        self.user_data.add_user_data(self.gamesPlayed, self.settingsClass.getBet(), self.settingsClass.getBombs(),
+                                      self.settingsClass.getBalanceBeforeChange(), self.calcProfit(), 
+                                      self.settingsClass.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())
         self.user_data.add_leaderboard_data(self.username, self.settingsClass.getBalanceBeforeChange() + self.calcProfit())
         self.data_tab.populateValues()
         self.leaderboard.populateLeaders()

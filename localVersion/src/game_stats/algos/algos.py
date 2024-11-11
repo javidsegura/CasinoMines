@@ -1,12 +1,19 @@
 
 
 class MergeSort():
-      def __init__(self, index, reverse=False):
+      def __init__(self, index, ascending=False):
             """
             index is the subscripting part of the array
             """
             self.index = index
-            self.reverse = reverse 
+            self.ascending = ascending 
+
+      def evaluate(self, l:list , r:list) -> bool:
+            """ Returns True when left element is added to arr first """
+            if self.ascending:
+                  return l[self.index] >= r[self.index]
+            else:
+                  return l[self.index] <= r[self.index]
 
       def mergeSort(self, arr: list[list], left: int, right: int):
             """right is exclusive for right arr
@@ -39,7 +46,7 @@ class MergeSort():
             k = left
 
             while i < n_l and j < n_r:
-                  if left_arr[i][self.index] <= right_arr[j][self.index]:
+                  if self.evaluate(left_arr[i], right_arr[j]):
                         arr[k] = left_arr[i]
                         i += 1
                   else:
@@ -63,7 +70,7 @@ class MergeSort():
 
 
 if __name__ == "__main__":
-      temp = MergeSort(0)
-      arr = [[6, 1], [7, 2], [8, 3], [4, 4], [3, 5], [2, 6]]
+      temp = MergeSort(1, ascending=True)
+      arr = [[6, 1], [7, 2], [8, 3], [4, 4], [3, 5], [2, 6], [-1, 9]]
       temp.mergeSort(arr, 0, len(arr))
       print(arr)
