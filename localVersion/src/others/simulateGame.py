@@ -1,7 +1,7 @@
 from multiplier import MultiplierFunc
 import random
 import pandas as pd
-
+from datetime import datetime
 class SimulateGame:
       def __init__(self, numberOfGames:int):
             self.numberOfGames = numberOfGames # Number of games per set up
@@ -47,7 +47,7 @@ class SimulateGame:
 
             # Create DataFrame and save to CSV
             df = pd.DataFrame(self.results_data)
-            df.to_csv('game_simulation_results.csv', index=False)
+            df.to_csv(f'localVersion/utils/data/simulations/game_simulation_results{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', index=False)
             return avg_profit
 
       def simulate_game(self, n_of_mines:int):
@@ -102,11 +102,10 @@ class SimulateGame:
             return profit, number_of_rounds, won
 
 if __name__ == "__main__":   
-      simulateGame = SimulateGame(100)
+      simulateGame = SimulateGame(1000)
       avg_simulation = 0
 
-      n_of_simulations = 1
-      
+      n_of_simulations = 3
 
       for i in range(n_of_simulations):
             temp = simulateGame.start_simulation()

@@ -1,4 +1,0 @@
-SpaceUncovered,WinFrequency,LoseFrequency,Multiplier,WinEV,LoseEV,EV (%),NumberOfCells,NumberOfBombs,Bet,HouseAdvantage
-1,0.12,0.88,8.08,85.0,-88.0,-3.0,25,22,100,0.03
-2,0.01,0.99,97.0,96.0,-99.0,-3.0,25,22,100,0.03
-3,0.0,1.0,2231.0,96.96,-99.96,-3.0,25,22,100,0.03
