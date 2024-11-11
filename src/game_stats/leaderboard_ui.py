@@ -91,12 +91,13 @@ class LeaderBoardTab(QWidget):
         self.top_layout.addLayout(self.title_layout)
 
     # 1. Ranking (left layout)
-    def populateRanking(self, start:int=0, limit:int=0, userRow:int=None, searchRank:bool=False) -> None:
+    def populateRanking(self, start:int=0, limit:int=0, username:str=None, searchRank:bool=False) -> None:
         """ Populate the ranking. Run at the beggining and when the user clicks on the search button (flag is self.searchRank = True)
         Paremeters:
             start (int): The starting row to filter from
             limit (int): The ending row to filter to
-            userRow (int): The row of the user in the ranking
+            username (str): The username of the user
+            searchRank (bool): Whether the ranking is being searched or not
         """
         
         self.clearData()
@@ -110,7 +111,6 @@ class LeaderBoardTab(QWidget):
             limit = numPlayers 
             if numPlayers > 10: # If more than 10 players, only show top 10
                 limit = 10
-        searchRank = False
 
         # Populate the ranking headers
         rankingCol = 0
@@ -124,22 +124,22 @@ class LeaderBoardTab(QWidget):
             self.main_layout.addItem(spacer)
             self.setLayout(self.main_layout)
 
+        print(f"\n\nStart: {start}, limit: {limit}")
         # Populate the ranking values
-        for row in range(start, limit): 
+        for row in range(start-1, limit): 
             if row <= numPlayers:
                 print(f"Row: {row}, leaderData: {leaderDataList}")
                 rowData = leaderDataList[row]
                 for col, value in enumerate(rowData): # e.g: (0, rank), (1, username), (2, largestBalance), (3, date)
 
                     print(f"\tRow: {row}, Col: {rowData[col]}, Value: {value}")
-                   
-                    value_label = QLabel(str(value)) # QLabel need to be str
+                    value_label = QLabel(str(value)) 
                     value_label.setAlignment(Qt.AlignCenter)
                     value_label.setFont(self.valueFont)
 
                     # Highlight the user's row
-                    if row == userRow:
-                        value_label.setStyleSheet("background-color: #ffcc00; color: white;")
+                    if rowData[1] == username:
+                        value_label.setStyleSheet("background-color: #ffcc00; color: white;") # Highlight user's row: IMPROVE THIS 
 
                     self.left_layout.addWidget(value_label, row, col)
 
@@ -150,8 +150,10 @@ class LeaderBoardTab(QWidget):
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
 
-        # Every time the ranking is populated, the podium is updated automatically
-        self.populatePodium()
+        # Update podium based on the new ranking
+        if not searchRank:
+            # Update podium based on the new ranking
+            self.populatePodium()
     
     # 2. Podium (right layout)
     def populatePodium(self) -> None:
@@ -167,16 +169,13 @@ class LeaderBoardTab(QWidget):
         except FileNotFoundError:
             print("Podium image not found")
 
-        shiftUnit = self.contWidth // 10 #on freeform there are about 10 equally spaced apart units across the image
         
         df = pd.read_csv(self.user_data.leaderboardPath)
-        print(f"df: {df.to_string()}")
         podium_ranking = df.values.tolist()
-
-        print(f"Podium ranking: {podium_ranking}")
 
         painter = QPainter(pixmap)
         painter.setPen("white")
+        shiftUnit = self.contWidth // 10 
 
         for i in range(len(podium_ranking)):
             if i == 0:
@@ -209,43 +208,51 @@ class LeaderBoardTab(QWidget):
                 break
 
         painter.end()
-
         self.image_label.setPixmap(pixmap)
         self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
-
 
     # 3. Auxiliary functions
     def search(self) -> None:
         """ Search for the user in the leaderboard and populate the ranking """
 
         # Previously we were doing a linear search, now we do a binary search
-        search = MySearching()
-        userRank, start, limit = search.binary_search_leaderboard(self.leaderboard_pd.values.tolist(), self.username)
+        df = pd.read_csv(self.user_data.leaderboardPath)
 
-        if userRank != -1:
-            self.populateRanking(start, limit, userRank, searchRank=True)
+        print(f"Username: {self.username}")
+        print(f"Leaderboard: {df}")
+        print(f"User rank: {df[df['username'] == self.username]}")
+
+        # Find the user rank
+        userRank = df[df["username"] == self.username]["rank"].values[0]
+
+        search = MySearching()
+        username, start, limit = search.binary_search_leaderboard(df.values.tolist(), userRank)
+
+        print(f"User rank: {userRank}, start: {start}, limit: {limit}")
+
+        if username != -1:
+            self.populateRanking(start, limit, username, searchRank=True)
         else:
             QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
-
-
 
     def clearData(self, left=True) -> None:
         """ Remove users from podium
         Parameters:
             left (bool): Whether to clear the left layout or the right layout
         """
+
         if left:
             while self.left_layout.count():
-                item = self.left_layout.takeAt(0)  # Take the item at the top of the layout
-                if item.widget():  # Check if the item is a widget
-                    item.widget().deleteLater() # delete row 
+                item = self.left_layout.takeAt(0)  
+                if item.widget():  
+                    item.widget().deleteLater() 
         else:
             while self.right_layout.count():
                 item = self.right_layout.takeAt(0)
                 if item.widget(): 
                     item.widget().deleteLater()
     
-    def defineUsername(self, user: str) -> None:
+    def defineUsername(self, user:str) -> None:
         """ comes given after the user logs in"""
         self.username = user
 

@@ -3,7 +3,10 @@
 class MySorting():
       def __init__(self, index, ascending=False):
             """
-            index is the subscripting part of the array
+            Analysis:
+                  - Time complexity: O(n log n)
+                  - Space complexity: O(1)
+                  - index is the subscripting part of the array
             """
             self.index = index
             self.ascending = ascending 
@@ -68,7 +71,7 @@ class MySorting():
 
 # TESTING
 if __name__ == "__main__":
-      temp = Sorting(1, ascending=True)
+      temp = MySorting(1, ascending=True)
       arr = [[6, 1], [7, 2], [8, 3], [4, 4], [3, 5], [2, 6], [-1, 9]]
       temp.mergeSort(arr, 0, len(arr))
       print(arr)
