@@ -1,7 +1,6 @@
 """ Controls the leaderboard tab of the game """
 
 from game_stats.data import UserData
-from design.game_css import GameStyle
 from others.algorithms.searching import MySearching
 
 import pandas as pd 
@@ -16,7 +15,6 @@ class LeaderBoardTab(QWidget):
     def __init__(self, user_data:UserData) -> None:
 
         super().__init__()
-        self.setStyleSheet(GameStyle().get_stylesheet())
 
         self.user_data = user_data
         self.leaderboard_pd = self.user_data.leaderboard_pd
@@ -115,29 +113,33 @@ class LeaderBoardTab(QWidget):
         # Populate the ranking headers
         rankingCol = 0
         for col in ["Rank", "User", "Top Balance", "Date"]:
-            value_label = QLabel(col)
+            value_label = QLabel(str(col))
             value_label.setAlignment(Qt.AlignCenter)
             value_label.setFont(self.firstRowFont)
             self.left_layout.addWidget(value_label, 0, rankingCol)
             rankingCol += 1
-            spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-            self.main_layout.addItem(spacer)
-            self.setLayout(self.main_layout)
+            
+        spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.main_layout.addItem(spacer)
+
+        if start != 0:
+            start -= 1
 
         # Populate the ranking values
-        for row in range(start-1, limit): 
-            if row <= numPlayers:
-                rowData = leaderDataList[row]
-                for col, value in enumerate(rowData): # e.g: (0, rank), (1, username), (2, largestBalance), (3, date)
+        for row_idx, data_row in enumerate(range(start, limit)):
+            if data_row < numPlayers:  # Changed <= to < to prevent index out of range
+                rowData = leaderDataList[data_row]
+                for col, value in enumerate(rowData):
                     value_label = QLabel(str(value)) 
                     value_label.setAlignment(Qt.AlignCenter)
                     value_label.setFont(self.valueFont)
 
                     # Highlight the user's row
                     if rowData[1] == username:
-                        value_label.setStyleSheet("background-color: #ffcc00; color: white;") # Highlight user's row: IMPROVE THIS 
+                        value_label.setStyleSheet("background-color: #ffcc00; color: white;")
 
-                    self.left_layout.addWidget(value_label, row, col)
+                    # Use row_idx + 1 to place data right below headers
+                    self.left_layout.addWidget(value_label, row_idx + 1, col)
 
             
 
@@ -147,7 +149,6 @@ class LeaderBoardTab(QWidget):
 
         # Update podium based on the new ranking
         if not searchRank:
-            # Update podium based on the new ranking
             self.populatePodium()
     
     # 2. Podium (right layout)
@@ -207,12 +208,11 @@ class LeaderBoardTab(QWidget):
     def search(self) -> None:
         """ Search for the user in the leaderboard and populate the ranking """
 
-        # Previously we were doing a linear search, now we do a binary search
-        df = pd.read_csv(self.user_data.leaderboardPath)
-
         # Find the user rank
+        df = pd.read_csv(self.user_data.leaderboardPath)
         userRank = df[df["username"] == self.username]["rank"].values[0]
 
+        # Search for the user in the leaderboard
         search = MySearching()
         username, start, limit = search.binary_search_leaderboard(df.values.tolist(), userRank)
 

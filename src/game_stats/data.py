@@ -12,7 +12,7 @@ class UserData():
     def __init__(self, game_stats_path:str="utils/data/game_stats.csv", leaderboardPath:str="utils/data/leaderboard.csv") -> None:
         self.game_stats_path = game_stats_path
         self.leaderboardPath = leaderboardPath
-        self.leaderboardList = [] # arr of records for leaderboard => [user, largestBalance]
+        self.leaderboardList = []
         self.game_stats_pd = self.initialize_game_stats()
         self.leaderboard_pd = self.initialize_leaderboard()
 

@@ -127,6 +127,7 @@ class DataTab(QWidget):
         self.setLayout(self.main_layout)
 
     def headerClicked(self, v:str, button:QPushButton) -> None:
+        print("I have been clicked")
         if not self.firstHeaderPop: #meaning there is no data yet
             for element in self.headerButtons:
                 element.setStyleSheet("background-color: #444444; color: white;")
@@ -135,13 +136,10 @@ class DataTab(QWidget):
             button.setStyleSheet("background-color: blue; color: white;")
 
             arr = self.createArr(v)
-            #print(f"Arr unsorted: {arr}")
             sorted = self.mergeSort(arr, 0, len(arr) - 1)
-            #print(f"Arr sorted: {sorted}")
             self.populateSortedValues(sorted)
 
     def clearData(self) -> None:
-        # self.headerButtons = []
         for i in reversed(range(self.main_layout.count(), 1)):
             item = self.main_layout.itemAt(i)
             if item.widget() is not None:
