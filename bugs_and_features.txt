@@ -1,0 +1,23 @@
+
+BUGS:
+1) Opacity is weird for the cells
+3)  Adding time to the game data
+8) Fix the width of the header elements
+9) Simulate the game and see if the math holds
+14) Debuggin error when no bet provided
+15) Make height of game screen relative (and not absolute)
+16) Make the game palette closer to a luxury black-yellow theme
+17) Two utils are being created 
+18) Check if multiplier is correct
+19) You are currently loading the frequency table every time you click on a cell
+20) Whats with all the casting?
+21) No cash, let the user know
+22) If in leaderboard make celeberation screen
+23) Guarantee unique usernames
+
+FEATURES:
+2. When about to log in create a new window that ask for log in and then show stats and current balance
+
+
+QUESTIONS:
+1) was print_all_user_data coded for debugging purposes?
