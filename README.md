@@ -29,3 +29,4 @@ A simulation and interactive implementation of the popular casino game "Mines", 
 A detailed mathematical analysis of the game's probabilities and expected values can be found in the attached paper in: <i> docs/MathOfGame.ipynb </i>
 
 
+A
