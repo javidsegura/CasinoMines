@@ -3,6 +3,8 @@
 from game_stats.data import UserData
 from design.game_css import GameStyle
 
+import pandas as pd 
+
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
                                 QSpacerItem, QSizePolicy, QMessageBox, QGridLayout)
 from PySide6.QtCore import Qt
@@ -16,55 +18,53 @@ class LeaderBoardTab(QWidget):
         self.setStyleSheet(GameStyle().get_stylesheet())
 
         self.user_data = user_data
-        self.numPlayers = self.user_data.return_numPlayers()
-        self.leaderData = self.user_data.return_leaderboard_list()
+        self.leaderboard_pd = self.user_data.leaderboard_pd
 
-        self.username = None
-        self.searched = False
         self.headers = []
         self.leaders = []
         self.firstRowFont = QFont("Arial", 50, QFont.Bold)
         self.valueFont = QFont("Arial", 40)
-        self.mapping = {
-            "rank": "Rank",
-            "username": "User",
-            "largestBalance": "Top Balance",
-            "date": "Date"
-        }
 
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(20, 20, 20, 20)
 
+        # Top layout
         self.top_layout = QVBoxLayout()
         self.title_layout = QHBoxLayout()
-        self.populateHeaders()
+        self.populateTopBar()
         self.top_layout.addWidget(self.small_text, alignment=Qt.AlignCenter)
 
+        # Button container
         self.buttonContainer = QVBoxLayout()
         self.searchButton = QPushButton("Find my Rank")
         self.searchButton.clicked.connect(self.search)  # Connect to click event
         self.buttonContainer.addWidget(self.searchButton, alignment=Qt.AlignCenter)
 
+        # Grid container
         self.grid_container = QWidget()
         self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.contWidth = self.grid_container.width()
 
+        # Left layout - Ranking
         self.left_layout = QGridLayout()
         self.left_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.left_layout.setHorizontalSpacing(50)
         self.left_layout.setVerticalSpacing(40)
 
+        # Right layout - Podium
         self.right_layout = QVBoxLayout()
         self.right_layout.addStretch()
         self.populatePodium()
         self.right_layout.addStretch()
 
+        # Left and right layout (compacted to the grid container)
         self.left_right_layout = QHBoxLayout()
         self.left_right_layout.addLayout(self.left_layout)
         self.left_right_layout.addLayout(self.right_layout)
 
         self.grid_container.setLayout(self.left_right_layout)
 
+        # Connecting to the main layout
         self.main_layout.addLayout(self.top_layout)
         self.main_layout.addLayout(self.buttonContainer)
         self.main_layout.addWidget(self.grid_container)
@@ -72,13 +72,15 @@ class LeaderBoardTab(QWidget):
 
         self.setLayout(self.main_layout)
     
-    def populateHeaders(self) -> None:
+    # 0. Top-bar (top layout)
+    def populateTopBar(self) -> None:
         """ Populate the headers of the leaderboard tab"""
+
         title = QLabel("LeaderBoard")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("font-size: 50px; font-weight: bold;")
 
-        self.small_text = QLabel(f"Players: {self.numPlayers}")
+        self.small_text = QLabel(f"Total Players: {self.user_data.return_numPlayers() + 1}")
         self.small_text.setStyleSheet("font-size: 15px;")
         self.small_text.setAlignment(Qt.AlignRight | Qt.AlignTop)
 
@@ -87,52 +89,72 @@ class LeaderBoardTab(QWidget):
         self.title_layout.addStretch()
         self.top_layout.addLayout(self.title_layout)
 
-    def populateLeaders(self, start=1, limit=0, userRow=None) -> None:
-        """ Populate the leaderboard tab"""
-        pass
+    # 1. Ranking (left layout)
+    def populateRanking(self, start:int=0, limit:int=0, userRow:int=None, searchRank:bool=False) -> None:
+        """ Populate the ranking. Run at the beggining and when the user clicks on the search button (flag is self.searchRank = True)
+        Paremeters:
+            start (int): The starting row to filter from
+            limit (int): The ending row to filter to
+            userRow (int): The row of the user in the ranking
         """
+        
         self.clearData()
-        self.leaderData = self.user_data.return_leaderboard_list()
+        
+        # Are these two lines necessary?
+        leaderData = pd.read_csv(self.user_data.leaderboardPath)
+        leaderDataList = leaderData.values.tolist()
+        numPlayers = leaderData.shape[0]
 
-        self.numPlayers = self.user_data.return_numPlayers()
-
-        if not self.searched:
-            limit = self.numPlayers 
-            if self.numPlayers > 10:
+        if not searchRank:
+            limit = numPlayers 
+            if numPlayers > 10: # If more than 10 players, only show top 10
                 limit = 10
-        self.searched = False
+        searchRank = False
 
-        headerCol = 0
-        for value in self.leaderData[0]:
-            value_label = QLabel(self.mapping[value])
+        # Populate the ranking headers
+        rankingCol = 0
+        for col in ["Rank", "User", "Top Balance", "Date"]:
+            value_label = QLabel(col)
             value_label.setAlignment(Qt.AlignCenter)
             value_label.setFont(self.firstRowFont)
-            self.left_layout.addWidget(value_label, 0, headerCol)
-            headerCol += 1
+            self.left_layout.addWidget(value_label, 0, rankingCol)
+            rankingCol += 1
             spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
             self.main_layout.addItem(spacer)
             self.setLayout(self.main_layout)
 
-        for row in range(start, limit + 1): # +1 for label row
-            if row <= self.numPlayers:
-                rowData = self.leaderData[row]
-                for col, value in enumerate(rowData):
-                    if col == 0:
-                        value_label = QLabel(str(value))
-                    else:
-                        value_label = QLabel(value)
+        # Populate the ranking values
+        for row in range(start, limit): 
+            if row <= numPlayers:
+                print(f"Row: {row}, leaderData: {leaderDataList}")
+                rowData = leaderDataList[row]
+                for col, value in enumerate(rowData): # e.g: (0, rank), (1, username), (2, largestBalance), (3, date)
+
+                    print(f"\tRow: {row}, Col: {rowData[col]}, Value: {value}")
+                   
+                    value_label = QLabel(str(value)) # QLabel need to be str
                     value_label.setAlignment(Qt.AlignCenter)
                     value_label.setFont(self.valueFont)
+
+                    # Highlight the user's row
                     if row == userRow:
                         value_label.setStyleSheet("background-color: #ffcc00; color: white;")
+
                     self.left_layout.addWidget(value_label, row, col)
-                
+
+            print(f"\nAdded user data to the grid")
+            print("\n","-"*30, "\n")
+
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
+
+        # Every time the ranking is populated, the podium is updated automatically
         self.populatePodium()
-    """
+    
+    # 2. Podium (right layout)
     def populatePodium(self) -> None:
+        """ Invoked from populateRanking()"""
         self.clearData(False)
         try:
             ogPixmap = QPixmap("./utils/imgs/podium.png")
@@ -144,11 +166,11 @@ class LeaderBoardTab(QWidget):
         shiftUnit = self.contWidth // 10 #on freeform there are about 10 equally spaced apart units across the image
         # not perfect but pretty good
         top3 = {}
-        for i in range(1, self.numPlayers + 2): #plus two for index change and title row
-            if i < len(self.leaderData):
+        for i in range(1, self.user_data.return_numPlayers() + 2): #plus two for index change and title row
+            if i < len(self.leaderboard_pd.values.tolist()):
                 if i > 3:
                     break
-                top3[i] = self.leaderData[i][1]
+                top3[i] = self.leaderboard_pd.values.tolist()[i][1]
             else:
                 break
 
@@ -183,41 +205,48 @@ class LeaderBoardTab(QWidget):
         self.image_label.setPixmap(pixmap)
         self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
 
-    def defineUsername(self, user: str) -> None:
-        self.username = user
 
+    # 3. Auxiliary functions
     def search(self) -> None:
-        self.numPlayers = self.user_data.return_numPlayers()
+        """ Search for the user in the leaderboard and populate the ranking """
 
-        for person in self.leaderData:
-            if person[1] == self.username:
-                #print(f"{self.username} is {person[0]} place!")
-                
+        # Do binary search instead of linear search
+
+        for user in self.leaderboard_pd.values.tolist():
+            if user[1] == self.username:                
                 start = 1
-                if int(person[0]) > 5:
-                    start = int(person[0]) - 4
+                userRank = user[0]
+                # If user not in top 10: => LIMIT THE TOTAL PEOPLE DISPLAYED (ONLY 10)
+                if userRank > 5:
+                    start = userRank - 4 # leave for higher ranked users before
                 limit = start + 9
-                if self.numPlayers < limit:
-                    limit = self.numPlayers
-                
-                self.searched = True
-                self.populateLeaders(start, limit, int(person[0]))
+                if self.user_data.return_numPlayers() < limit:
+                    limit = self.user_data.return_numPlayers()
+                self.populateRanking(start, limit, userRank, searchRank=True)
                 return
-        
+            else:
+                break
         QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
 
     def clearData(self, left=True) -> None:
-        """ Remove users from podium"""
+        """ Remove users from podium
+        Parameters:
+            left (bool): Whether to clear the left layout or the right layout
+        """
         if left:
             while self.left_layout.count():
                 item = self.left_layout.takeAt(0)  # Take the item at the top of the layout
                 if item.widget():  # Check if the item is a widget
-                    item.widget().deleteLater()
+                    item.widget().deleteLater() # delete row 
         else:
             while self.right_layout.count():
                 item = self.right_layout.takeAt(0)
                 if item.widget(): 
                     item.widget().deleteLater()
+    
+    def defineUsername(self, user: str) -> None:
+        """ comes given after the user logs in"""
+        self.username = user
 
 
                         

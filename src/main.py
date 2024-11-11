@@ -77,7 +77,7 @@ class CasinoMines(QWidget, GameStyle):
         self.tabs.addTab(self.data_tab, "Game Data")
         self.leaderboard = LeaderBoardTab(self.user_data)
         self.tabs.addTab(self.leaderboard, "Leaderboard") 
-        self.leaderboard.populateLeaders()
+        self.leaderboard.populateRanking()
 
         # Add the game container to the main layout
         self.main_layout.addWidget(self.tabs)
@@ -86,7 +86,7 @@ class CasinoMines(QWidget, GameStyle):
         self.show()
         self.confetti = ConfettiEffect(self)
         self.confetti.resize(self.size())
-        self.confetti.hide()
+        self.confetti.hide() # Activate confetti but down show yet
         self.username = self.show_userPopup()
         self.leaderboard.defineUsername(self.username)
 
@@ -265,18 +265,14 @@ class CasinoMines(QWidget, GameStyle):
     def add_user_data(self, win:bool) -> None:
         """ Update databases with user data"""
         profit = self.calcProfit()
+
         self.user_data.add_user_data(win=win, game_id=self.gamesPlayed, bet=self.settingsClass.getBet(),
                                       mines=self.settingsClass.getBombs(), balanceBefore=self.settingsClass.getBalanceBeforeChange(), 
                                       balanceAfter=self.settingsClass.getBalanceBeforeChange() + profit, profit=profit)
-        
-        #print("Added usert data correctly")
         self.data_tab.populateGameStats()
-        #print("Updated data tab correctly")
 
         self.user_data.add_leaderboard_data(user=self.username, balance=self.settingsClass.getBalanceBeforeChange() + profit)
-        #print("Updated leaderboard correctly")
-        self.leaderboard.populateLeaders()
-        #print("Populated leaderboard correctly")
+        self.leaderboard.populateRanking() 
 
 
 if __name__ == "__main__":

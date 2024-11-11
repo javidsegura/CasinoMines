@@ -18,7 +18,7 @@ class UserData():
 
     
     # 0) GAME STATS CSV
-    def initialize_game_stats(self) -> None:
+    def initialize_game_stats(self) -> pd.DataFrame:
         """ Create game stats csv"""
         with open(self.game_stats_path, 'w', newline='') as data_file:
             csv_writer = csv.writer(data_file)
