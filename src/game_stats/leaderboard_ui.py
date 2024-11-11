@@ -156,7 +156,10 @@ class LeaderBoardTab(QWidget):
     # 2. Podium (right layout)
     def populatePodium(self) -> None:
         """ Invoked from populateRanking()"""
+
+        # Clear the right layout
         self.clearData(False)
+
         try:
             ogPixmap = QPixmap("./utils/imgs/podium.png")
             pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
@@ -165,41 +168,45 @@ class LeaderBoardTab(QWidget):
             print("Podium image not found")
 
         shiftUnit = self.contWidth // 10 #on freeform there are about 10 equally spaced apart units across the image
-        # not perfect but pretty good
-        top3 = {}
-        for i in range(1, self.user_data.return_numPlayers() + 2): #plus two for index change and title row
-            if i < len(self.leaderboard_pd.values.tolist()):
-                if i > 3:
-                    break
-                top3[i] = self.leaderboard_pd.values.tolist()[i][1]
-            else:
-                break
+        
+        df = pd.read_csv(self.user_data.leaderboardPath)
+        print(f"df: {df.to_string()}")
+        podium_ranking = df.values.tolist()
+
+        print(f"Podium ranking: {podium_ranking}")
 
         painter = QPainter(pixmap)
         painter.setPen("white")
 
-        if 1 in top3:
-            font = QFont("Arial", 35)
-            fontMetrics = QFontMetrics(font)
-            text = top3[1]
-            textWidth = fontMetrics.horizontalAdvance(text)
-            painter.setFont(font)
-            painter.drawText((shiftUnit * 5) - (textWidth // 2), 25, text) #finding string width in pixels and adjusting position on image
+        for i in range(len(podium_ranking)):
+            if i == 0:
+                font = QFont("Arial", 35)
+                fontMetrics = QFontMetrics(font)
+                firstPlace_username = podium_ranking[0][1]
+                firstPlace_textWidth = fontMetrics.horizontalAdvance(firstPlace_username)
+                painter.setFont(font)
+                painter.drawText((shiftUnit * 5) - (firstPlace_textWidth // 2), 25, firstPlace_username) #finding string width in pixels and adjusting position on image
+                print(f"First place username: {firstPlace_username}")
 
-            if 2 in top3:
+            elif i == 1:
                 font = QFont("Arial", 30)
                 fontMetrics = QFontMetrics(font)
-                text = top3[2]
-                textWidth = fontMetrics.horizontalAdvance(text)
+                secondPlace_username = podium_ranking[1][1]
+                secondPlace_textWidth = fontMetrics.horizontalAdvance(secondPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit * 2) - (textWidth // 2), 25, text)
-                if 3 in top3:
-                    font = QFont("Arial", 20)
-                    fontMetrics = QFontMetrics(font)
-                    text = top3[3]
-                    textWidth = fontMetrics.horizontalAdvance(text)
-                    painter.setFont(font)
-                    painter.drawText((shiftUnit*8.5) - (textWidth // 2), 32, text)
+                painter.drawText((shiftUnit * 2) - (secondPlace_textWidth // 2), 25, secondPlace_username)
+                print(f"Second place username: {secondPlace_username}")
+
+            elif i == 2:
+                font = QFont("Arial", 20)
+                fontMetrics = QFontMetrics(font)
+                thirdPlace_username = podium_ranking[2][1]
+                thirdPlace_textWidth = fontMetrics.horizontalAdvance(thirdPlace_username)
+                painter.setFont(font)
+                painter.drawText((shiftUnit*8.5) - (thirdPlace_textWidth // 2), 32, thirdPlace_username)
+                print(f"Third place username: {thirdPlace_username}")
+            else:
+                break
 
         painter.end()
 

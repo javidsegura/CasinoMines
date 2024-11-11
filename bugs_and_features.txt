@@ -15,6 +15,13 @@ BUGS:
 22) If in leaderboard make celeberation screen
 23) Guarantee unique usernames
 
+
+24) Test shit about limits
+25) Print headers
+26) Fix gamesate ui
+
+
+
 FEATURES:
 2. When about to log in create a new window that ask for log in and then show stats and current balance
 

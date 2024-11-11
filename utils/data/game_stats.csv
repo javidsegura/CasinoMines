@@ -1,1 +1,2 @@
 gameId,win,betAmount,numMines,balanceBefore,balanceAfter,profit
+1,True,250,1,1000,1107.5,107.5
