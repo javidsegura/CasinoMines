@@ -1,0 +1,13 @@
+
+BUGS:
+1) Opacity is weird for the cells
+8) Fix the width of the header elements
+9) Simulate the game and see if the math holds
+14) Debuggin error when no bet provided
+15) Make height of game screen relative (and not absolute)
+16) Make the game palette closer to a luxury black-yellow theme
+18) Check if multiplier is correct
+21) No cash, let the user know
+22) If in leaderboard make celeberation screen
+
+
