@@ -1,58 +1,105 @@
 .
 ├── README.md
+├── bugs_and_features.txt
+├── docs
+│   ├── math_paper
+│   │   └── MathOfGame.ipynb
+│   ├── requirements.txt
+│   └── tree.txt
+├── my_script.zsh
 ├── src
 │   ├── __pycache__
-│   │   ├── bombs.cpython-312.pyc
-│   │   ├── game_css.cpython-312.pyc
-│   │   ├── grid.cpython-312.pyc
-│   │   ├── multiplier.cpython-312.pyc
-│   │   └── wallet.cpython-312.pyc
-│   ├── bombs.py
-│   ├── game_css.py
-│   ├── grid.py
+│   │   ├── bombs.cpython-311.pyc
+│   │   ├── configuration_panel.cpython-311.pyc
+│   │   ├── data.cpython-311.pyc
+│   │   ├── data_tab.cpython-311.pyc
+│   │   ├── game_css.cpython-311.pyc
+│   │   ├── grid.cpython-311.pyc
+│   │   ├── header.cpython-311.pyc
+│   │   ├── leaderboard_tab.cpython-311.pyc
+│   │   ├── mines.cpython-311.pyc
+│   │   ├── multiplier.cpython-311.pyc
+│   │   ├── settings.cpython-311.pyc
+│   │   ├── sound_effects.cpython-311.pyc
+│   │   └── wallet.cpython-311.pyc
+│   ├── board
+│   │   ├── __pycache__
+│   │   │   ├── grid.cpython-311.pyc
+│   │   │   ├── grid.cpython-312.pyc
+│   │   │   ├── header.cpython-311.pyc
+│   │   │   ├── header.cpython-312.pyc
+│   │   │   ├── mines.cpython-311.pyc
+│   │   │   ├── mines.cpython-312.pyc
+│   │   │   ├── settings.cpython-311.pyc
+│   │   │   └── settings.cpython-312.pyc
+│   │   ├── grid.py
+│   │   ├── header.py
+│   │   ├── mines.py
+│   │   └── settings.py
+│   ├── design
+│   │   ├── __pycache__
+│   │   │   ├── game_css.cpython-311.pyc
+│   │   │   └── game_css.cpython-312.pyc
+│   │   └── game_css.py
+│   ├── game_stats
+│   │   ├── __pycache__
+│   │   │   ├── data.cpython-311.pyc
+│   │   │   ├── data.cpython-312.pyc
+│   │   │   ├── data_tab.cpython-311.pyc
+│   │   │   ├── data_tab.cpython-312.pyc
+│   │   │   ├── game_stats_ui.cpython-311.pyc
+│   │   │   ├── game_stats_ui.cpython-312.pyc
+│   │   │   ├── leaderboard_tab.cpython-311.pyc
+│   │   │   ├── leaderboard_tab.cpython-312.pyc
+│   │   │   ├── leaderboard_ui.cpython-311.pyc
+│   │   │   ├── leaderboard_ui.cpython-312.pyc
+│   │   │   └── sorting.cpython-312.pyc
+│   │   ├── data.py
+│   │   ├── game_stats_ui.py
+│   │   └── leaderboard_ui.py
 │   ├── main.py
-│   ├── multiplier.py
-│   └── wallet.py
+│   └── others
+│       ├── __pycache__
+│       │   ├── confetty.cpython-311.pyc
+│       │   ├── confetty.cpython-312.pyc
+│       │   ├── login_dialog.cpython-311.pyc
+│       │   ├── login_dialog.cpython-312.pyc
+│       │   ├── multiplier.cpython-311.pyc
+│       │   ├── multiplier.cpython-312.pyc
+│       │   ├── sound_effects.cpython-311.pyc
+│       │   ├── sound_effects.cpython-312.pyc
+│       │   ├── wallet.cpython-311.pyc
+│       │   └── wallet.cpython-312.pyc
+│       ├── algorithms
+│       │   ├── __pycache__
+│       │   │   ├── searching.cpython-311.pyc
+│       │   │   ├── sorting.cpython-311.pyc
+│       │   │   └── sorting.cpython-312.pyc
+│       │   ├── searching.py
+│       │   └── sorting.py
+│       ├── confetty.py
+│       ├── login_dialog.py
+│       ├── multiplier.py
+│       ├── simulateGame.py
+│       ├── sound_effects.py
+│       └── wallet.py
 └── utils
-    ├── MATH
-    │   ├── MathOfGame.ipynb
-    │   └── csv-results
-    │       ├── 0bombs.csv
-    │       ├── 10bombs.csv
-    │       ├── 11bombs.csv
-    │       ├── 12bombs.csv
-    │       ├── 13bombs.csv
-    │       ├── 14bombs.csv
-    │       ├── 15bombs.csv
-    │       ├── 16bombs.csv
-    │       ├── 17bombs.csv
-    │       ├── 18bombs.csv
-    │       ├── 19bombs.csv
-    │       ├── 1bombs.csv
-    │       ├── 20bombs.csv
-    │       ├── 21bombs.csv
-    │       ├── 22bombs.csv
-    │       ├── 23bombs.csv
-    │       ├── 24bombs.csv
-    │       ├── 2bombs.csv
-    │       ├── 3bombs.csv
-    │       ├── 4bombs.csv
-    │       ├── 5bombs.csv
-    │       ├── 6bombs.csv
-    │       ├── 7bombs.csv
-    │       ├── 8bombs.csv
-    │       ├── 9bombs.csv
-    │       └── README.md
+    ├── data
+    │   ├── game_stats.csv
+    │   ├── leaderboard.csv
+    │   └── simulations
     ├── imgs
-    │   ├── back_bomb.png
-    │   ├── back_star.png
-    │   └── front.png
-    ├── organization
-    │   ├── my_script.zsh
-    │   ├── requirements.txt
-    │   └── tree.txt
-    └── other
-        ├── design.txt
-        └── iterations.txt
+    │   ├── cells
+    │   │   ├── bomb.png
+    │   │   ├── doubt.png
+    │   │   └── star.png
+    │   ├── dollar.png
+    │   ├── gambling_icon.png
+    │   ├── log_in.png
+    │   └── podium.png
+    └── sound_effects
+        ├── click.wav
+        ├── error.wav
+        └── win.wav
 
-9 directories, 47 files
+21 directories, 82 files
