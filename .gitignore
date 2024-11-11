@@ -1,3 +1,4 @@
 .DS_Store
 .venv/
 .src/__pycache__/
+my_script.zsh
