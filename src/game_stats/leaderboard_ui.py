@@ -2,6 +2,7 @@
 
 from game_stats.data import UserData
 from design.game_css import GameStyle
+from others.algorithms.searching import MySearching
 
 import pandas as pd 
 
@@ -210,23 +211,16 @@ class LeaderBoardTab(QWidget):
     def search(self) -> None:
         """ Search for the user in the leaderboard and populate the ranking """
 
-        # Do binary search instead of linear search
+        # Previously we were doing a linear search, now we do a binary search
+        search = MySearching()
+        userRank, start, limit = search.binary_search_leaderboard(self.leaderboard_pd.values.tolist(), self.username)
 
-        for user in self.leaderboard_pd.values.tolist():
-            if user[1] == self.username:                
-                start = 1
-                userRank = user[0]
-                # If user not in top 10: => LIMIT THE TOTAL PEOPLE DISPLAYED (ONLY 10)
-                if userRank > 5:
-                    start = userRank - 4 # leave for higher ranked users before
-                limit = start + 9
-                if self.user_data.return_numPlayers() < limit:
-                    limit = self.user_data.return_numPlayers()
-                self.populateRanking(start, limit, userRank, searchRank=True)
-                return
-            else:
-                break
-        QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
+        if userRank != -1:
+            self.populateRanking(start, limit, userRank, searchRank=True)
+        else:
+            QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
+
+
 
     def clearData(self, left=True) -> None:
         """ Remove users from podium
