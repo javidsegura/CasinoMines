@@ -124,15 +124,11 @@ class LeaderBoardTab(QWidget):
             self.main_layout.addItem(spacer)
             self.setLayout(self.main_layout)
 
-        print(f"\n\nStart: {start}, limit: {limit}")
         # Populate the ranking values
         for row in range(start-1, limit): 
             if row <= numPlayers:
-                print(f"Row: {row}, leaderData: {leaderDataList}")
                 rowData = leaderDataList[row]
                 for col, value in enumerate(rowData): # e.g: (0, rank), (1, username), (2, largestBalance), (3, date)
-
-                    print(f"\tRow: {row}, Col: {rowData[col]}, Value: {value}")
                     value_label = QLabel(str(value)) 
                     value_label.setAlignment(Qt.AlignCenter)
                     value_label.setFont(self.valueFont)
@@ -143,8 +139,7 @@ class LeaderBoardTab(QWidget):
 
                     self.left_layout.addWidget(value_label, row, col)
 
-            print(f"\nAdded user data to the grid")
-            print("\n","-"*30, "\n")
+            
 
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
@@ -185,7 +180,6 @@ class LeaderBoardTab(QWidget):
                 firstPlace_textWidth = fontMetrics.horizontalAdvance(firstPlace_username)
                 painter.setFont(font)
                 painter.drawText((shiftUnit * 5) - (firstPlace_textWidth // 2), 25, firstPlace_username) #finding string width in pixels and adjusting position on image
-                print(f"First place username: {firstPlace_username}")
 
             elif i == 1:
                 font = QFont("Arial", 30)
@@ -194,7 +188,6 @@ class LeaderBoardTab(QWidget):
                 secondPlace_textWidth = fontMetrics.horizontalAdvance(secondPlace_username)
                 painter.setFont(font)
                 painter.drawText((shiftUnit * 2) - (secondPlace_textWidth // 2), 25, secondPlace_username)
-                print(f"Second place username: {secondPlace_username}")
 
             elif i == 2:
                 font = QFont("Arial", 20)
@@ -203,7 +196,6 @@ class LeaderBoardTab(QWidget):
                 thirdPlace_textWidth = fontMetrics.horizontalAdvance(thirdPlace_username)
                 painter.setFont(font)
                 painter.drawText((shiftUnit*8.5) - (thirdPlace_textWidth // 2), 32, thirdPlace_username)
-                print(f"Third place username: {thirdPlace_username}")
             else:
                 break
 
@@ -218,17 +210,11 @@ class LeaderBoardTab(QWidget):
         # Previously we were doing a linear search, now we do a binary search
         df = pd.read_csv(self.user_data.leaderboardPath)
 
-        print(f"Username: {self.username}")
-        print(f"Leaderboard: {df}")
-        print(f"User rank: {df[df['username'] == self.username]}")
-
         # Find the user rank
         userRank = df[df["username"] == self.username]["rank"].values[0]
 
         search = MySearching()
         username, start, limit = search.binary_search_leaderboard(df.values.tolist(), userRank)
-
-        print(f"User rank: {userRank}, start: {start}, limit: {limit}")
 
         if username != -1:
             self.populateRanking(start, limit, username, searchRank=True)
