@@ -27,8 +27,9 @@ class LeaderBoardTab(QWidget):
         self.valueFont = QFont("Arial", 40)
         self.mapping = {
             "rank": "Rank",
-            "user": "User",
-            "largestBalance": "Top Balance"
+            "username": "User",
+            "largestBalance": "Top Balance",
+            "date": "Date"
         }
 
         self.main_layout = QVBoxLayout()

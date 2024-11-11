@@ -17,13 +17,13 @@ class DataTab(QWidget):
         self.firstHeaderPop = True
 
         self.mapping = {
-            "id": "Game Number",
+            "win": "Win",
+            "gameId": "Game ID",
             "betAmount": "Bet Amount",
             "numMines": "Number of Mines",
-            "balanceBefore": "Balance Before Game",
-            "profit": "Profit",
-            "balanceAfter": "Balance After Game",
-            "win": "Win or Loss"
+            "balanceBefore": "Balance Before",
+            "balanceAfter": "Balance After",
+            "profit": "Profit"
         }
 
         self.main_layout = QVBoxLayout()
@@ -56,7 +56,7 @@ class DataTab(QWidget):
                         self.grid_layout.addWidget(header_button, 0, col)
                         self.headerButtons.append(header_button)
     
-    def populateValues(self) -> None:
+    def populateGameStats(self) -> None:
         """ Populate the values of the data tab"""
         self.clearData()
         self.firstHeaderPop = False
@@ -210,6 +210,7 @@ class DataTab(QWidget):
                 mid += 1
     
     def mergeSort(self, arr, start, end): # **sorts from smallest --> largest**
+        """ Called for the sorting of the buttons """
         if start < end:
             mid = (start + end) // 2
 

@@ -22,17 +22,20 @@ class UserData():
         """ Create game stats csv"""
         with open(self.game_stats_path, 'w', newline='') as data_file:
             csv_writer = csv.writer(data_file)
-            csv_writer.writerow(["id", "betAmount", "numMines", "balanceBefore", "profit", "balanceAfter", "win"])
+            csv_writer.writerow(["gameId", "win","betAmount", "numMines", "balanceBefore", "balanceAfter", "profit"])
         return pd.read_csv(self.game_stats_path)
     
-    def add_user_data(self, game_id:int, bet:float, bombs:int, balanceBefore:float, profit:float, balanceAfter:float, win:str) -> None:
+    def add_user_data(self, win:bool, game_id:int, bet:float, mines:int,
+                     balanceBefore:float, balanceAfter:float, profit:float) -> None:
         """ Add user data to GAME STATS csv. Invoked at the end of each game"""
 
-        with open(self.game_stats_path, 'a', newline='') as data_file:
-            csv_writer = csv.writer(data_file)
-            csv_writer.writerow([game_id, math.floor(bet * 100) / 100,
-                                  bombs, math.floor(balanceBefore * 100) / 100,
-                                  math.floor(profit * 100) / 100, math.floor(balanceAfter * 100) / 100, win])
+        # Add game stats to game_stats_pd
+        new_row = pd.DataFrame([[game_id, win, bet, mines,
+                                 balanceBefore, balanceAfter, profit]], 
+                               columns=self.game_stats_pd.columns)
+        self.game_stats_pd = pd.concat([self.game_stats_pd, new_row], ignore_index=True)
+
+        self.write_game_stats_pd()
 
     # 1) LEADERBOARD CSV
     def initialize_leaderboard(self) -> pd.DataFrame:

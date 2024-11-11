@@ -156,7 +156,7 @@ class CasinoMines(QWidget, GameStyle):
 
     def handle_cash_out(self) -> None:
         """ Controls what happens when the user clicks on the cash out button"""
-        self.add_user_data()
+        self.add_user_data(win=True)
         if self.game_in_progress and len(self.clicked_cells) > 0:
             self.gridClass.reveal_cells(self.minesClass.set_of_mines(), self.clicked_cells)
             self.show_CashOut_screen()
@@ -167,9 +167,9 @@ class CasinoMines(QWidget, GameStyle):
         """ Defines behavior after user clicked on a cell with a mine"""
         self.game_in_progress = False
         if self.bombHit:
+            self.add_user_data(win=False)
             self.gridClass.reveal_cells(self.minesClass.set_of_mines(), self.clicked_cells)
             self.show_GameOver_screen()
-            self.add_user_data()
 
     def show_CashOut_screen(self) -> None:
         """ Shows a game over pop-up and resets the game when dismissed """
@@ -261,25 +261,19 @@ class CasinoMines(QWidget, GameStyle):
             return - self.settingsClass.getBet()
         else:
             return self.settingsClass.getProfit()
-    
-    def calcWin(self) -> str:
-        profit = self.calcProfit()
-        #print(profit)
-        if profit >= 0:
-            return "Win"
-        return "Loss"
 
-    def add_user_data(self) -> None:
+    def add_user_data(self, win:bool) -> None:
         """ Update databases with user data"""
-        self.user_data.add_user_data(self.gamesPlayed, self.settingsClass.getBet(), self.settingsClass.getBombs(),
-                                      self.settingsClass.getBalanceBeforeChange(), self.calcProfit(), 
-                                      self.settingsClass.getBalanceBeforeChange() + self.calcProfit(), self.calcWin())
+        profit = self.calcProfit()
+        self.user_data.add_user_data(win=win, game_id=self.gamesPlayed, bet=self.settingsClass.getBet(),
+                                      mines=self.settingsClass.getBombs(), balanceBefore=self.settingsClass.getBalanceBeforeChange(), 
+                                      balanceAfter=self.settingsClass.getBalanceBeforeChange() + profit, profit=profit)
         
         #print("Added usert data correctly")
-        self.data_tab.populateValues()
+        self.data_tab.populateGameStats()
         #print("Updated data tab correctly")
 
-        self.user_data.add_leaderboard_data(user=self.username, balance=self.settingsClass.getBalanceBeforeChange() + self.calcProfit())
+        self.user_data.add_leaderboard_data(user=self.username, balance=self.settingsClass.getBalanceBeforeChange() + profit)
         #print("Updated leaderboard correctly")
         self.leaderboard.populateLeaders()
         #print("Populated leaderboard correctly")
