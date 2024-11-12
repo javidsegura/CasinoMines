@@ -1,6 +1,6 @@
 # CasinoMines Implementation
 
-A simulation and interactive implementation of the popular casino game "Mines", featuring both a graphical user interface and mathematical analysis.
+An interactive implementation of the popular casino game "Mines", featuring both a graphical user interface and mathematical analysis.
 
 ## Features
 
@@ -27,4 +27,5 @@ A simulation and interactive implementation of the popular casino game "Mines", 
 ## Mathematical Analysis
 
 A detailed mathematical analysis of the game's probabilities and expected values can be found in the attached paper in: <i> docs/MathOfGame.ipynb </i>
+
 
