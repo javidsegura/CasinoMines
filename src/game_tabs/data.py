@@ -52,7 +52,6 @@ class UserData():
         Invoked at the end of each game.
         """
 
-        #print(f"Gonna add leaderboard data. User: {user}, Balance: {balance}")
         # Find if user has already played:
         all_users_names = self.leaderboard_pd["username"].tolist()
         if user in all_users_names: 
@@ -62,8 +61,6 @@ class UserData():
                                                    user, 
                                                    round(balance, 2), 
                                                    date.today()]  # arbitrary rank for 0
-            #else:
-                #print("Not a record")
         else: 
             new_row = pd.DataFrame([[0,
                                       user, 
@@ -74,22 +71,18 @@ class UserData():
 
         # Sort leaderboard CSV
         leaderboard_list = self.leaderboard_pd.values.tolist()
-        #print(f"Leaderboard list: {leaderboard_list}")
         MySorting(self.leaderboard_pd.columns.get_loc("largestBalance"), ascending=True).mergeSort(leaderboard_list, 
                                                                                                  0, 
                                                                                                  len(leaderboard_list)) 
         self.leaderboard_pd = pd.DataFrame(leaderboard_list, 
                                             columns=self.leaderboard_pd.columns)
-        #print(f"Sorted leaderboard: {self.leaderboard_pd}")
         self.write_leaderboard_pd()
-        #print("\n--------------------------------\n")
 
     # 2) Auxiliary functions
     def find_highest_balance(self, user:str, balance:float) -> bool:
         """ Returns True if current balance is the highest balance for the user and its prior rank.
         """
-        """ HASH TABLEEEEEE"""
-
+       
         # Find the index of the user in the leaderboard
         user_index = self.leaderboard_pd[self.leaderboard_pd["username"] == user].index[0]
         if self.leaderboard_pd.loc[user_index, "largestBalance"] >= balance:

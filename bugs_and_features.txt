@@ -11,3 +11,7 @@ BUGS:
 22) If in leaderboard make celeberation screen
 
 
+TO-DO:
+0) Finish presentation
+1) Improve UI
+2) Go again over the math

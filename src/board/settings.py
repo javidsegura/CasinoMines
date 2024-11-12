@@ -273,4 +273,11 @@ class Settings():
     def getBalanceBeforeChange(self) -> float:
         return self.balanceBeforeChange
 
+    def getCurrentBalance(self) -> float:
+        return self.wallet.get_balance()
+
+    def increase_balance(self, amount) -> None:
+        new_amount = self.wallet.increase_balance(amount)
+        self.header.update_balance(new_amount)
+
 

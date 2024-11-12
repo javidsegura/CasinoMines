@@ -1,6 +1,6 @@
 """ Controls the leaderboard tab of the game """
 
-from game_stats.data import UserData
+from game_tabs.data import UserData
 from others.algorithms.searching import MySearching
 
 import pandas as pd 
