@@ -59,7 +59,7 @@ class Settings():
         bet_input_layout = QHBoxLayout()
 
         dollar_sign = QLabel()
-        dollar_pixmap = QPixmap("./utils/imgs/dollar.png")  
+        dollar_pixmap = QPixmap("CasinoMines/utils/imgs/dollar.png")  
         scaled_pixmap = dollar_pixmap.scaled(30, 30, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         dollar_sign.setPixmap(scaled_pixmap)
         dollar_sign.setFixedSize(30, 30)  # Adjust size as needed

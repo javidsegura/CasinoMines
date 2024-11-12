@@ -9,7 +9,7 @@ from datetime import date
 import pandas as pd
 
 class UserData():
-    def __init__(self, game_stats_path:str="utils/data/game_stats.csv", leaderboardPath:str="utils/data/leaderboard.csv") -> None:
+    def __init__(self, game_stats_path:str="CasinoMines/utils/data/game_stats.csv", leaderboardPath:str="CasinoMines/utils/data/leaderboard.csv") -> None:
         self.game_stats_path = game_stats_path
         self.leaderboardPath = leaderboardPath
         self.leaderboardList = []

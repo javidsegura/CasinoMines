@@ -3,18 +3,29 @@
 from PySide6.QtWidgets import (QHBoxLayout, QLabel, QFrame)
 from PySide6.QtGui import QFont
 
-class Header():
-      """ Defines the header element of the game"""
-      def __init__(self) -> None:
-        self.username_label= QLabel()
+class Header:
+    """ Defines the header element of the game """
+    def __init__(self) -> None:
+        self.username_label = QLabel()
         self.wallet_label = QLabel()
         self.multiplier_label = QLabel()
         self.profit_label = QLabel()
 
-      def setup_header(self) -> QFrame:
-        header_layout = QHBoxLayout() # Horizontal layout
-        header_frame = QFrame() # Frame to contain the header
-        header_frame.setStyleSheet("background-color: gray; color: white; border-radius: 5px;")
+    def setup_header(self) -> QFrame:
+        header_layout = QHBoxLayout()  # Horizontal layout
+        header_frame = QFrame()  # Frame to contain the header
+
+        header_frame.setStyleSheet("""
+            QFrame {
+                background-color: #444444;  /* Dark background for the header */
+                color: #d4af37;  /* Softer gold color */
+            }
+            QLabel {
+                color: #d4af37;  /* Gold color for text */
+                font-weight: bold;
+            }
+        """)
+
         header_frame.setLayout(header_layout)
 
         # Game name
@@ -25,7 +36,7 @@ class Header():
         # Spacer
         header_layout.addStretch()
 
-        # username
+        # Username
         self.username_label.setText("User:")
         header_layout.addWidget(self.username_label)
 
@@ -39,26 +50,24 @@ class Header():
         header_layout.addSpacing(20)
 
         # Current multiplier
-        self.multiplier_label.setText("Multiplier: ")
+        self.multiplier_label.setText("Multiplier:")
         header_layout.addWidget(self.multiplier_label)
 
         # Profit
-        self.profit_label.setText("Profit: ")
+        self.profit_label.setText("Profit:")
         header_layout.addWidget(self.profit_label)
 
         return header_frame
-      
-      def update_balance(self, new_balance:float) -> None:
-        self.wallet_label.setText(f"Balance: {round(new_balance,2)}$")
 
-      def update_multiplier(self, new_multiplier:float) -> None:
+    def update_balance(self, new_balance: float) -> None:
+        self.wallet_label.setText(f"Balance: {round(new_balance, 2)}$")
+
+    def update_multiplier(self, new_multiplier: float) -> None:
         """Writes to header prior multiplier"""
-        self.multiplier_label.setText(f"Multiplier: {round(new_multiplier,2)}x")
+        self.multiplier_label.setText(f"Multiplier: {round(new_multiplier, 2)}x")
 
-      def update_profit(self, new_profit:float) -> None:
-        #print(f"Profit is {new_profit}")
-        # self.profit = new_profit
-        self.profit_label.setText(f"Profit: {round(new_profit,2)}$")
+    def update_profit(self, new_profit: float) -> None:
+        self.profit_label.setText(f"Profit: {round(new_profit, 2)}$")
 
-      def update_user(self, user:str) -> None:
+    def update_user(self, user: str) -> None:
         self.username_label.setText(f"Username: {user}")

@@ -128,7 +128,7 @@ class LoginDialog(QDialog):
         # Add image to right panel
         right_layout = QVBoxLayout(right_panel)
         image_label = QLabel()
-        pixmap = QPixmap("./utils/imgs/gambling_icon.png")  # Replace with your image path
+        pixmap = QPixmap("CasinoMines/utils/imgs/gambling_icon.png")  # Replace with your image path
         
         scaled_pixmap = pixmap.scaled(550, 550, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         image_label.setPixmap(scaled_pixmap)

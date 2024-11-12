@@ -159,7 +159,7 @@ class LeaderBoardTab(QWidget):
         self.clearData(False)
 
         try:
-            ogPixmap = QPixmap("./utils/imgs/podium.png")
+            ogPixmap = QPixmap("CasinoMines/utils/imgs/podium.png")
             pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
             self.image_label = QLabel()
         except FileNotFoundError:

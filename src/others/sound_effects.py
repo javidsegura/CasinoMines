@@ -7,9 +7,9 @@ class SoundEffects():
     """ Controls the sound effects of the game """
     def __init__(self) -> None:
         self.sounds = {
-            'click': self.load_sound("./utils/sound_effects/click.wav"),
-            'win': self.load_sound("./utils/sound_effects/win.wav"),
-            'lose': self.load_sound("./utils/sound_effects/error.wav"),
+            'click': self.load_sound("CasinoMines/utils/sound_effects/click.wav"),
+            'win': self.load_sound("CasinoMines/utils/sound_effects/win.wav"),
+            'lose': self.load_sound("CasinoMines/utils/sound_effects/error.wav"),
             # Add more sound effects here
         }
 

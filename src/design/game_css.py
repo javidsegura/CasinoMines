@@ -1,28 +1,21 @@
-"""
-Major remark: most of the elements have been styled with the attribute .setStyleSheet(). 
-This file contains the styling of common elements 
-"""
 class GameStyle:
     def get_stylesheet(self) -> str:
-        """
-        Def: sets CSS for UI widgets
-        Question: which widget is which? 
-        """
         return """
             QWidget {
                 background-color: #2b2b2b;
                 font-family: Arial;
             }
             QLabel {
-                color: #ffffff;
+                color: #ffcc00; /* Match "Confirm Selection" button color */
                 font-size: 16px;
+                font-weight: bold;
             }
             QLineEdit {
                 background-color: #444444;
                 color: white;
                 font-size: 18px;
                 padding: 5px;
-                border: 2px solid #555555;
+                border: 1px solid #ffcc00;  /* Match "Confirm Selection" button color */
                 border-radius: 5px;
             }
             QLineEdit:focus {
@@ -30,21 +23,25 @@ class GameStyle:
             }
             QPushButton {
                 background-color: #444444;
-                color: white;
+                color: #ffcc00; /* Match "Confirm Selection" button color */
                 font-size: 18px;
+                font-weight: bold;
                 border-radius: 10px;
                 padding: 10px;
+                border: 1px solid #ffcc00;
             }
             QPushButton:hover {
                 background-color: #555555;
+                border-color: #ffcc00;
             }
             QPushButton#startButton {
                 background-color: #ffcc00;
                 color: black;
                 font-size: 18px;
+                font-weight: bold;
             }
             QPushButton#startButton:hover {
-                background-color: #ffd633;
+                background-color: #ffd633; /* Slightly lighter shade */
             }
             QPushButton#startButton:disabled {
                 background-color: #888888;
@@ -54,11 +51,22 @@ class GameStyle:
                 background-color: #888888;
                 color: #aaaaaa;
             }
-            QPushButton.grid-cell:enabled { 
-                border-radius: 10px;
+            
+            /* Grid Cell Specific Styling */
+            QPushButton#grid-cell {
+                background-color: transparent;
+                border: 1px solid #ffcc00;  /* Match "Confirm Selection" button color */
+                border-radius: 5px;
+                opacity: 1;
             }
-            QPushButton.grid-cell:disabled {
-                color: #aaaaaa;
+
+            /* Top Horizontal Box */
+            QFrame#topBar {
+                background-color: #2b2b2b;
+                border: 1px solid #ffcc00; /* Subtle border to match "Confirm Selection" */
+            }
+            QLabel#topLabel {
+                color: #ffcc00;
+                font-weight: bold;
             }
         """
-
