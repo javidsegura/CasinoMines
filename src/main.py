@@ -5,12 +5,12 @@ from board.mines import MinesLogic
 from board.grid import GridLogic
 from board.settings import Settings
 from others.sound_effects import SoundEffects
-from game_stats.data import UserData
-from game_stats.game_stats_ui import DataTab
-from game_stats.leaderboard_ui import LeaderBoardTab
+from game_tabs.data import UserData
+from game_tabs.game_stats_ui import DataTab
+from game_tabs.payout import PayoutTab
+from game_tabs.leaderboard_ui import LeaderBoardTab
 from others.login_dialog import show_login_dialog
 from others.confetty import ConfettiEffect
-
 import sys
 
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
@@ -78,6 +78,11 @@ class CasinoMines(QWidget, GameStyle):
         self.leaderboard = LeaderBoardTab(self.user_data)
         self.tabs.addTab(self.leaderboard, "Leaderboard") 
         self.leaderboard.populateRanking()
+
+        # Payout tab
+        self.payout_tab = PayoutTab(self.settingsClass)
+        self.tabs.addTab(self.payout_tab, "Payout")
+
 
         # Add the game container to the main layout
         self.main_layout.addWidget(self.tabs)

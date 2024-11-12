@@ -23,10 +23,12 @@ class MinesLogic():
 
     def is_mine(self, row:int, col:int) -> bool: 
         """ Determines if the given cell is a mine or not
-        --Compute the hash function to increase performance--
         """
         return (row, col) in self.mines
 
     def set_of_mines(self) -> set:
         """ Returns the set of mines"""
         return self.mines
+    
+
+    

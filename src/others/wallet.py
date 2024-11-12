@@ -52,3 +52,8 @@ class Wallet:
         self.profit = self.current_bet * self.current_multiplier - self.current_bet
         #print(f"Profit: {self.profit}\n")
         return self.profit
+    
+    def increase_balance(self, amount) -> float:
+        self.balance += amount
+        return self.balance
+        
