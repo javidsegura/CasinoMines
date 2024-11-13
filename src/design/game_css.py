@@ -2,7 +2,7 @@ class GameStyle:
     def get_stylesheet(self) -> str:
         return """
             QWidget {
-                background-color: #2b2b2b;
+                background-color: #00001a; /* Darker navy blue, almost black */
                 font-family: Arial;
             }
             QLabel {
@@ -62,7 +62,7 @@ class GameStyle:
 
             /* Top Horizontal Box */
             QFrame#topBar {
-                background-color: #2b2b2b;
+                background-color: #00001a; /* Darker navy blue for the top bar as well */
                 border: 1px solid #ffcc00; /* Subtle border to match "Confirm Selection" */
             }
             QLabel#topLabel {

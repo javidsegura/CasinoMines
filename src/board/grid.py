@@ -92,30 +92,31 @@ class GridLogic:
 
 
     def set_button_state(self, row: int, col: int, is_bomb: bool, revealed: bool = False) -> None:
-            """ Changes the image and style of a cell accessing its buttons via its coordinates """
-            cell = self.cells[(row, col)] # return the button at the given coordinates
-            
-            if is_bomb:
-                try:
-                    icon = QIcon("CasinoMines/utils/imgs/cells/bomb.png")
-                except:
-                    raise Exception("Bomb icon not found")
-            else:
-                try:
-                    icon = QIcon("CasinoMines/utils/imgs/cells/star (1).png")
-                except:
-                    raise Exception("Star icon not found")
-            
-            cell.setIcon(icon)
-            cell.setIconSize(cell.size())        
-            cell.setStyleSheet("""
-                QPushButton {
-                    background-color: #444444;
-                    border: 1px solid #C5A880;
-                    border-radius: 5px;
-                }
-            """)  # Remove any overlay when revealed
+        """ Changes the image and style of a cell accessing its buttons via its coordinates """
+        cell = self.cells[(row, col)]  # Return the button at the given coordinates
         
+        # Set the icon based on whether it's a bomb or a star
+        if is_bomb:
+            icon = QIcon("CasinoMines/utils/imgs/cells/bomb.png")
+        else:
+            icon = QIcon("CasinoMines/utils/imgs/cells/star (1).png")
+        
+        # Apply the icon and set the icon size explicitly
+        cell.setIcon(icon)
+        cell.setIconSize(QSize(80, 80))  # Keep the icon size consistent
+        
+        # Update the style to ensure no gray overlay or opacity is applied
+        cell.setStyleSheet("""
+            QPushButton {
+                background-color: #444444;  /* Consistent background */
+                border: 1px solid #FFCC00;  /* Bright gold border for contrast */
+                border-radius: 5px;
+            }
+            QPushButton:disabled {
+                background-color: #444444;  /* Ensure no overlay on disabled state */
+                color: #FFFFFF;
+            }
+        """)
 
     def disable_button(self, row:int, col:int) -> None:
         self.cells[(row, col)].setDisabled(True)
