@@ -124,7 +124,7 @@ class Settings():
         self.setup_layout.addWidget(self.confirmation_label)
 
     def confirm_selection(self) -> None:
-        """ Confirm the set-up of the game """
+        """Confirm the set-up of the game and enable the start button"""
         try:
             bet_amount = int(self.bet_input.text())
             self.num_mines = self.mines_slider.value()
@@ -193,10 +193,15 @@ class Settings():
         self.cash_out_button.setDisabled(True)  # Disable initially
         
     def reset_for_new_game(self) -> None:
-        """Reset the header for a new game"""
+        """Reset the header for a new game and prepare the buttons"""
         self.cash_out_button.setDisabled(True)
         self.header.update_profit(0)
         self.header.update_multiplier(1)
+
+        # Reset start button to purple and disable it
+        if self.start_button:
+            self.start_button.setDisabled(True)
+            self.start_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
 
     def activate_cash_out_button(self) -> None:
         """ Enable the cash out button"""
@@ -254,6 +259,11 @@ class Settings():
         self.cash_out_button.setDisabled(True)
         self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
 
+        # Reset start button back to purple after it is used to start a game
+        if self.start_button:
+            self.start_button.setDisabled(True)
+            self.start_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+    
     def update_profit(self) -> None:
         """ Update the profit label"""
         self.header.update_profit(self.wallet.calculate_profit())

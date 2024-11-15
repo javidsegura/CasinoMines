@@ -26,29 +26,22 @@ class GridLogic:
                 cell.setIcon(QIcon("utils/imgs/cells/diamond.png"))
                 cell.setIconSize(QSize(80, 80))
 
-
-                # Apply a softer, modern gold border to each cell
+                # Set background color and border styling to match the reference
                 cell.setStyleSheet("""
                     QPushButton {
-                        background-color: #444444;
-                        border: 1px solid #C5A880;  /* Soft, modern gold border */
+                        background-color: #2b1d39;  /* Dark purple background */
+                        border: 1px solid #3e2c53;  /* Subtle purple border */
                         border-radius: 5px;
                     }
                     QPushButton:hover {
-                        background-color: #555555;
-                        border-color: #B89B72;  /* Slightly muted gold on hover */
+                        background-color: #3a2a4f;  /* Slightly lighter purple on hover */
                     }
                     QPushButton:pressed {
-                        background-color: #444444;
-                        border-color: #C5A880;
-                    }
-                    QPushButton:disabled {
-                        background-color: #444444;
-                        color: #aaaaaa;
-                        border-color: #C5A880;
+                        background-color: #2b1d39;
+                        border: 2px solid #ffd700;  /* Gold border when clicked */
                     }
                 """)
-                
+
                 self.grid_layout.addWidget(cell, row, col)
                 self.cells[(row, col)] = cell
 
@@ -58,6 +51,8 @@ class GridLogic:
         grid_container.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         return grid_container
+
+
         
     def disable_grid(self, disable: bool) -> None:
         """ Disables all buttons in the grid """
@@ -80,12 +75,12 @@ class GridLogic:
             cell.setIconSize(QSize(80, 80))
             cell.setStyleSheet("""
             QPushButton {
-                background-color: #444444;
+                background-color: #2b1d39;
                 border: 1px solid #C5A880;
                 border-radius: 5px;
             }
             QPushButton:disabled {
-                background-color: #444444;
+                background-color: #2b1d39;
                 color: #aaaaaa;
                 border-color: #C5A880;
             }
@@ -106,10 +101,10 @@ class GridLogic:
         
         # Style for revealed and non-revealed cells with transparent background
         if revealed:
-            # Styling for unclicked cells with sublte gold border
+            # Styling for unclicked cells with subtle gold border
             cell.setStyleSheet("""
                 QPushButton {
-                    background-color: transparent;  /* Transparent background */
+                    background-color: #2b1d39;  /* Transparent background */
                     border: 0.5px solid #B89B72;  /* Subtle gold border for unclicked cells */
                     border-radius: 3px;
                 }

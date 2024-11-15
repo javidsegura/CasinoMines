@@ -22,7 +22,7 @@ class GameStyle:
                 border-color: #ffd700;
             }
             QPushButton {
-                background-color: #2e004d; /* Darker purple for buttons */
+                background-color: #2e004d; /* Dark purple for buttons */
                 color: #ffd700; /* Gold text for buttons */
                 font-size: 18px;
                 font-weight: bold;
@@ -48,13 +48,13 @@ class GameStyle:
                 color: #aaaaaa;
             }
             QPushButton:disabled {
-                background-color: #888888;
+                background-color: #3b0066; /* Dark purple for disabled state to match game theme */
                 color: #aaaaaa;
             }
 
             /* Grid Cell Specific Styling */
             QPushButton#grid-cell {
-                background-color: transparent;
+                background-color: #4B0082; /* Dark purple background for grid cells */
                 border: 1px solid #ffd700; /* Gold border for grid cells */
                 border-radius: 5px;
                 opacity: 1;
