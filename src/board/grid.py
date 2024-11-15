@@ -19,10 +19,11 @@ class GridLogic:
             for col in range(self.grid_size):
                 cell = QPushButton("")  # cell button
                 cell.setMinimumSize(150, 150)
+                cell.setFlat(True)  # Disable default shading and overlay effect
                 cell.clicked.connect(lambda _, r=row, c=col: self.on_cell_click(r, c))
                 cell.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
                 cell.setProperty("class", "grid-cell")
-                cell.setIcon(QIcon("utils/imgs/cells/treasure.png"))
+                cell.setIcon(QIcon("utils/imgs/cells/diamond.png"))
                 cell.setIconSize(QSize(80, 80))
 
 
@@ -75,7 +76,7 @@ class GridLogic:
             cell.setEnabled(True)  # Enable to click on the cell
             cell.setStyleSheet("")  # Reset style to default version
             cell.setProperty("class", "grid-cell")  # Reapply the grid-cell class
-            cell.setIcon(QIcon("utils/imgs/cells/treasure.png"))
+            cell.setIcon(QIcon("utils/imgs/cells/diamond.png"))
             cell.setIconSize(QSize(80, 80))
             cell.setStyleSheet("""
             QPushButton {
@@ -92,34 +93,46 @@ class GridLogic:
 
 
     def set_button_state(self, row: int, col: int, is_bomb: bool, revealed: bool = False) -> None:
-        """ Changes the image and style of a cell accessing its buttons via its coordinates """
-        cell = self.cells[(row, col)]  # Return the button at the given coordinates
+        """Changes the image and style of a cell, ensuring immediate icon update with transparent background."""
+        cell = self.cells[(row, col)]
         
         # Set the icon based on whether it's a bomb or a star
-        if is_bomb:
-            icon = QIcon("utils/imgs/cells/bomb.png")
-        else:
-            icon = QIcon("utils/imgs/cells/star.png")
-        
-        # Apply the icon and set the icon size explicitly
+        icon = QIcon("utils/imgs/cells/bomb.png") if is_bomb else QIcon("utils/imgs/cells/coin.png")
         cell.setIcon(icon)
-        cell.setIconSize(QSize(80, 80))  # Keep the icon size consistent
         
-        # Update the style to ensure no gray overlay or opacity is applied
-        cell.setStyleSheet("""
-            QPushButton {
-                background-color: #444444;  /* Consistent background */
-                border: 1px solid #FFCC00;  /* Bright gold border for contrast */
-                border-radius: 5px;
-            }
-            QPushButton:disabled {
-                background-color: #444444;  /* Ensure no overlay on disabled state */
-                color: #FFFFFF;
-            }
-        """)
+        # Dynamically set icon size relative to cell size
+        cell_size = min(cell.width(), cell.height()) * 0.8
+        cell.setIconSize(QSize(cell_size, cell_size))
+        
+        # Style for revealed and non-revealed cells with transparent background
+        if revealed:
+            # Styling for unclicked cells with sublte gold border
+            cell.setStyleSheet("""
+                QPushButton {
+                    background-color: transparent;  /* Transparent background */
+                    border: 0.5px solid #B89B72;  /* Subtle gold border for unclicked cells */
+                    border-radius: 3px;
+                }
+            """)
+            cell.setDisabled(True)  # Disable the button once revealed
+        else:
+            # Styling for clicked cells with strong gold border
+            cell.setStyleSheet("""
+                QPushButton {
+                    background-color: transparent;  /* Transparent to show underlying purple */
+                    border: 3.5px solid #FFCC00;  /* Bright gold border for clicked cells */
+                    border-radius: 3px;
+                }
+            """)
+        
+        # Immediate repaint to ensure the icon and style are updated
+        cell.repaint()
+
+
 
     def disable_button(self, row:int, col:int) -> None:
         self.cells[(row, col)].setDisabled(True)
+
 
     def reveal_cells(self, set_of_mines: set, clicked_cells: set) -> None:
         """ Reveals all cells that are not clicked"""
