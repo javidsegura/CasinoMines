@@ -8,7 +8,7 @@ import pandas as pd
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
                                 QSpacerItem, QSizePolicy, QMessageBox, QGridLayout)
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
+from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor
 
 
 class LeaderBoardTab(QWidget):
@@ -43,6 +43,8 @@ class LeaderBoardTab(QWidget):
         self.grid_container = QWidget()
         self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.contWidth = self.grid_container.width()
+        self.contHeight = self.grid_container.height()
+
 
         # Left layout - Ranking
         self.left_layout = QGridLayout()
@@ -160,18 +162,42 @@ class LeaderBoardTab(QWidget):
 
         try:
             ogPixmap = QPixmap("./utils/imgs/podium.png")
-            pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
+            pixmap = ogPixmap.scaled(int(self.contWidth), int(self.contHeight), Qt.KeepAspectRatio)
+            black_image = QPixmap(pixmap.width(), 100)  # Width = podium width, Height = 100px
+            black_image.fill(QColor(0, 0, 0))
+            # new_height = pixmap.height() + 100  # Adjust this value based on the text size
+            # pixmap = pixmap.scaled(pixmap.width(), new_height, Qt.KeepAspectRatio)
             self.image_label = QLabel()
         except FileNotFoundError:
             print("Podium image not found")
 
-        
+        # Testing
+        test = QPainter(black_image)
+        test.setRenderHint(QPainter.Antialiasing)
+        test.setRenderHint(QPainter.SmoothPixmapTransform)
+
+        # Set text color and font
+        test.setPen(QColor(255, 255, 255))  # White color for the text
+        test.setFont(QFont("Arial", 24))  # Font and size for the text
+
+        # Set the text and position (centered horizontally and vertically)
+        text = "Podium Place"
+        # Align the text to the top and center it horizontally on the black image
+        test.drawText(black_image.rect(), Qt.AlignCenter, text)
+
+
+
         df = pd.read_csv(self.user_data.leaderboardPath)
         podium_ranking = df.values.tolist()
 
         painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+
         painter.setPen("white")
-        shiftUnit = self.contWidth // 10 
+        painter.drawText(pixmap.rect(), Qt.AlignTop | Qt.AlignHCenter, "top")
+
+        shiftUnit = self.contWidth / 9 
 
         for i in range(len(podium_ranking)):
             if i == 0:
@@ -180,28 +206,29 @@ class LeaderBoardTab(QWidget):
                 firstPlace_username = podium_ranking[0][1]
                 firstPlace_textWidth = fontMetrics.horizontalAdvance(firstPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit * 5) - (firstPlace_textWidth // 2), 25, firstPlace_username) #finding string width in pixels and adjusting position on image
+                painter.drawText((shiftUnit * 5) - (firstPlace_textWidth // 2) - 20, 0, firstPlace_username) #finding string width in pixels and adjusting position on image
 
             elif i == 1:
-                font = QFont("Arial", 30)
+                font = QFont("Arial", 35)
                 fontMetrics = QFontMetrics(font)
                 secondPlace_username = podium_ranking[1][1]
                 secondPlace_textWidth = fontMetrics.horizontalAdvance(secondPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit * 2) - (secondPlace_textWidth // 2), 25, secondPlace_username)
+                painter.drawText((shiftUnit * 2) - (secondPlace_textWidth // 2) - 20, 110, secondPlace_username) # third
 
             elif i == 2:
-                font = QFont("Arial", 20)
+                font = QFont("Arial", 25)
                 fontMetrics = QFontMetrics(font)
                 thirdPlace_username = podium_ranking[2][1]
                 thirdPlace_textWidth = fontMetrics.horizontalAdvance(thirdPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit*8.5) - (thirdPlace_textWidth // 2), 32, thirdPlace_username)
+                painter.drawText((shiftUnit*8) - (thirdPlace_textWidth // 2) - 20, 65, thirdPlace_username) # second
             else:
                 break
 
         painter.end()
         self.image_label.setPixmap(pixmap)
+        self.image_label.setScaledContents(False)
         self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
 
     # 3. Auxiliary functions
