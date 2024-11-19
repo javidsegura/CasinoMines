@@ -6,8 +6,9 @@ from others.algorithms.searching import MySearching
 import pandas as pd 
 
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QSpacerItem, QSizePolicy, QMessageBox, QGridLayout)
+                                QSpacerItem, QSizePolicy, QMessageBox, QGridLayout, QGraphicsScene, QGraphicsView, QGraphicsRectItem)
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor
 from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor
 
 
@@ -46,7 +47,7 @@ class LeaderBoardTab(QWidget):
         # self.contHeight = self.grid_container.height()
 
 
-        # Left layout - Ranking
+        # Left layout + container - Ranking
         self.left_layout = QGridLayout()
         self.left_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.left_layout.setHorizontalSpacing(50)
@@ -55,19 +56,13 @@ class LeaderBoardTab(QWidget):
         self.left_container.setLayout(self.left_layout)
         self.left_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        # Right layout - Podium
+        # Right layout + container - Podium
         self.right_layout = QVBoxLayout()
         self.right_layout.addStretch()
-
         self.right_container = QWidget()
         self.right_container.setLayout(self.right_layout)
         self.right_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.populatePodium()
-
-        # self.right_layout.addStretch()
-        # self.right_layout.setSpacing(0)
-        # self.right_layout.setContentsMargins(0, 0, 0, 0)
-
 
         # Left and right layout (compacted to the grid container)
         self.left_right_layout = QHBoxLayout()
@@ -173,87 +168,67 @@ class LeaderBoardTab(QWidget):
 
         try:
             ogPixmap = QPixmap("./utils/imgs/podium.png")
-            pixmap = ogPixmap.scaled(int(self.contWidth), 100, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            black_image = QPixmap(pixmap.width(), 100)  # Width = podium width, Height = 100px
-            black_image.fill(QColor(255, 255, 255))
-            # new_height = pixmap.height() + 100  # Adjust this value based on the text size
-            # pixmap = pixmap.scaled(pixmap.width(), new_height, Qt.KeepAspectRatio)
+            scaled_pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            black_image = QPixmap(scaled_pixmap.width(), 500) #dummy pixmap to write text above "scaled_pixmap"
+            black_image.fill(QColor(43, 43, 43))
+
             self.image_label = QLabel()
             self.fill_label = QLabel()
         except FileNotFoundError:
             print("Podium image not found")
 
-        # Testing
-        test = QPainter(black_image)
-        test.setRenderHint(QPainter.Antialiasing)
-        test.setRenderHint(QPainter.SmoothPixmapTransform)
-
-        # Set text color and font
-        test.setPen("black")  # White color for the text
-        test.setFont(QFont("Arial", 24))  # Font and size for the text
-
-        # Set the text and position (centered horizontally and vertically)
-        text = "Podium Place"
-        # Align the text to the top and center it horizontally on the black image
-        test.drawText(black_image.rect(), Qt.AlignCenter | Qt.AlignBottom, text)
-
-
+        firstPlace = QPainter(black_image)
+        firstPlace.setRenderHint(QPainter.Antialiasing)
+        firstPlace.setRenderHint(QPainter.SmoothPixmapTransform)
+        firstPlace.setPen("white")
 
         df = pd.read_csv(self.user_data.leaderboardPath)
         podium_ranking = df.values.tolist()
 
-        painter = QPainter(pixmap)
+        painter = QPainter(scaled_pixmap)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
-
         painter.setPen("white")
-        # painter.drawText(pixmap.rect(), Qt.AlignTop | Qt.AlignHCenter, "top")
-
         shiftUnit = self.contWidth / 9 
 
         for i in range(len(podium_ranking)):
-            if i == 0:
+            if i == 0: #first place
                 font = QFont("Arial", 35)
-                fontMetrics = QFontMetrics(font)
                 firstPlace_username = podium_ranking[0][1]
-                firstPlace_textWidth = fontMetrics.horizontalAdvance(firstPlace_username)
-                painter.setFont(font)
-                painter.drawText((shiftUnit * 5) - (firstPlace_textWidth // 2) - 20, 0, firstPlace_username) #finding string width in pixels and adjusting position on image
+                firstPlace.setFont(font)
+                firstPlace.drawText(black_image.rect(), Qt.AlignCenter | Qt.AlignBottom, firstPlace_username)
 
-            elif i == 1:
+            elif i == 1: #second place
                 font = QFont("Arial", 35)
                 fontMetrics = QFontMetrics(font)
                 secondPlace_username = podium_ranking[1][1]
                 secondPlace_textWidth = fontMetrics.horizontalAdvance(secondPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit * 2) - (secondPlace_textWidth // 2) - 20, 110, secondPlace_username) # third
+                painter.drawText((shiftUnit * 8) - (secondPlace_textWidth // 2) - 40, 65, secondPlace_username)
 
-            elif i == 2:
+            elif i == 2: #third place
                 font = QFont("Arial", 25)
                 fontMetrics = QFontMetrics(font)
                 thirdPlace_username = podium_ranking[2][1]
                 thirdPlace_textWidth = fontMetrics.horizontalAdvance(thirdPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit*8) - (thirdPlace_textWidth // 2) - 20, 65, thirdPlace_username) # second
+                painter.drawText((shiftUnit*2) - (thirdPlace_textWidth // 2) - 25, 110, thirdPlace_username)
             else:
                 break
 
         painter.end()
-        test.end()
-        self.image_label.setPixmap(pixmap)
-        self.fill_label.setPixmap(black_image)
+        firstPlace.end()
 
+        self.image_label.setPixmap(scaled_pixmap)
+        self.fill_label.setPixmap(black_image)
         self.image_label.setScaledContents(False)
         self.fill_label.setScaledContents(False)
 
 
         self.right_layout.addWidget(self.fill_label, alignment=Qt.AlignBottom)
         self.right_layout.addWidget(self.image_label, alignment=Qt.AlignBottom)
-
         self.right_layout.setSpacing(0)
         self.right_layout.setContentsMargins(0, 0, 0, 0)
-
-        # self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
 
     # 3. Auxiliary functions
     def search(self) -> None:
@@ -261,14 +236,21 @@ class LeaderBoardTab(QWidget):
 
         # Find the user rank
         df = pd.read_csv(self.user_data.leaderboardPath)
-        userRank = df[df["username"] == self.username]["rank"].values[0]
 
-        # Search for the user in the leaderboard
-        search = MySearching()
-        username, start, limit = search.binary_search_leaderboard(df.values.tolist(), userRank)
+        if self.username in set(df['username'].values): 
+        #Converting to set is still O(n), but we need to check if username exists before 
+        #assigining a value otherwise will get an error. Only way around is to pre-save each user's rank,
+        #but this is dynamic and will change very often
+            
+            userRank = df[df["username"] == self.username]["rank"].values[0]
+            # Search for the user in the leaderboard
+            search = MySearching()
+            username, start, limit = search.binary_search_leaderboard(df.values.tolist(), userRank)
 
-        if username != -1:
-            self.populateRanking(start, limit, username, searchRank=True)
+            if username != -1:
+                self.populateRanking(start, limit, username, searchRank=True)
+            else:
+                QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
         else:
             QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
 
