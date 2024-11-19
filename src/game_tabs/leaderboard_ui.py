@@ -170,7 +170,7 @@ class LeaderBoardTab(QWidget):
             ogPixmap = QPixmap("./utils/imgs/podium.png")
             scaled_pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             black_image = QPixmap(scaled_pixmap.width(), 500) #dummy pixmap to write text above "scaled_pixmap"
-            black_image.fill(QColor(43, 43, 43))
+            black_image.fill(QColor(0, 0, 26))
 
             self.image_label = QLabel()
             self.fill_label = QLabel()
