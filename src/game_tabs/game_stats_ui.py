@@ -49,22 +49,23 @@ class DataTab(QWidget):
                 for col, var in enumerate(row):
                     if i == 0:
                         header_button = QPushButton(self.mapping[var])  # Use QPushButton
-                        header_button.setCheckable(True)  # Optional: to make it behave like a toggle button
-                        header_button.clicked.connect(lambda _, v=var, btn=header_button: self.headerClicked(v, btn))  # Connect to click event
-                        if col == 0 and self.firstHeaderPop:
-                            header_button.setStyleSheet("background-color: blue; color: white;")
+                        header_button.setCheckable(True)
+                        header_button.clicked.connect(lambda _, v=var, btn=header_button: self.headerClicked(v, btn))
+
+                        # Set default dark purple for all header buttons
+                        header_button.setStyleSheet("background-color: #5A3D8A; color: white;")  # Slightly lighter dark purple
                         self.grid_layout.addWidget(header_button, 0, col)
                         self.headerButtons.append(header_button)
-    
+
     def populateGameStats(self) -> None:
         """ Populate the values of the data tab"""
         self.clearData()
         self.firstHeaderPop = False
         for i, element in enumerate(self.headerButtons):
             if i == 0:
-                element.setStyleSheet("background-color: blue; color: white;")
+                element.setStyleSheet("background-color:  #2E0854;; color: white;")
             else:
-                element.setStyleSheet("background-color: #444444; color: white;")
+                element.setStyleSheet("background-color:  #2E0854; color: white;")
 
         with open(self.file_path, 'r') as data_file:
             csv_reader = csv.reader(data_file)
@@ -127,13 +128,13 @@ class DataTab(QWidget):
         self.setLayout(self.main_layout)
 
     def headerClicked(self, v:str, button:QPushButton) -> None:
-        print("I have been clicked")
-        if not self.firstHeaderPop: #meaning there is no data yet
+        if not self.firstHeaderPop:  # Check if data is already displayed
             for element in self.headerButtons:
-                element.setStyleSheet("background-color: #444444; color: white;")
+                # Reset all buttons to default dark purple
+                element.setStyleSheet("background-color: #4B0082; color: white;")  # Lighter dark purple
 
-            #print(f"\nHeader {v} has been clicked")
-            button.setStyleSheet("background-color: blue; color: white;")
+            # Set the clicked button to a darker purple
+            button.setStyleSheet("background-color: #2E0854; color: white;")  # Darker purple for the active header
 
             arr = self.createArr(v)
             sorted = self.mergeSort(arr, 0, len(arr) - 1)
