@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, Q
                                 QSpacerItem, QSizePolicy, QMessageBox, QGridLayout, QGraphicsScene, QGraphicsView, QGraphicsRectItem)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor
-from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor
+from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor, QPen
 
 
 class LeaderBoardTab(QWidget):
@@ -143,7 +143,7 @@ class LeaderBoardTab(QWidget):
                     value_label.setFont(self.valueFont)
 
                     # Highlight the user's row
-                    if rowData[1] == username:
+                    if rowData[1] == username and col == 0:
                         value_label.setStyleSheet("background-color: #ffcc00; color: white;")
 
                     # Use row_idx + 1 to place data right below headers
@@ -177,10 +177,11 @@ class LeaderBoardTab(QWidget):
         except FileNotFoundError:
             print("Podium image not found")
 
+        pen = QPen(QColor("#ffcc00"))
         firstPlace = QPainter(black_image)
         firstPlace.setRenderHint(QPainter.Antialiasing)
         firstPlace.setRenderHint(QPainter.SmoothPixmapTransform)
-        firstPlace.setPen("white")
+        firstPlace.setPen(pen)
 
         df = pd.read_csv(self.user_data.leaderboardPath)
         podium_ranking = df.values.tolist()
@@ -188,7 +189,8 @@ class LeaderBoardTab(QWidget):
         painter = QPainter(scaled_pixmap)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
-        painter.setPen("white")
+
+        painter.setPen(pen)
         shiftUnit = self.contWidth / 9 
 
         for i in range(len(podium_ranking)):
