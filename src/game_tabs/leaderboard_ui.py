@@ -144,7 +144,7 @@ class LeaderBoardTab(QWidget):
 
                     # Highlight the user's row
                     if rowData[1] == username and col == 0:
-                        value_label.setStyleSheet("background-color: #ffcc00; color: white;")
+                        value_label.setStyleSheet("background-color: #ffcc00; color: #00001a;")
 
                     # Use row_idx + 1 to place data right below headers
                     self.left_layout.addWidget(value_label, row_idx + 1, col)
@@ -227,8 +227,8 @@ class LeaderBoardTab(QWidget):
         self.fill_label.setScaledContents(False)
 
 
-        self.right_layout.addWidget(self.fill_label, alignment=Qt.AlignBottom)
-        self.right_layout.addWidget(self.image_label, alignment=Qt.AlignBottom)
+        self.right_layout.addWidget(self.fill_label, alignment=Qt.AlignVCenter)
+        self.right_layout.addWidget(self.image_label, alignment=Qt.AlignVCenter)
         self.right_layout.setSpacing(0)
         self.right_layout.setContentsMargins(0, 0, 0, 0)
 
