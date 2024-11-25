@@ -12,9 +12,20 @@ class UserData():
     def __init__(self, game_stats_path:str="utils/data/game_stats.csv", leaderboardPath:str="utils/data/leaderboard.csv") -> None:
         self.game_stats_path = game_stats_path
         self.leaderboardPath = leaderboardPath
-        self.leaderboardList = []
+        # self.leaderboardList = []
         self.game_stats_pd = self.initialize_game_stats()
         self.leaderboard_pd = self.initialize_leaderboard()
+        self.leaderboard_dict = None
+        self.userSortLeaderboard = None
+        # self.username = None
+
+    def updateVars(self, leaderboard_dict:dict, leaderboard_df:pd.DataFrame, userSortLeaderboard:pd.DataFrame) -> None:
+        self.leaderboard_dict = leaderboard_dict
+        self.leaderboard_pd = leaderboard_df
+        self.userSortLeaderboard = userSortLeaderboard
+    
+    def getChangedVars(self):
+        return self.leaderboard_pd, self.leaderboard_dict, self.userSortLeaderboard #This is updated whenever leaderboard changes; leaderboard tab needs this
 
     
     # 0) GAME STATS CSV
@@ -30,10 +41,8 @@ class UserData():
         """ Add user data to GAME STATS csv. Invoked at the end of each game"""
 
         # Add game stats to game_stats_pd
-        new_row = pd.DataFrame([[game_id, win, bet, mines,
-                                 balanceBefore, balanceAfter, profit]], 
-                               columns=self.game_stats_pd.columns)
-        self.game_stats_pd = pd.concat([self.game_stats_pd, new_row], ignore_index=True)
+        new_row = {'gameId': game_id, 'win': win, 'betAmount': bet, 'numMines': mines, 'balanceBefore': balanceBefore, 'balanceAfter': balanceAfter, 'profit': profit}
+        self.game_stats_pd = pd.concat([self.game_stats_pd, pd.DataFrame([new_row])], ignore_index=True)
 
         self.write_game_stats_pd()
 
@@ -52,28 +61,22 @@ class UserData():
         Invoked at the end of each game.
         """
 
-        # Find if user has already played:
-        all_users_names = self.leaderboard_pd["username"].tolist()
-        if user in all_users_names: 
-            aggregate_old_user, user_rank = self.find_highest_balance(user, balance)
-            if aggregate_old_user: 
-                self.leaderboard_pd.loc[user_rank] = [0, 
-                                                   user, 
-                                                   round(balance, 2), 
-                                                   date.today()]  # arbitrary rank for 0
-        else: 
-            new_row = pd.DataFrame([[0,
-                                      user, 
-                                      round(balance, 2), 
-                                      date.today()]], 
-                                 columns=self.leaderboard_pd.columns)
-            self.leaderboard_pd = pd.concat([self.leaderboard_pd, new_row], ignore_index=True)
+        # Find if user has already played in O(1):
+
+        aggregate_old_user, user_index = self.find_highest_balance(user, balance)
+        if aggregate_old_user: 
+            self.leaderboard_pd.loc[user_index] = [0, 
+                                                user, 
+                                                round(balance, 2), 
+                                                date.today()]  # arbitrary rank for 0
+
 
         # Sort leaderboard CSV
+        # CHANGE SORTING TO PD
         leaderboard_list = self.leaderboard_pd.values.tolist()
-        MySorting(self.leaderboard_pd.columns.get_loc("largestBalance"), ascending=True).mergeSort(leaderboard_list, 
-                                                                                                 0, 
-                                                                                                 len(leaderboard_list)) 
+        MySorting(self.leaderboard_pd.columns.get_loc("largestBalance"), ascending=True).mergeSort(
+            leaderboard_list, 0, len(leaderboard_list)
+        ) 
         self.leaderboard_pd = pd.DataFrame(leaderboard_list, 
                                             columns=self.leaderboard_pd.columns)
         self.write_leaderboard_pd()
@@ -82,16 +85,16 @@ class UserData():
     def find_highest_balance(self, user:str, balance:float) -> bool:
         """ Returns True if current balance is the highest balance for the user and its prior rank.
         """
-       
         # Find the index of the user in the leaderboard
-        user_index = self.leaderboard_pd[self.leaderboard_pd["username"] == user].index[0]
+        user_index = self.leaderboard_dict[user] - 1 #Rank minus 1 is always index
         if self.leaderboard_pd.loc[user_index, "largestBalance"] >= balance:
             return False, None
         else:
             return True, user_index
 
-    def return_leaderboard_list(self) -> list:
-        return self.leaderboard_pd.values.tolist()    
+    def return_leaderboard_list(self) -> pd.DataFrame:
+        return self.leaderboard_pd
+    # .values.tolist()    
 
     def return_numPlayers(self) -> int:
         if self.leaderboard_pd is not None:
@@ -106,6 +109,14 @@ class UserData():
     
     def write_leaderboard_pd(self) -> None:
         self.leaderboard_pd["rank"] = range(1, len(self.leaderboard_pd) + 1)
+        self.leaderboard_dict = dict(zip(self.leaderboard_pd['username'], self.leaderboard_pd['rank']))
+        # Sort df based on users and new rank
+        self.userSortLeaderboard = list(zip(self.leaderboard_pd['rank'], self.leaderboard_pd['username']))
+        MySorting(1, ascending=True).mergeSort(
+            self.userSortLeaderboard, 0, len(self.leaderboard_pd)
+        )
+        self.userSortLeaderboard = pd.DataFrame(self.userSortLeaderboard, columns=['rank', 'username'])
+
         self.leaderboard_pd.to_csv(self.leaderboardPath, index=False)
     
     def write_game_stats_pd(self) -> None:

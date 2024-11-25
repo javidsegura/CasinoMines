@@ -18,10 +18,11 @@ class MySorting():
             else:
                   return l[self.index] <= r[self.index]
 
-      def mergeSort(self, arr: list[list], left: int, right: int):
+      def mergeSort(self, arr: list[list], left: int, right: int) -> int:
             """right is exclusive for right arr
                mid is exclusive for left arr
                => right - left represents the length of the subset of the arr"""
+            # print(f"Sorting: {arr}")
             if left < right - 1:
                   mid = (left + right) // 2
                   self.mergeSort(arr, left, mid)
