@@ -116,20 +116,18 @@ class Settings():
         self.confirm_button = QPushButton("Confirm Selection")
         self.confirm_button.clicked.connect(self.confirm_selection)
         self.setup_layout.addWidget(self.confirm_button)
-        self.confirm_button.setStyleSheet("background-color: #ffcc00; color: #fffce3;")
+        # Initial state: gold color to indicate it's the next step
+        self.confirm_button.setStyleSheet("background-color: #ffcc00; color: black; font-weight: bold; border: 1px solid #ffd700; border-radius: 5px;")
 
         # Confirmation message
         self.confirmation_label = QLabel("")
         self.setup_layout.addWidget(self.confirmation_label)
 
-    
     def confirm_selection(self) -> None:
-        """ Confirm the set-up of the game"""
+        """Confirm the set-up of the game and enable the start button"""
         try:
             bet_amount = int(self.bet_input.text())
             self.num_mines = self.mines_slider.value()
-            #print("\n\n\033[1mConfiguration:\033[0m\n")
-            #print(f"Current balance is {self.wallet.get_balance()}")
             self.balanceBeforeChange = self.wallet.get_balance()
 
             if self.num_mines < 1 or self.num_mines > 24:
@@ -137,25 +135,34 @@ class Settings():
 
             if bet_amount > self.wallet.get_balance():
                 raise ValueError("Bet amount exceeds wallet balance. Try again!")
-        
+
             if bet_amount <= 0:
                 raise ValueError("Bet amount must be greater than 0!")  
 
-            self.multiplier_func = multiplier.MultiplierFunc(25, self.num_mines) # Get all multipliers for the given setup at each game
-            
+            # Initialize the multiplier function based on the game settings
+            self.multiplier_func = multiplier.MultiplierFunc(25, self.num_mines)
+
+            # Deactivate all buttons except the Start Game button
             self.deactivate_btns()
             self.wallet.place_bet(bet_amount)
             self.header.update_balance(self.wallet.get_balance())
 
             self.betAmount = bet_amount
             self.numMines = self.num_mines
-            # If start button has been created, activate it
+
+            # Change Confirm Selection button to purple after clicking
+            self.confirm_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+
+            # Enable the Start Game button as the next step
             if self.start_button:
                 self.start_button.setDisabled(False)
+                self.start_button.setStyleSheet("background-color: #ffcc00; color: black; font-weight: bold; border: 1px solid #ffd700; border-radius: 5px;")
+
         except ValueError as e:
             if str(e).startswith("invalid literal"):
                 e = "You need to specify an amount to bet"
             self.show_confirmation(str(e))
+
     
     def show_confirmation(self, message :str) -> None:
         """Print message on confirmation label"""
@@ -180,15 +187,21 @@ class Settings():
     def cash_out_btn(self) -> None:
         """ Sets up the cash out button"""
         self.cash_out_button = QPushButton("Cash Out")
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")  # Initially purple with gold text and border
         self.cash_out_button.clicked.connect(self.cash_out)
         self.setup_layout.addWidget(self.cash_out_button)
-        self.cash_out_button.setDisabled(True)  
+        self.cash_out_button.setDisabled(True)  # Disable initially
         
     def reset_for_new_game(self) -> None:
-        """Reset the header for a new game"""
+        """Reset the header for a new game and prepare the buttons"""
         self.cash_out_button.setDisabled(True)
         self.header.update_profit(0)
         self.header.update_multiplier(1)
+
+        # Reset start button to purple and disable it
+        if self.start_button:
+            self.start_button.setDisabled(True)
+            self.start_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
 
     def activate_cash_out_button(self) -> None:
         """ Enable the cash out button"""
@@ -211,25 +224,46 @@ class Settings():
         self.header.update_multiplier(1)
 
     def deactivate_btns(self) -> None:
-        """ Deactivate all buttons"""
-        self.bet_input.setDisabled(True) # Disable bet input
-        self.mines_slider.setDisabled(True) # Disable mines slider
-        self.confirm_button.setDisabled(True) # Disable confirm button
-        self.confirm_button.setStyleSheet("background-color: #888888; color: #aaaaaa;")
+        """ Deactivate all buttons and set them to purple to indicate inactivity """
+        self.bet_input.setDisabled(True)
+        self.mines_slider.setDisabled(True)
+        
+        # Confirm button in "disabled" state (purple)
+        self.confirm_button.setDisabled(True)
+        self.confirm_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+        
+        # Percentage buttons in "disabled" state (purple)
         for btn in self.percentages_btns:
             btn.setDisabled(True)
-        self.cash_out_button.setDisabled(True)  
+            btn.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
         
+        # Cash Out button in "disabled" state (purple)
+        self.cash_out_button.setDisabled(True)
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+
     def activate_btns(self) -> None:
-        """ Activate all buttons"""
-        self.bet_input.setDisabled(False) # Disable bet input
-        self.mines_slider.setDisabled(False) # Disable mines slider
-        self.confirm_button.setDisabled(False) # Disable confirm button
-        self.confirm_button.setStyleSheet("background-color: #ffcc00; color: #fffad1;")
+        """ Activate all buttons and set them appropriately based on their purpose """
+        self.bet_input.setDisabled(False)
+        self.mines_slider.setDisabled(False)
+        
+        # Confirm button in "active" state (gold)
+        self.confirm_button.setDisabled(False)
+        self.confirm_button.setStyleSheet("background-color: #ffcc00; color: black; font-weight: bold; border: 1px solid #ffd700; border-radius: 5px;")
+
+        # Percentage buttons in "inactive" state (purple)
         for btn in self.percentages_btns:
             btn.setDisabled(False)
-        self.cash_out_button.setDisabled(False)
+            btn.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+        
+        # Cash Out button remains disabled (purple) until game progress
+        self.cash_out_button.setDisabled(True)
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
 
+        # Reset start button back to purple after it is used to start a game
+        if self.start_button:
+            self.start_button.setDisabled(True)
+            self.start_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+    
     def update_profit(self) -> None:
         """ Update the profit label"""
         self.header.update_profit(self.wallet.calculate_profit())
@@ -239,19 +273,25 @@ class Settings():
         """ Set the start button reference
         Receives button from CasinoMines class"""
         self.start_button = button
+        # Set the initial style to purple and disable it
+        self.start_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")  # Purple with gold text and border
+        self.start_button.setDisabled(True)
 
     def disable_cash_out_button(self) -> None:
-        """ Disable the cash out button"""
+        """ Disable the cash out button and set it to purple """
         self.cash_out_button.setDisabled(True)
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")  # Purple with gold text
 
     def enable_cash_out_button(self) -> None:
-        """ Enable the cash out button"""
+        """ Enable the cash out button and set it to gold """
         self.cash_out_button.setDisabled(False)
+        self.cash_out_button.setStyleSheet("background-color: #ffcc00; color: black; font-weight: bold; border: 1px solid #ffd700; border-radius: 5px;")  # Gold with black text
 
     def restart_cash_out_button(self) -> None:
-        """ Restart the cash out button"""
+        """ Reset the cash out button to its initial purple state """
+        self.cash_out_button.setDisabled(True)  # Initially disabled
         self.cash_out_button.setText("Cash Out")
-        self.cash_out_button.setStyleSheet("")
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")  # Purple with gold text
 
     def get_prior_profit(self) -> float:
         """ Get the profit"""
@@ -279,5 +319,4 @@ class Settings():
     def increase_balance(self, amount) -> None:
         new_amount = self.wallet.increase_balance(amount)
         self.header.update_balance(new_amount)
-
 

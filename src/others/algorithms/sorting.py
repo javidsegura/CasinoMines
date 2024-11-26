@@ -3,10 +3,11 @@
 class MySorting():
       def __init__(self, index, ascending=False):
             """
-            Analysis:
-                  - Time complexity: O(n log n)
+            Analysis (for merge sort):
+                  - Time complexity: O(n log n) / worst and best case
                   - Space complexity: O(1)
-                  - index is the subscripting part of the array
+            Parametes:
+                  - index is the subscripting part of the array (the value to sort by)
             """
             self.index = index
             self.ascending = ascending 
