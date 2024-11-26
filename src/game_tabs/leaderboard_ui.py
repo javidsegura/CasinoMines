@@ -47,10 +47,8 @@ class LeaderBoardTab(QWidget):
         self.grid_container = QWidget()
         self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.contWidth = self.grid_container.width()
-        # self.contHeight = self.grid_container.height()
 
-
-        # Left layout + container - Ranking
+        # Left layout + container for Ranking
         self.left_layout = QGridLayout()
         self.left_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.left_layout.setHorizontalSpacing(50)
@@ -59,7 +57,7 @@ class LeaderBoardTab(QWidget):
         self.left_container.setLayout(self.left_layout)
         self.left_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        # Right layout + container - Podium
+        # Right layout + container for Podium
         self.right_layout = QVBoxLayout()
         self.right_layout.addStretch()
         self.right_container = QWidget()
@@ -118,9 +116,6 @@ class LeaderBoardTab(QWidget):
         
         self.clearData()
         
-        # Are these two lines necessary?
-        # leaderData = pd.read_csv(self.user_data.leaderboardPath)
-        # leaderDataList = leaderData.values.tolist()
         numPlayers = self.leaderboard_pd.shape[0]
 
         if not searchRank:
@@ -173,15 +168,11 @@ class LeaderBoardTab(QWidget):
                     # Use row_idx + 1 to place data right below headers
                     self.left_layout.addWidget(value_label, row_idx + 1, col_idx)
 
-            
-
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
 
         # Update podium based on the new ranking
-        print(f"Leaderboard pd in leaderboard tab:\n {self.leaderboard_pd}")
-
         if not searchRank:
             self.populatePodium()
     
@@ -208,9 +199,6 @@ class LeaderBoardTab(QWidget):
         firstPlace.setRenderHint(QPainter.Antialiasing)
         firstPlace.setRenderHint(QPainter.SmoothPixmapTransform)
         firstPlace.setPen(pen)
-
-        # df = pd.read_csv(self.user_data.leaderboardPath)
-        # podium_ranking = df.values.tolist()
 
         painter = QPainter(scaled_pixmap)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -262,30 +250,14 @@ class LeaderBoardTab(QWidget):
     def search(self) -> None:
         """ Search for the user in the leaderboard and populate the ranking """
 
-        # Find the user rank
-        # df = pd.read_csv(self.user_data.leaderboardPath)
-
-        print(f"Leaderboard pd in leaderboard tab first:\n {self.leaderboard_pd}")
+        # Update variables according to new leaderboard
         self.leaderboard_pd, self.leaderboard_dict, self.userSortLeaderboard = self.user_data.getChangedVars()
-        print(f"Leaderboard pd in leaderboard tab then:\n {self.leaderboard_pd}")
-        # self.userSortLeaderboard = self.user_data.getUserSortLeaderboard()
 
-        # self.userSortLeaderboard
-        #Converting to set is still O(n), but we need to check if username exists before 
-        #assigining a value otherwise will get an error. Only way around is to pre-save each user's rank,
-        #but this is dynamic and will change very often
-            
-        # userRank = df[df["username"] == self.username]["rank"].values[0]
         # Search for the user in the leaderboard
         search = MySearching()
         user_rank = search.binary_search_users(self.userSortLeaderboard, self.username)
         print(f"User {self.username} is in: {user_rank}")
         self.populateRanking(0, 0, self.username, True, user_rank)
-        # if username != -1:
-        #     self.populateRanking(start, limit, username, searchRank=True)
-        # else:
-        #     QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
-
 
 
     def clearData(self, left=True) -> None:

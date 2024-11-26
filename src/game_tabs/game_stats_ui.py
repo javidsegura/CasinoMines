@@ -127,12 +127,11 @@ class DataTab(QWidget):
         self.setLayout(self.main_layout)
 
     def headerClicked(self, v:str, button:QPushButton) -> None:
-        print("I have been clicked")
         if not self.firstHeaderPop: #meaning there is no data yet
             for element in self.headerButtons:
                 element.setStyleSheet("background-color: #444444; color: white;")
 
-            #print(f"\nHeader {v} has been clicked")
+            print(f"\nHeader {v} has been clicked")
             button.setStyleSheet("background-color: blue; color: white;")
 
             arr = self.createArr(v)
@@ -174,12 +173,12 @@ class DataTab(QWidget):
         return arr
     
     def stringToInt(self, element:str) -> int:
-        # only for win as of right now
         if element == 'Win':
             return 1
         else:
             return 0
 
+# MIGRATE
     def merge(self, arr, start, mid, end): 
         # Start indexes for the two halves
         left_index = start

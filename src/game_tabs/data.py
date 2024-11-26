@@ -12,20 +12,20 @@ class UserData():
     def __init__(self, game_stats_path:str="utils/data/game_stats.csv", leaderboardPath:str="utils/data/leaderboard.csv") -> None:
         self.game_stats_path = game_stats_path
         self.leaderboardPath = leaderboardPath
-        # self.leaderboardList = []
         self.game_stats_pd = self.initialize_game_stats()
         self.leaderboard_pd = self.initialize_leaderboard()
         self.leaderboard_dict = None
         self.userSortLeaderboard = None
-        # self.username = None
 
     def updateVars(self, leaderboard_dict:dict, leaderboard_df:pd.DataFrame, userSortLeaderboard:pd.DataFrame) -> None:
         self.leaderboard_dict = leaderboard_dict
         self.leaderboard_pd = leaderboard_df
         self.userSortLeaderboard = userSortLeaderboard
-    
+        # Only used once upon initilization, when main updates these values based on the possibly new username
+
     def getChangedVars(self):
-        return self.leaderboard_pd, self.leaderboard_dict, self.userSortLeaderboard #This is updated whenever leaderboard changes; leaderboard tab needs this
+        return self.leaderboard_pd, self.leaderboard_dict, self.userSortLeaderboard 
+        #These are updated whenever leaderboard changes; leaderboard tab needs this
 
     
     # 0) GAME STATS CSV
@@ -85,7 +85,7 @@ class UserData():
     def find_highest_balance(self, user:str, balance:float) -> bool:
         """ Returns True if current balance is the highest balance for the user and its prior rank.
         """
-        # Find the index of the user in the leaderboard
+        # Find the index of the user in the leaderboard in constant time complexity
         user_index = self.leaderboard_dict[user] - 1 #Rank minus 1 is always index
         if self.leaderboard_pd.loc[user_index, "largestBalance"] >= balance:
             return False, None
@@ -93,8 +93,8 @@ class UserData():
             return True, user_index
 
     def return_leaderboard_list(self) -> pd.DataFrame:
-        return self.leaderboard_pd
-    # .values.tolist()    
+        return self.leaderboard_pd 
+        # Only used once in the initlization of main to get leader board data
 
     def return_numPlayers(self) -> int:
         if self.leaderboard_pd is not None:
@@ -108,15 +108,16 @@ class UserData():
             pass
     
     def write_leaderboard_pd(self) -> None:
+        # New Ranks
         self.leaderboard_pd["rank"] = range(1, len(self.leaderboard_pd) + 1)
         self.leaderboard_dict = dict(zip(self.leaderboard_pd['username'], self.leaderboard_pd['rank']))
-        # Sort df based on users and new rank
+
+        # Sort df in respect to usernames with the new ranks
         self.userSortLeaderboard = list(zip(self.leaderboard_pd['rank'], self.leaderboard_pd['username']))
         MySorting(1, ascending=True).mergeSort(
             self.userSortLeaderboard, 0, len(self.leaderboard_pd)
         )
         self.userSortLeaderboard = pd.DataFrame(self.userSortLeaderboard, columns=['rank', 'username'])
-
         self.leaderboard_pd.to_csv(self.leaderboardPath, index=False)
     
     def write_game_stats_pd(self) -> None:

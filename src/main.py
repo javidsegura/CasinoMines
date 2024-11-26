@@ -289,10 +289,9 @@ class CasinoMines(QWidget, GameStyle):
     
     def show_userPopup(self) -> str:
         """ Defines log in element popup"""
-        username = show_login_dialog(self)
-        # Ensuring usernames are unique
-        # while username in self.username_set:
-        #     username = show_login_dialog(self, "Username taken. Choose a unique username")
+        username = show_login_dialog(self) 
+        #There can never be two of the same usernames, because if a username is already saved then 
+        # you'll just be logged in as that, not create a new user 
         
         self.settingsClass.defineUsername(username)
         return username
