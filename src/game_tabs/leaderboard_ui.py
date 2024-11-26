@@ -46,6 +46,9 @@ class LeaderBoardTab(QWidget):
         # Grid container
         self.grid_container = QWidget()
         self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        # So right and left heights are independent:
+        # self.grid_container_layout = QHBoxLayout(self.grid_container)
         self.contWidth = self.grid_container.width()
 
         # Left layout + container for Ranking
@@ -56,26 +59,36 @@ class LeaderBoardTab(QWidget):
         self.left_container = QWidget()
         self.left_container.setLayout(self.left_layout)
         self.left_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.contHeight = self.left_container.height()
+
 
         # Right layout + container for Podium
         self.right_layout = QVBoxLayout()
-        self.right_layout.addStretch()
+        self.right_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+
+        # self.right_layout.addStretch()
         self.right_container = QWidget()
         self.right_container.setLayout(self.right_layout)
-        self.right_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # self.right_container.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.populatePodium()
+
+        self.right_container.setMaximumHeight(self.contHeight // 1.5)
+        self.right_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Left and right layout (compacted to the grid container)
         self.left_right_layout = QHBoxLayout()
-        self.left_right_layout.addWidget(self.left_container)
-        self.left_right_layout.addWidget(self.right_container)
+        self.left_right_layout.addWidget(self.left_container, stretch=1)
+        self.left_right_layout.addWidget(self.right_container, stretch=1)
+        # self.horz = QHBoxLayout()
+        # self.horz.addLa
 
-        self.grid_container.setLayout(self.left_right_layout)
 
+        # self.grid_container.setLayout(self.left_right_layout)
         # Connecting to the main layout
         self.main_layout.addLayout(self.top_layout)
         self.main_layout.addLayout(self.buttonContainer)
-        self.main_layout.addWidget(self.grid_container)
+        self.main_layout.addLayout(self.left_right_layout)
+
         self.main_layout.addStretch()
 
         self.setLayout(self.main_layout)
@@ -112,8 +125,9 @@ class LeaderBoardTab(QWidget):
             username (str): The username of the user
             searchRank (bool): Whether the ranking is being searched or not
         """
+        print(f"First: {self.leaderboard_pd}")
         self.leaderboard_pd, self.leaderboard_dict, self.userSortLeaderboard = self.user_data.getChangedVars()
-        
+        print(f"Then: {self.leaderboard_pd}")
         self.clearData()
         
         numPlayers = self.leaderboard_pd.shape[0]
@@ -186,7 +200,7 @@ class LeaderBoardTab(QWidget):
         try:
             ogPixmap = QPixmap("./utils/imgs/podium.png")
             scaled_pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            black_image = QPixmap(scaled_pixmap.width(), 500) #dummy pixmap to write text above "scaled_pixmap"
+            black_image = QPixmap(scaled_pixmap.width(), 100) #dummy pixmap to write text above "scaled_pixmap"
             black_image.fill(QColor(0, 0, 26))
 
             self.image_label = QLabel()
@@ -207,7 +221,7 @@ class LeaderBoardTab(QWidget):
         painter.setPen(pen)
         shiftUnit = self.contWidth / 9 
 
-        for i in range(len(self.leaderboard_pd)):
+        for i in range(len(self.leaderboard_pd) + 1):
             if i == 0: #first place
                 font = QFont("Arial", 35)
                 firstPlace_username = self.leaderboard_pd.iloc[0]['username']
@@ -240,11 +254,8 @@ class LeaderBoardTab(QWidget):
         self.image_label.setScaledContents(False)
         self.fill_label.setScaledContents(False)
 
-
         self.right_layout.addWidget(self.fill_label, alignment=Qt.AlignVCenter)
         self.right_layout.addWidget(self.image_label, alignment=Qt.AlignVCenter)
-        self.right_layout.setSpacing(0)
-        self.right_layout.setContentsMargins(0, 0, 0, 0)
 
     # 3. Auxiliary functions
     def search(self) -> None:

@@ -41,7 +41,9 @@ class UserData():
         """ Add user data to GAME STATS csv. Invoked at the end of each game"""
 
         # Add game stats to game_stats_pd
-        new_row = {'gameId': game_id, 'win': win, 'betAmount': bet, 'numMines': mines, 'balanceBefore': balanceBefore, 'balanceAfter': balanceAfter, 'profit': profit}
+                            #     if isinstance(var, float):
+                            # var = math.floor(var * 100) / 100
+        new_row = {'gameId': game_id, 'win': win, 'betAmount': math.floor(bet * 100) / 100, 'numMines': mines, 'balanceBefore': math.floor(balanceBefore * 100) / 100, 'balanceAfter': math.floor(balanceAfter * 100) / 100, 'profit': math.floor(profit * 100) / 100}
         self.game_stats_pd = pd.concat([self.game_stats_pd, pd.DataFrame([new_row])], ignore_index=True)
 
         self.write_game_stats_pd()

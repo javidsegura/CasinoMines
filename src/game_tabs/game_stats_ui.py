@@ -4,7 +4,9 @@ from design.game_css import GameStyle
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel,
                                 QSpacerItem, QSizePolicy, QGridLayout)
 from PySide6.QtCore import Qt
+from others.algorithms.sorting import MySorting
 import csv
+import math
 
 class DataTab(QWidget):
     def __init__(self, file_path:str="./utils/data/game_stats.csv") -> None:
@@ -15,6 +17,7 @@ class DataTab(QWidget):
         self.data = []
         self.headerButtons = []
         self.firstHeaderPop = True
+        self.indexClicked = None
 
         self.mapping = {
             "win": "Win",
@@ -76,9 +79,9 @@ class DataTab(QWidget):
                         value_label = QLabel(str(var))
                         value_label.setAlignment(Qt.AlignCenter)
 
-                        if str(var) == "Win":
+                        if str(var) == "win":
                             value_label.setStyleSheet("background-color: lightgreen; color: black;")
-                        elif str(var) == "Loss":
+                        elif str(var) == "loss":
                             value_label.setStyleSheet("background-color: lightcoral; color: black;")
                         self.grid_layout.addWidget(value_label, row, col)
         
@@ -90,10 +93,8 @@ class DataTab(QWidget):
         sortedOutput = []
         for element in arr:
             currIndex = element[0]
-            # binary search
-            sortedOutput.append(self.data[self.binarySearch(currIndex)])
+            sortedOutput.append(self.data[currIndex])
         if sortedOutput is not None:
-            #print(f"SortedOutput {sortedOutput}\n")
             self.displaySortedValues(sortedOutput)
         return "Error" 
 
@@ -131,12 +132,12 @@ class DataTab(QWidget):
             for element in self.headerButtons:
                 element.setStyleSheet("background-color: #444444; color: white;")
 
-            print(f"\nHeader {v} has been clicked")
             button.setStyleSheet("background-color: blue; color: white;")
 
             arr = self.createArr(v)
-            sorted = self.mergeSort(arr, 0, len(arr) - 1)
-            self.populateSortedValues(sorted)
+            sort = MySorting(index=self.indexClicked)
+            sort.mergeSortTuples(arr, 0, len(arr) - 1)
+            self.populateSortedValues(arr)
 
     def clearData(self) -> None:
         for i in reversed(range(self.main_layout.count(), 1)):
@@ -148,7 +149,6 @@ class DataTab(QWidget):
     
     def createArr(self, header:str) -> list:
         arr = []
-        ourCol = None
         win = False
         if header == 'win':
             win = True
@@ -160,12 +160,12 @@ class DataTab(QWidget):
                 for col, var in enumerate(rowData):
                     if row == 0:
                         if var == header:
-                            ourCol = col
+                            self.indexClicked = col
                     else:
-                        if ourCol is None:
+                        if self.indexClicked is None:
                             return "Could not find specified header"
                         else:
-                            if col == ourCol:
+                            if col == self.indexClicked:
                                 if win:
                                     arr.append((row, self.stringToInt(var)))
                                 else:
@@ -177,44 +177,3 @@ class DataTab(QWidget):
             return 1
         else:
             return 0
-
-# MIGRATE
-    def merge(self, arr, start, mid, end): 
-        # Start indexes for the two halves
-        left_index = start
-        right_index = mid + 1
-
-        # Iterate over the array and merge in place
-        while left_index <= mid and right_index <= end:
-            # If the left element is in the right place, move on
-            if arr[left_index][1] <= arr[right_index][1]:
-                left_index += 1
-            else:
-            # Right element is smaller, so we need to insert it before the left element
-                value = arr[right_index]
-                index = right_index
-
-                # Shift all elements between left_index and right_index to the right
-                while index > left_index:
-                    arr[index] = arr[index - 1]
-                    index -= 1
-
-                arr[left_index] = value
-
-                # Update all indexes, including mid since we shifted the elements
-                left_index += 1
-                right_index += 1
-                mid += 1
-    
-    def mergeSort(self, arr, start, end): # **sorts from smallest --> largest**
-        """ Called for the sorting of the buttons """
-        if start < end:
-            mid = (start + end) // 2
-
-            # Recursively split and sort both halves
-            self.mergeSort(arr, start, mid)
-            self.mergeSort(arr, mid + 1, end)
-
-            # Merge the sorted halves
-            self.merge(arr, start, mid, end)
-        return arr
