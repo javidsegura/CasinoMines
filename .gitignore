@@ -2,3 +2,4 @@
 .venv/
 .src/__pycache__/
 my_script.zsh
+utils/data
