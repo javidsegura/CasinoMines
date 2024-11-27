@@ -11,7 +11,11 @@ from game_tabs.payout import PayoutTab
 from game_tabs.leaderboard_ui import LeaderBoardTab
 from others.login_dialog import show_login_dialog
 from others.confetty import ConfettiEffect
+from others.algorithms.sorting import MySorting
+
 import sys
+import pandas as pd
+from datetime import date
 
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
                                 QSizePolicy, QMessageBox, QTabWidget)
@@ -75,25 +79,54 @@ class CasinoMines(QWidget, GameStyle):
         self.tabs.addTab(self.game_container, "CasinoMines Game")
         self.data_tab = DataTab()
         self.tabs.addTab(self.data_tab, "Game Data")
+
+        # Define required data structures
+        self.leaderboard_pd = self.user_data.return_leaderboard_list()
+        self.leaderboard_dict = dict(zip(self.leaderboard_pd['username'], self.leaderboard_pd['rank']))
+
+        # Username operations
+        self.username_set = set(self.leaderboard_pd['username'])
+        self.username = self.show_userPopup()
+
+        # Update leaderboard w/ new username if its already included (new user)
+        if not self.username in self.username_set:
+            self.leaderboard_dict[self.username] = self.leaderboard_pd.shape[0] +1
+            dummy_row = {'rank': self.leaderboard_pd.shape[0] +1, 'username': self.username, 'largestBalance': 0, 'date': date.today()}
+            self.leaderboard_pd = pd.concat([self.leaderboard_pd, pd.DataFrame([dummy_row])], ignore_index=True)
+        self.rank = self.leaderboard_dict[self.username]
+
+        #1 is index of username in leaderboard_pd
+        self.userSortLeaderboard = list(zip(self.leaderboard_pd['rank'], self.leaderboard_pd['username']))
+        MySorting(1, ascending=True).mergeSort(
+            self.userSortLeaderboard, 0, len(self.leaderboard_pd)
+        )
+        self.userSortLeaderboard = pd.DataFrame(self.userSortLeaderboard, columns=['rank', 'username'])
+        self.user_data.updateVars(self.leaderboard_dict, self.leaderboard_pd, self.userSortLeaderboard)
+
+        # Wait to update leaderboard w/ new user until initializing leaderboard tab 
         self.leaderboard = LeaderBoardTab(self.user_data)
         self.tabs.addTab(self.leaderboard, "Leaderboard") 
+        self.leaderboard.defineUsername(self.username)
         self.leaderboard.populateRanking()
+        self.main_layout.addWidget(self.tabs)
+
+        self.leaderboard.updateVars(self.leaderboard_dict, self.leaderboard_pd, self.userSortLeaderboard, self.username)
 
         # Payout tab
         self.payout_tab = PayoutTab(self.settingsClass)
         self.tabs.addTab(self.payout_tab, "Payout")
 
-
-        # Add the game container to the main layout
-        self.main_layout.addWidget(self.tabs)
-
-        # Show the window and get the username
+        # Show the window
         self.show()
         self.confetti = ConfettiEffect(self)
         self.confetti.resize(self.size())
         self.confetti.hide() # Activate confetti but down show yet
-        self.username = self.show_userPopup()
-        self.leaderboard.defineUsername(self.username)
+
+        print(f"Leaderboard dict initialzied: {self.leaderboard_dict}")
+        print(f"Leaderboard DF initialzied: {self.leaderboard_pd}")
+        print(f"Leaderboard User Sort initialzied: {self.userSortLeaderboard}")
+
+
 
     def start_game(self) -> None:
         """Function executed when the user clicks on the start button"""
@@ -183,6 +216,7 @@ class CasinoMines(QWidget, GameStyle):
         self.confetti.start_animation()
         
         msg_box = QMessageBox(self)
+
         msg_box.setWindowTitle("You win!")
         self.sound_effectsClass.play_win() 
 
@@ -203,6 +237,8 @@ class CasinoMines(QWidget, GameStyle):
         msg_box.layout().addLayout(layout, 0, 0, 1, msg_box.layout().columnCount())
         msg_box.setStandardButtons(QMessageBox.Ok)
         msg_box.button(QMessageBox.Ok).setText("Play again")
+        msg_box.setWindowFlags(msg_box.windowFlags() & ~Qt.WindowCloseButtonHint)
+
 
         # Connect the buttonClicked signal to our reset function
         msg_box.buttonClicked.connect(self.reset_game_after_cash_out)
@@ -254,7 +290,10 @@ class CasinoMines(QWidget, GameStyle):
     
     def show_userPopup(self) -> str:
         """ Defines log in element popup"""
-        username = show_login_dialog(self)
+        username = show_login_dialog(self) 
+        # There can never be two of the same usernames, aka they're all unique
+        # Important for self.userSortLeaderboard
+        
         self.settingsClass.defineUsername(username)
         return username
 

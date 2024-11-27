@@ -33,7 +33,7 @@ class ShimmerButton(QPushButton):
         painter.fillRect(0, 0, self.width(), self.height(), gradient)
 
 class LoginDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, err=None):
         super().__init__(parent)
         self.setWindowTitle("Log-in")
         self.setFixedSize(1000, 600)
@@ -79,7 +79,10 @@ class LoginDialog(QDialog):
         self.username_input = QLineEdit()
         self.username_input.setFixedHeight(50)
         self.username_input.setFixedWidth(400)  # Fixed width for better appearance
-        self.username_input.setPlaceholderText("Username")
+        if err is not None:
+            self.username_input.setPlaceholderText(err)
+        else:
+            self.username_input.setPlaceholderText("Username")
         self.username_input.setStyleSheet("""
             QLineEdit {
                 padding: 10px;
@@ -142,13 +145,13 @@ class LoginDialog(QDialog):
         self.login_button.clicked.connect(self.accept)
 
     def get_username(self):
-        return self.username_input.text().strip()
+        return self.username_input.text().strip().lower()
 
 
-def show_login_dialog(parent=None) -> str:
+def show_login_dialog(parent=None, err=None) -> str:
     """Show login dialog and return username"""
     while True:
-        dialog = LoginDialog(parent)
+        dialog = LoginDialog(parent, err)
         result = dialog.exec()
         
         if result == QDialog.Accepted:

@@ -6,11 +6,12 @@ from others.algorithms.searching import MySearching
 import pandas as pd 
 
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                                QSpacerItem, QSizePolicy, QMessageBox, QGridLayout)
+                                QSpacerItem, QSizePolicy, QMessageBox, QGridLayout, QGraphicsScene, QGraphicsView, QGraphicsRectItem)
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
+from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor
+from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor, QPen
 
-
+# Leaderboard should be a set
 class LeaderBoardTab(QWidget):
     def __init__(self, user_data:UserData) -> None:
 
@@ -18,6 +19,9 @@ class LeaderBoardTab(QWidget):
 
         self.user_data = user_data
         self.leaderboard_pd = self.user_data.leaderboard_pd
+        self.leaderboard_dict = None
+        self.userSortLeaderboard = None
+        self.username = None
 
         self.headers = []
         self.leaders = []
@@ -42,35 +46,59 @@ class LeaderBoardTab(QWidget):
         # Grid container
         self.grid_container = QWidget()
         self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        # So right and left heights are independent:
+        # self.grid_container_layout = QHBoxLayout(self.grid_container)
         self.contWidth = self.grid_container.width()
 
-        # Left layout - Ranking
+        # Left layout + container for Ranking
         self.left_layout = QGridLayout()
         self.left_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.left_layout.setHorizontalSpacing(50)
         self.left_layout.setVerticalSpacing(40)
+        self.left_container = QWidget()
+        self.left_container.setLayout(self.left_layout)
+        self.left_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.contHeight = self.left_container.height()
 
-        # Right layout - Podium
+
+        # Right layout + container for Podium
         self.right_layout = QVBoxLayout()
-        self.right_layout.addStretch()
+        self.right_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+
+        # self.right_layout.addStretch()
+        self.right_container = QWidget()
+        self.right_container.setLayout(self.right_layout)
+        # self.right_container.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.populatePodium()
-        self.right_layout.addStretch()
+
+        self.right_container.setMaximumHeight(self.contHeight // 1.5)
+        self.right_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Left and right layout (compacted to the grid container)
         self.left_right_layout = QHBoxLayout()
-        self.left_right_layout.addLayout(self.left_layout)
-        self.left_right_layout.addLayout(self.right_layout)
+        self.left_right_layout.addWidget(self.left_container, stretch=1)
+        self.left_right_layout.addWidget(self.right_container, stretch=1)
+        # self.horz = QHBoxLayout()
+        # self.horz.addLa
 
-        self.grid_container.setLayout(self.left_right_layout)
 
+        # self.grid_container.setLayout(self.left_right_layout)
         # Connecting to the main layout
         self.main_layout.addLayout(self.top_layout)
         self.main_layout.addLayout(self.buttonContainer)
-        self.main_layout.addWidget(self.grid_container)
+        self.main_layout.addLayout(self.left_right_layout)
+
         self.main_layout.addStretch()
 
         self.setLayout(self.main_layout)
     
+    def updateVars(self, leaderboard_dict:dict, leaderboard_df:pd.DataFrame, userSortLeaderboard:pd.DataFrame, username:str) -> None:
+        self.leaderboard_dict = leaderboard_dict
+        self.leaderboard_pd = leaderboard_df
+        self.userSortLeaderboard = userSortLeaderboard
+        self.username = username
+
     # 0. Top-bar (top layout)
     def populateTopBar(self) -> None:
         """ Populate the headers of the leaderboard tab"""
@@ -89,7 +117,7 @@ class LeaderBoardTab(QWidget):
         self.top_layout.addLayout(self.title_layout)
 
     # 1. Ranking (left layout)
-    def populateRanking(self, start:int=0, limit:int=0, username:str=None, searchRank:bool=False) -> None:
+    def populateRanking(self, start:int=0, limit:int=0, username:str=None, searchRank:bool=False, rank:int=0) -> None:
         """ Populate the ranking. Run at the beggining and when the user clicks on the search button (flag is self.searchRank = True)
         Paremeters:
             start (int): The starting row to filter from
@@ -97,18 +125,26 @@ class LeaderBoardTab(QWidget):
             username (str): The username of the user
             searchRank (bool): Whether the ranking is being searched or not
         """
-        
+        print(f"First: {self.leaderboard_pd}")
+        self.leaderboard_pd, self.leaderboard_dict, self.userSortLeaderboard = self.user_data.getChangedVars()
+        print(f"Then: {self.leaderboard_pd}")
         self.clearData()
         
-        # Are these two lines necessary?
-        leaderData = pd.read_csv(self.user_data.leaderboardPath)
-        leaderDataList = leaderData.values.tolist()
-        numPlayers = leaderData.shape[0]
+        numPlayers = self.leaderboard_pd.shape[0]
 
         if not searchRank:
             limit = numPlayers 
             if numPlayers > 10: # If more than 10 players, only show top 10
                 limit = 10
+        else:
+            if rank - 4 < 1:
+                start = 0
+            else:
+                start = rank - 4
+            if rank + 5 > numPlayers:
+                limit = numPlayers
+            else:
+                limit = rank + 5
 
         # Populate the ranking headers
         rankingCol = 0
@@ -127,21 +163,24 @@ class LeaderBoardTab(QWidget):
 
         # Populate the ranking values
         for row_idx, data_row in enumerate(range(start, limit)):
+
             if data_row < numPlayers:  # Changed <= to < to prevent index out of range
-                rowData = leaderDataList[data_row]
-                for col, value in enumerate(rowData):
+                rowData = self.leaderboard_pd.iloc[data_row]
+                print(f"Id {data_row} rowData {rowData}")
+
+                columns = ['rank', 'username', 'largestBalance', 'date']
+                for col_idx, col_name in enumerate(columns):
+                    value = rowData[col_name]
                     value_label = QLabel(str(value)) 
                     value_label.setAlignment(Qt.AlignCenter)
                     value_label.setFont(self.valueFont)
 
                     # Highlight the user's row
-                    if rowData[1] == username:
-                        value_label.setStyleSheet("background-color: #ffcc00; color: white;")
+                    if col_name == 'username' and value == self.username:
+                        value_label.setStyleSheet("background-color: #ffcc00; color: #00001a;")
 
                     # Use row_idx + 1 to place data right below headers
-                    self.left_layout.addWidget(value_label, row_idx + 1, col)
-
-            
+                    self.left_layout.addWidget(value_label, row_idx + 1, col_idx)
 
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
@@ -160,66 +199,77 @@ class LeaderBoardTab(QWidget):
 
         try:
             ogPixmap = QPixmap("./utils/imgs/podium.png")
-            pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
+            scaled_pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            black_image = QPixmap(scaled_pixmap.width(), 100) #dummy pixmap to write text above "scaled_pixmap"
+            black_image.fill(QColor(10, 0, 26))
+
             self.image_label = QLabel()
+            self.fill_label = QLabel()
         except FileNotFoundError:
             print("Podium image not found")
 
-        
-        df = pd.read_csv(self.user_data.leaderboardPath)
-        podium_ranking = df.values.tolist()
+        pen = QPen(QColor("#ffcc00"))
+        firstPlace = QPainter(black_image)
+        firstPlace.setRenderHint(QPainter.Antialiasing)
+        firstPlace.setRenderHint(QPainter.SmoothPixmapTransform)
+        firstPlace.setPen(pen)
 
-        painter = QPainter(pixmap)
-        painter.setPen("white")
-        shiftUnit = self.contWidth // 10 
+        painter = QPainter(scaled_pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
 
-        for i in range(len(podium_ranking)):
-            if i == 0:
+        painter.setPen(pen)
+        shiftUnit = self.contWidth / 9 
+
+        for i in range(len(self.leaderboard_pd) + 1):
+            if i == 0: #first place
+                font = QFont("Arial", 35)
+                firstPlace_username = self.leaderboard_pd.iloc[0]['username']
+                firstPlace.setFont(font)
+                firstPlace.drawText(black_image.rect(), Qt.AlignCenter | Qt.AlignBottom, firstPlace_username)
+
+            elif i == 1: #second place
                 font = QFont("Arial", 35)
                 fontMetrics = QFontMetrics(font)
-                firstPlace_username = podium_ranking[0][1]
-                firstPlace_textWidth = fontMetrics.horizontalAdvance(firstPlace_username)
-                painter.setFont(font)
-                painter.drawText((shiftUnit * 5) - (firstPlace_textWidth // 2), 25, firstPlace_username) #finding string width in pixels and adjusting position on image
-
-            elif i == 1:
-                font = QFont("Arial", 30)
-                fontMetrics = QFontMetrics(font)
-                secondPlace_username = podium_ranking[1][1]
+                secondPlace_username = self.leaderboard_pd.iloc[1]['username']
                 secondPlace_textWidth = fontMetrics.horizontalAdvance(secondPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit * 2) - (secondPlace_textWidth // 2), 25, secondPlace_username)
+                painter.drawText((shiftUnit * 8) - (secondPlace_textWidth // 2) - 40, 65, secondPlace_username)
 
-            elif i == 2:
-                font = QFont("Arial", 20)
+            elif i == 2: #third place
+                font = QFont("Arial", 25)
                 fontMetrics = QFontMetrics(font)
-                thirdPlace_username = podium_ranking[2][1]
+                thirdPlace_username = self.leaderboard_pd.iloc[2]['username']
                 thirdPlace_textWidth = fontMetrics.horizontalAdvance(thirdPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit*8.5) - (thirdPlace_textWidth // 2), 32, thirdPlace_username)
+                painter.drawText((shiftUnit*2) - (thirdPlace_textWidth // 2) - 25, 110, thirdPlace_username)
             else:
                 break
 
         painter.end()
-        self.image_label.setPixmap(pixmap)
-        self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
+        firstPlace.end()
+
+        self.image_label.setPixmap(scaled_pixmap)
+        self.fill_label.setPixmap(black_image)
+        self.image_label.setScaledContents(False)
+        self.fill_label.setScaledContents(False)
+
+        self.right_layout.addWidget(self.fill_label, alignment=Qt.AlignVCenter)
+        self.right_layout.addWidget(self.image_label, alignment=Qt.AlignVCenter)
 
     # 3. Auxiliary functions
     def search(self) -> None:
         """ Search for the user in the leaderboard and populate the ranking """
 
-        # Find the user rank
-        df = pd.read_csv(self.user_data.leaderboardPath)
-        userRank = df[df["username"] == self.username]["rank"].values[0]
+        # Update variables according to new leaderboard
+        self.leaderboard_pd, self.leaderboard_dict, self.userSortLeaderboard = self.user_data.getChangedVars()
 
         # Search for the user in the leaderboard
         search = MySearching()
-        username, start, limit = search.binary_search_leaderboard(df.values.tolist(), userRank)
+        user_rank = search.binary_search_users(self.userSortLeaderboard, self.username)
+        print(f"User {self.username} is in: {user_rank}")
+        self.populateRanking(0, 0, self.username, True, user_rank)
 
-        if username != -1:
-            self.populateRanking(start, limit, username, searchRank=True)
-        else:
-            QMessageBox.warning(self, f"{self.username} is not on the leaderboard yet", "Play a game or log in with your previous username!")
 
     def clearData(self, left=True) -> None:
         """ Remove users from podium
