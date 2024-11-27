@@ -5,7 +5,7 @@ class MySorting():
             """
             Analysis (for merge sort):
                   - Time complexity: O(n log n) / worst and best case
-                  - Space complexity: O(1)
+                  - Space complexity: O(n)
             Parametes:
                   - index is the subscripting part of the array (the value to sort by)
             """

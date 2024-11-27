@@ -99,7 +99,7 @@ class LoginDialog(QDialog):
         self.username_input = QLineEdit()
         self.username_input.setFixedHeight(50)
         self.username_input.setFixedWidth(400)  # Fixed width for better appearance
-        self.username_input.setPlaceholderText("Your Username")
+        self.username_input.setPlaceholderText("Your username")
         self.username_input.setStyleSheet("""
             QLineEdit {
                 padding: 10px;
