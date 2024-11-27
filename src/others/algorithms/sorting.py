@@ -1,7 +1,7 @@
 
 
 class MySorting():
-      def __init__(self, index, ascending=False):
+      def __init__(self, index:int, ascending:bool=False) -> None:
             """
             Analysis (for merge sort):
                   - Time complexity: O(n log n) / worst and best case
@@ -67,6 +67,9 @@ class MySorting():
 
 
 
+"""
+Invoked in line 255 of leaderboard_ui.py and line 73 of data.py
+"""
 
 # TESTING
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ class MySearching():
 
             Analysis (for binary search):
             - Time complexity: O(log n) / worst case; O(1) / best case
-            - Space complexity: O(n)
+            - Space complexity: O(1)
         """
 
 
@@ -27,3 +27,7 @@ class MySearching():
                 
         return -1
     
+
+"""
+Invoked in line 214 of leaderboard_ui.py
+"""

@@ -1,12 +1,9 @@
 .
 ├── README.md
-├── bugs_and_features.txt
 ├── docs
-│   ├── math_paper
-│   │   └── MathOfGame.ipynb
+│   ├── MathOfGame.ipynb
 │   ├── requirements.txt
 │   └── tree.txt
-├── my_script.zsh
 ├── src
 │   ├── __pycache__
 │   │   ├── bombs.cpython-311.pyc
@@ -41,7 +38,7 @@
 │   │   │   ├── game_css.cpython-311.pyc
 │   │   │   └── game_css.cpython-312.pyc
 │   │   └── game_css.py
-│   ├── game_stats
+│   ├── game_tabs
 │   │   ├── __pycache__
 │   │   │   ├── data.cpython-311.pyc
 │   │   │   ├── data.cpython-312.pyc
@@ -53,10 +50,12 @@
 │   │   │   ├── leaderboard_tab.cpython-312.pyc
 │   │   │   ├── leaderboard_ui.cpython-311.pyc
 │   │   │   ├── leaderboard_ui.cpython-312.pyc
+│   │   │   ├── payout.cpython-311.pyc
 │   │   │   └── sorting.cpython-312.pyc
 │   │   ├── data.py
 │   │   ├── game_stats_ui.py
-│   │   └── leaderboard_ui.py
+│   │   ├── leaderboard_ui.py
+│   │   └── payout.py
 │   ├── main.py
 │   └── others
 │       ├── __pycache__
@@ -86,15 +85,18 @@
 └── utils
     ├── data
     │   ├── game_stats.csv
-    │   ├── leaderboard.csv
-    │   └── simulations
+    │   └── leaderboard.csv
+    ├── fonts
+    │   └── ZenDots-Regular.ttf
     ├── imgs
+    │   ├── canvas.png
     │   ├── cells
     │   │   ├── bomb.png
-    │   │   ├── doubt.png
-    │   │   └── star.png
+    │   │   ├── coin.png
+    │   │   └── diamond.png
     │   ├── dollar.png
     │   ├── gambling_icon.png
+    │   ├── horizontalDecoration.png
     │   ├── log_in.png
     │   └── podium.png
     └── sound_effects
@@ -102,4 +104,4 @@
         ├── error.wav
         └── win.wav
 
-21 directories, 82 files
+20 directories, 85 files
