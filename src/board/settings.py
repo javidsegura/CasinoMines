@@ -117,7 +117,7 @@ class Settings():
         self.confirm_button.clicked.connect(self.confirm_selection)
         self.setup_layout.addWidget(self.confirm_button)
         # Initial state: gold color to indicate it's the next step
-        self.confirm_button.setStyleSheet("background-color: #ffcc00; color: black; font-weight: bold; border: 1px solid #ffd700; border-radius: 5px;")
+        self.confirm_button.setStyleSheet("background-color: #ffcc00; color: #f6f6f6; font-weight: bold; border: 1px solid #c1cdcd; border-radius: 5px;")
 
         # Confirmation message
         self.confirmation_label = QLabel("")
@@ -151,12 +151,12 @@ class Settings():
             self.numMines = self.num_mines
 
             # Change Confirm Selection button to purple after clicking
-            self.confirm_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+            self.confirm_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")
 
             # Enable the Start Game button as the next step
             if self.start_button:
                 self.start_button.setDisabled(False)
-                self.start_button.setStyleSheet("background-color: #ffcc00; color: black; font-weight: bold; border: 1px solid #ffd700; border-radius: 5px;")
+                self.start_button.setStyleSheet("background-color: #ffcc00; color: #f6f6f6; font-weight: bold; border: 1px solid #c1cdcd; border-radius: 5px;")
 
         except ValueError as e:
             if str(e).startswith("invalid literal"):
@@ -187,7 +187,7 @@ class Settings():
     def cash_out_btn(self) -> None:
         """ Sets up the cash out button"""
         self.cash_out_button = QPushButton("Cash Out")
-        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")  # Initially purple with gold text and border
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")  # Initially purple with gold text and border
         self.cash_out_button.clicked.connect(self.cash_out)
         self.setup_layout.addWidget(self.cash_out_button)
         self.cash_out_button.setDisabled(True)  # Disable initially
@@ -201,7 +201,7 @@ class Settings():
         # Reset start button to purple and disable it
         if self.start_button:
             self.start_button.setDisabled(True)
-            self.start_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+            self.start_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")
 
     def activate_cash_out_button(self) -> None:
         """ Enable the cash out button"""
@@ -230,16 +230,16 @@ class Settings():
         
         # Confirm button in "disabled" state (purple)
         self.confirm_button.setDisabled(True)
-        self.confirm_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+        self.confirm_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")
         
         # Percentage buttons in "disabled" state (purple)
         for btn in self.percentages_btns:
             btn.setDisabled(True)
-            btn.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+            btn.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")
         
         # Cash Out button in "disabled" state (purple)
         self.cash_out_button.setDisabled(True)
-        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")
 
     def activate_btns(self) -> None:
         """ Activate all buttons and set them appropriately based on their purpose """
@@ -248,21 +248,21 @@ class Settings():
         
         # Confirm button in "active" state (gold)
         self.confirm_button.setDisabled(False)
-        self.confirm_button.setStyleSheet("background-color: #ffcc00; color: black; font-weight: bold; border: 1px solid #ffd700; border-radius: 5px;")
+        self.confirm_button.setStyleSheet("background-color: #ffcc00; color: #f6f6f6; font-weight: bold; border: 1px solid #c1cdcd; border-radius: 5px;")
 
         # Percentage buttons in "inactive" state (purple)
         for btn in self.percentages_btns:
             btn.setDisabled(False)
-            btn.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+            btn.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")
         
         # Cash Out button remains disabled (purple) until game progress
         self.cash_out_button.setDisabled(True)
-        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")
 
         # Reset start button back to purple after it is used to start a game
         if self.start_button:
             self.start_button.setDisabled(True)
-            self.start_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")
+            self.start_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")
     
     def update_profit(self) -> None:
         """ Update the profit label"""
@@ -274,24 +274,24 @@ class Settings():
         Receives button from CasinoMines class"""
         self.start_button = button
         # Set the initial style to purple and disable it
-        self.start_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")  # Purple with gold text and border
+        self.start_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")  # Purple with gold text and border
         self.start_button.setDisabled(True)
 
     def disable_cash_out_button(self) -> None:
         """ Disable the cash out button and set it to purple """
         self.cash_out_button.setDisabled(True)
-        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")  # Purple with gold text
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")  # Purple with gold text
 
     def enable_cash_out_button(self) -> None:
         """ Enable the cash out button and set it to gold """
         self.cash_out_button.setDisabled(False)
-        self.cash_out_button.setStyleSheet("background-color: #ffcc00; color: black; font-weight: bold; border: 1px solid #ffd700; border-radius: 5px;")  # Gold with black text
+        self.cash_out_button.setStyleSheet("background-color: #ffcc00; color: #f6f6f6; font-weight: bold; border: 1px solid #c1cdcd; border-radius: 5px;")  # Gold with black text
 
     def restart_cash_out_button(self) -> None:
         """ Reset the cash out button to its initial purple state """
         self.cash_out_button.setDisabled(True)  # Initially disabled
         self.cash_out_button.setText("Cash Out")
-        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #ffd700; border: 1px solid #ffd700; border-radius: 5px;")  # Purple with gold text
+        self.cash_out_button.setStyleSheet("background-color: #1a0033; color: #c1cdcd; border: 1px solid #c1cdcd; border-radius: 5px;")  # Purple with gold text
 
     def get_prior_profit(self) -> float:
         """ Get the profit"""

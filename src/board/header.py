@@ -18,7 +18,7 @@ class Header:
         header_frame.setFixedHeight(50)  # Set a fixed height for the header
         header_frame.setStyleSheet("""
             background-color: #1a0033;  /* Darker purple */
-            color: #ffd700;  /* Gold color for text */
+            color: #c1cdcd;  /* Gold color for text */
             border-radius: 5px;
         """)
         header_frame.setLayout(header_layout)
@@ -27,7 +27,7 @@ class Header:
         game_name_label = QLabel("CasinoMines")
         game_name_label.setFont(QFont("Arial", 12, QFont.Bold))  # Smaller font size
         game_name_label.setFixedHeight(30)  # Ensure consistent label height
-        game_name_label.setStyleSheet("color: #ffd700;")  # Gold color for text
+        game_name_label.setStyleSheet("color: #c1cdcd;")  # Gold color for text
         header_layout.addWidget(game_name_label)
 
         # Spacer
@@ -36,7 +36,7 @@ class Header:
         # Username
         self.username_label.setText("User: username")
         self.username_label.setFixedHeight(30)
-        self.username_label.setStyleSheet("color: #ffd700;")  # Gold color for text
+        self.username_label.setStyleSheet("color: #c1cdcd;")  # Gold color for text
         header_layout.addWidget(self.username_label)
 
         header_layout.addSpacing(15)
@@ -44,7 +44,7 @@ class Header:
         # Wallet balance
         self.wallet_label.setText("Balance: 1000$")
         self.wallet_label.setFixedHeight(30)
-        self.wallet_label.setStyleSheet("color: #ffd700;")  # Gold color for text
+        self.wallet_label.setStyleSheet("color: #c1cdcd;")  # Gold color for text
         header_layout.addWidget(self.wallet_label)
 
         header_layout.addSpacing(15)
@@ -52,7 +52,7 @@ class Header:
         # Current multiplier
         self.multiplier_label.setText("Multiplier: 1x")
         self.multiplier_label.setFixedHeight(30)
-        self.multiplier_label.setStyleSheet("color: #ffd700;")  # Gold color for text
+        self.multiplier_label.setStyleSheet("color: #c1cdcd;")  # Gold color for text
         header_layout.addWidget(self.multiplier_label)
 
         header_layout.addSpacing(15)
@@ -60,7 +60,7 @@ class Header:
         # Profit
         self.profit_label.setText("Profit: 0$")
         self.profit_label.setFixedHeight(30)
-        self.profit_label.setStyleSheet("color: #ffd700;")  # Gold color for text
+        self.profit_label.setStyleSheet("color: #c1cdcd;")  # Gold color for text
         header_layout.addWidget(self.profit_label)
 
         return header_frame

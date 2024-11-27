@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, 
                              QPushButton, QLabel, QFrame)
-from PySide6.QtGui import QPixmap, QPainter, QLinearGradient, QColor
+from PySide6.QtGui import QPixmap, QPainter, QLinearGradient, QColor, QFontDatabase
 from PySide6.QtCore import Qt, QTimer
+
 
 class ShimmerButton(QPushButton):
     def __init__(self, text, parent=None):
@@ -33,7 +34,7 @@ class ShimmerButton(QPushButton):
         painter.fillRect(0, 0, self.width(), self.height(), gradient)
 
 class LoginDialog(QDialog):
-    def __init__(self, parent=None, err=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Log-in")
         self.setFixedSize(1000, 600)
@@ -64,25 +65,41 @@ class LoginDialog(QDialog):
         left_layout.addStretch()
 
         # Title
-        title = QLabel("Welcome to CasinoMines!")
-        title.setStyleSheet("""
-            QLabel {
+        font_id = QFontDatabase.addApplicationFont("./utils/fonts/ZenDots-Regular.ttf")
+        if font_id != -1:
+            font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+        else:
+            font_family = "Default"  # Fallback if the font fails to load
+        title = QLabel("Welcome to CasinoMines")
+        title.setStyleSheet(f"""
+            QLabel {{
                 color: white;
-                font-size: 30px;
+                font-family: '{font_family}';
+                font-size: 35px;
                 font-weight: bold;
-            }
+            }}
         """)
         title.setAlignment(Qt.AlignCenter)
         left_layout.addWidget(title)
+
+        # Add description below the title
+        description = QLabel("Experience the thrill of the game!")
+        description.setStyleSheet("""
+            QLabel {
+                color: #cecece; /* A light gray */
+                font-size: 14px;
+                font-style: italic;
+                padding-bottom: 5px;
+            }
+        """)
+        description.setAlignment(Qt.AlignCenter)
+        left_layout.addWidget(description)
 
         # Username input
         self.username_input = QLineEdit()
         self.username_input.setFixedHeight(50)
         self.username_input.setFixedWidth(400)  # Fixed width for better appearance
-        if err is not None:
-            self.username_input.setPlaceholderText(err)
-        else:
-            self.username_input.setPlaceholderText("Username")
+        self.username_input.setPlaceholderText("Your Username")
         self.username_input.setStyleSheet("""
             QLineEdit {
                 padding: 10px;
@@ -90,7 +107,7 @@ class LoginDialog(QDialog):
                 border-radius: 10px;
                 background: rgba(255, 255, 255, 0.3);
                 color: white;
-                font-size: 20px;
+                font-size: 17px;
             }
             QLineEdit:focus {
                 border: 2px solid #666666;
@@ -106,17 +123,18 @@ class LoginDialog(QDialog):
             QPushButton {
                 padding: 12px;
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
-                                          stop:0 #FFD700, stop:1 #FFA500);
+                                            stop:0 #4B0082, stop:1 #9370DB);
                 border: none;
                 border-radius: 10px;
                 color: white;
                 font-weight: bold;
-                font-size: 17px;
+                font-size: 18px;
             }
             QPushButton:hover {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
-                                          stop:0 #FFA500, stop:1 #FF4500);
+                                            stop:0 #6A0DAD, stop:1 #D8BFD8);
             }
+
         """)
         left_layout.addWidget(self.login_button, 0, Qt.AlignCenter)
 
@@ -145,13 +163,13 @@ class LoginDialog(QDialog):
         self.login_button.clicked.connect(self.accept)
 
     def get_username(self):
-        return self.username_input.text().strip().lower()
+        return self.username_input.text().strip()
 
 
-def show_login_dialog(parent=None, err=None) -> str:
+def show_login_dialog(parent=None) -> str:
     """Show login dialog and return username"""
     while True:
-        dialog = LoginDialog(parent, err)
+        dialog = LoginDialog(parent)
         result = dialog.exec()
         
         if result == QDialog.Accepted:
