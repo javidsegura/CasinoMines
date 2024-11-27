@@ -1,16 +1,16 @@
 
-
-
-
 # CasinoMines Implementation
-CasinoMines implementation. Probablistic-approach for money multipliers. Mathematicall paper attached in docs/MathOfGame.ipynb
+CasinoMines implementation. Probablistic-approach for money multipliers. Mathematicall paper attached in docs/MathOfGame.ipynb.
+
 
 # Video Demo
 https://github.com/user-attachments/assets/d20b3373-fe8c-4f84-82d2-c6023975c602
 
+
 ## Algorithms & Data Structures
 
-- Binary search and merge sort. Find their implementations in src/others/algorithms
+- Binary search and merge sort. Find their implementations in src/others/algorithms.
+
 
 ## Features
 
@@ -30,8 +30,8 @@ https://github.com/user-attachments/assets/d20b3373-fe8c-4f84-82d2-c6023975c602
    ```bash
    pip install -r docs/requirements.txt
    ```
-
 3. Run src/main.py
+
 
 ## Tree
 
