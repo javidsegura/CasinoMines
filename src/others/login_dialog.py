@@ -1,3 +1,6 @@
+
+import pandas as pd
+
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, 
                              QPushButton, QLabel, QFrame)
 from PySide6.QtGui import QPixmap, QPainter, QLinearGradient, QColor, QFontDatabase

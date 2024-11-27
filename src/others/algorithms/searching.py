@@ -3,11 +3,16 @@
 class MySearching():
     def binary_search_leaderboard(self, leaderboard_data: list[list], userName: str) -> int:
         """ 
-            User username as the search key in the leaderboard (sorted by username). Return its rank or -1 if user not found.
-
             Analysis (for binary search):
-            - Time complexity: O(log n) / worst case; O(1) / best case
-            - Space complexity: O(1)
+                - Time complexity:
+                    - Average & Worst: O(log n)
+                    - Best: O(1)
+                - Space complexity: O(1)
+            Parameters:
+                - leaderboard_data: list of lists, where each inner list contains four elements: [rank, username, score, time]
+                - userName: string, the username to search for in the leaderboard
+            Returns:
+                - int: the rank of the user if found, -1 otherwise
         """
 
 

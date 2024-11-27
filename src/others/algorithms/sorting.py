@@ -3,17 +3,21 @@
 class MySorting():
       def __init__(self, index:int, ascending:bool=False) -> None:
             """
-            Analysis (for merge sort):
-                  - Time complexity: O(n log n) / worst and best case
-                  - Space complexity: O(n)
-            Parametes:
-                  - index is the subscripting part of the array (the value to sort by)
+                  Analysis (for merge sort):
+                        - Time complexity:
+                              - Average, Worst and Best: O(n log n)
+                        - Space complexity: O(n)
+                  Parametes:
+                        - index is the subscripting part of the array (the value to sort by)
+                        - ascending is a boolean value that determines the sorting order
+                  Returns:
+                        - None (sorts in place)
             """
             self.index = index
             self.ascending = ascending 
 
       def evaluate(self, l:list , r:list) -> bool:
-            """ Returns True when left element is added to arr first """
+            """ Returns True when left element should be added to arr first """
             if self.ascending:
                   return l[self.index] >= r[self.index]
             else:
@@ -29,8 +33,7 @@ class MySorting():
                   self.merge(arr, left, mid, right)
 
       def merge(self, arr: list[list], left: int, mid: int, right: int) -> None:
-            """ right is inclusive of mid, Right is subscriptable in arr"""
-
+            """ Merges two halves of the array """
             # Create temporary subarrays
             n_l = mid - left
             n_r = right - mid

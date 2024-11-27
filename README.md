@@ -31,7 +31,7 @@ https://github.com/user-attachments/assets/d20b3373-fe8c-4f84-82d2-c6023975c602
    pip install -r docs/requirements.txt
    ```
 
-3. Run main.py
+3. Run src/main.py
 
 ## Tree
 
