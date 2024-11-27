@@ -4,9 +4,7 @@ from design.game_css import GameStyle
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel,
                                 QSpacerItem, QSizePolicy, QGridLayout)
 from PySide6.QtCore import Qt
-from others.algorithms.sorting import MySorting
 import csv
-import math
 
 class DataTab(QWidget):
     def __init__(self, file_path:str="./utils/data/game_stats.csv") -> None:
@@ -17,7 +15,6 @@ class DataTab(QWidget):
         self.data = []
         self.headerButtons = []
         self.firstHeaderPop = True
-        self.indexClicked = None
 
         self.mapping = {
             "win": "Win",
@@ -54,10 +51,9 @@ class DataTab(QWidget):
                         header_button = QPushButton(self.mapping[var])  # Use QPushButton
                         header_button.setCheckable(True)
                         header_button.clicked.connect(lambda _, v=var, btn=header_button: self.headerClicked(v, btn))
-                        if col == 0 and self.firstHeaderPop:
-                            header_button.setStyleSheet("background-color: blue; color: white;")
+
                         # Set default dark purple for all header buttons
-                        # header_button.setStyleSheet("background-color: #5A3D8A; color: white;")  # Slightly lighter dark purple
+                        header_button.setStyleSheet("background-color: #5A3D8A; color: white;")  # Slightly lighter dark purple
                         self.grid_layout.addWidget(header_button, 0, col)
                         self.headerButtons.append(header_button)
 
@@ -81,9 +77,9 @@ class DataTab(QWidget):
                         value_label = QLabel(str(var))
                         value_label.setAlignment(Qt.AlignCenter)
 
-                        if str(var) == "win":
+                        if str(var) == "Win":
                             value_label.setStyleSheet("background-color: lightgreen; color: black;")
-                        elif str(var) == "loss":
+                        elif str(var) == "Loss":
                             value_label.setStyleSheet("background-color: lightcoral; color: black;")
                         self.grid_layout.addWidget(value_label, row, col)
         
@@ -95,8 +91,10 @@ class DataTab(QWidget):
         sortedOutput = []
         for element in arr:
             currIndex = element[0]
-            sortedOutput.append(self.data[currIndex])
+            # binary search
+            sortedOutput.append(self.data[self.binarySearch(currIndex)])
         if sortedOutput is not None:
+            #print(f"SortedOutput {sortedOutput}\n")
             self.displaySortedValues(sortedOutput)
         return "Error" 
 
@@ -130,17 +128,17 @@ class DataTab(QWidget):
         self.setLayout(self.main_layout)
 
     def headerClicked(self, v:str, button:QPushButton) -> None:
-        if not self.firstHeaderPop: #meaning there is no data yet
+        if not self.firstHeaderPop:  # Check if data is already displayed
             for element in self.headerButtons:
                 # Reset all buttons to default dark purple
                 element.setStyleSheet("background-color: #4B0082; color: white;")  # Lighter dark purple
 
-            button.setStyleSheet("background-color: blue; color: white;")
+            # Set the clicked button to a darker purple
+            button.setStyleSheet("background-color: #2E0854; color: white;")  # Darker purple for the active header
 
             arr = self.createArr(v)
-            sort = MySorting(index=self.indexClicked)
-            sort.mergeSortTuples(arr, 0, len(arr) - 1)
-            self.populateSortedValues(arr)
+            sorted = self.mergeSort(arr, 0, len(arr) - 1)
+            self.populateSortedValues(sorted)
 
     def clearData(self) -> None:
         for i in reversed(range(self.main_layout.count(), 1)):
@@ -152,6 +150,7 @@ class DataTab(QWidget):
     
     def createArr(self, header:str) -> list:
         arr = []
+        ourCol = None
         win = False
         if header == 'win':
             win = True
@@ -163,12 +162,12 @@ class DataTab(QWidget):
                 for col, var in enumerate(rowData):
                     if row == 0:
                         if var == header:
-                            self.indexClicked = col
+                            ourCol = col
                     else:
-                        if self.indexClicked is None:
+                        if ourCol is None:
                             return "Could not find specified header"
                         else:
-                            if col == self.indexClicked:
+                            if col == ourCol:
                                 if win:
                                     arr.append((row, self.stringToInt(var)))
                                 else:
@@ -176,7 +175,48 @@ class DataTab(QWidget):
         return arr
     
     def stringToInt(self, element:str) -> int:
+        # only for win as of right now
         if element == 'Win':
             return 1
         else:
             return 0
+
+    def merge(self, arr, start, mid, end): 
+        # Start indexes for the two halves
+        left_index = start
+        right_index = mid + 1
+
+        # Iterate over the array and merge in place
+        while left_index <= mid and right_index <= end:
+            # If the left element is in the right place, move on
+            if arr[left_index][1] <= arr[right_index][1]:
+                left_index += 1
+            else:
+            # Right element is smaller, so we need to insert it before the left element
+                value = arr[right_index]
+                index = right_index
+
+                # Shift all elements between left_index and right_index to the right
+                while index > left_index:
+                    arr[index] = arr[index - 1]
+                    index -= 1
+
+                arr[left_index] = value
+
+                # Update all indexes, including mid since we shifted the elements
+                left_index += 1
+                right_index += 1
+                mid += 1
+    
+    def mergeSort(self, arr, start, end): # **sorts from smallest --> largest**
+        """ Called for the sorting of the buttons """
+        if start < end:
+            mid = (start + end) // 2
+
+            # Recursively split and sort both halves
+            self.mergeSort(arr, start, mid)
+            self.mergeSort(arr, mid + 1, end)
+
+            # Merge the sorted halves
+            self.merge(arr, start, mid, end)
+        return arr
