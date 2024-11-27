@@ -51,9 +51,6 @@ class UserData():
         
         Invoked at the end of each game.
         """
-
-        print(f"User: {user}, Balance: {balance} added to leaderboard\n\n")
-
         # Find if user has already played:
         all_users_names = self.leaderboard_pd["username"].tolist()
         if user in all_users_names: 
@@ -80,7 +77,6 @@ class UserData():
         self.leaderboard_pd = pd.DataFrame(leaderboard_list, 
                                             columns=self.leaderboard_pd.columns)
         
-        print(f"\n\n\n--------\nLeaderboard: {self.leaderboard_pd}")
         self.write_leaderboard_pd()
 
     # 2) Auxiliary functions

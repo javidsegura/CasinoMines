@@ -83,7 +83,6 @@ class CasinoMines(QWidget, GameStyle):
         self.payout_tab = PayoutTab(self.settingsClass)
         self.tabs.addTab(self.payout_tab, "Payout")
 
-
         # Add the game container to the main layout
         self.main_layout.addWidget(self.tabs)
 
