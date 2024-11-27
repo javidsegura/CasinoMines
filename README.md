@@ -1,3 +1,9 @@
+
+
+
+https://github.com/user-attachments/assets/d20b3373-fe8c-4f84-82d2-c6023975c602
+
+
 # CasinoMines Implementation
 
 An interactive implementation of the popular casino game "Mines", featuring both a graphical user interface and mathematical analysis.
