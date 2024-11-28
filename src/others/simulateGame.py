@@ -3,10 +3,12 @@ import random
 import pandas as pd
 from datetime import datetime
 class SimulateGame:
+      # O(1)
       def __init__(self, numberOfGames:int):
             self.numberOfGames = numberOfGames # Number of games per set up
             self.results_data = []  # Add this to store results
       
+      #O(m * n) where m is the number of games and n is the number of bombs
       def start_simulation(self):
             """ You can tweak the following:
                   - Number of mines
@@ -29,7 +31,7 @@ class SimulateGame:
                         games_won += 1 if won else 0
                         games_lost += 0 if won else 1
                         print(f"\t\t=> Game profit: {game_profit}")
-                  
+                   
                   # Store results for this mine configuration
                   self.results_data.append({
                         'mines': n_of_mines,
@@ -50,6 +52,7 @@ class SimulateGame:
             df.to_csv(f'./utils/data/simulations/game_simulation_results{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', index=False)
             return avg_profit
 
+      # O(n), where n is the number of mines, but since n is bounded then O(1) 
       def simulate_game(self, n_of_mines:int):
             """
             Simulates a single game with the given number of mines.
@@ -101,6 +104,7 @@ class SimulateGame:
 
             return profit, number_of_rounds, won
 
+#O(1) since n is bounded
 if __name__ == "__main__":   
       simulateGame = SimulateGame(1000)
       avg_simulation = 0
