@@ -1,6 +1,5 @@
 """ Controls the data tab of the game """
 
-from others.algorithms.sorting import MySorting
 from design.game_css import GameStyle
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel,
                                 QSpacerItem, QSizePolicy, QGridLayout)
@@ -123,6 +122,7 @@ class DataTab(QWidget):
         for row, rowData in enumerate(arr):
                 for col, var in enumerate(rowData):
                     value_label = QLabel(var)
+                    print("I am writing")
                     value_label.setAlignment(Qt.AlignCenter)
 
                     if var == "Win":
@@ -149,10 +149,8 @@ class DataTab(QWidget):
             button.setStyleSheet("background-color: #2E0854; color: white;")
 
             arr = self.createArr(v)
-            MySorting(1, ascending=False).mergeSort(arr, 0, len(arr) - 1) # O(n * log n) 
-            print(arr)
-            #sorted = self.mergeSort(arr, 0, len(arr) - 1)
-            self.populateSortedValues(arr)
+            sorted = self.mergeSort(arr, 0, len(arr) - 1)
+            self.populateSortedValues(sorted)
 
     def clearData(self) -> None:
         """ Iterates through all elements on the tab and deletes them
