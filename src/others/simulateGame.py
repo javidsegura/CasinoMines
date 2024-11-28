@@ -3,17 +3,27 @@ import random
 import pandas as pd
 from datetime import datetime
 class SimulateGame:
-      # O(1)
-      def __init__(self, numberOfGames:int):
+      def __init__(self, numberOfGames:int) -> None:
+            """
+            Description: initializes the SimulateGame class
+            Time Complexity:
+                - O(1): All operations run in constant time
+            """
             self.numberOfGames = numberOfGames # Number of games per set up
             self.results_data = []  # Add this to store results
       
       #O(m * n) where m is the number of games and n is the number of bombs
       def start_simulation(self):
-            """ You can tweak the following:
-                  - Number of mines
-                  - Bet amount (will be kept fixed, we are interested in the percentage)
-                  - House advantage
+            """
+            Description: starts the simulation
+            Time Complexity:
+                - O(m * n): where m is the number of games and n is the number of bombs. Please note that this is asymptotic growth, 
+                ignoring the fact that the outermost loop has a constant iteration bound of [1,25).
+            Notes:      
+                - You can tweak the following:
+                    - Number of mines
+                    - Bet amount (will be kept fixed, we are interested in the percentage)
+                    - House advantage
             """
             avg_profit = 0 # Profit on the user 
             for n_of_mines in range(1,25):
@@ -48,20 +58,21 @@ class SimulateGame:
                   print("----------------------------------\n")
 
             # Create DataFrame and save to CSV
-            df = pd.DataFrame(self.results_data)
+            df = pd.DataFrame(self.results_data) 
             df.to_csv(f'./utils/data/simulations/game_simulation_results{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', index=False)
             return avg_profit
 
-      # O(n), where n is the number of mines, but since n is bounded then O(1) 
       def simulate_game(self, n_of_mines:int):
             """
             Simulates a single game with the given number of mines.
+            Time Complexity:
+                - O(n): because of the frequency table's function invocation
             """
             profit = 0
 
             # 0. Setting up the multiplier function
             multiplierFunc = MultiplierFunc(25, n_of_mines, M=0.1)
-            multiplier_table = multiplierFunc.frequency_table()
+            multiplier_table = multiplierFunc.frequency_table() # O(n)
 
             # 1. Setting up the cells and mines
             cells = set() # coordinates of all cells
@@ -104,7 +115,6 @@ class SimulateGame:
 
             return profit, number_of_rounds, won
 
-#O(1) since n is bounded
 if __name__ == "__main__":   
       simulateGame = SimulateGame(1000)
       avg_simulation = 0
