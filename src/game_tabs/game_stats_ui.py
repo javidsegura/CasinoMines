@@ -6,8 +6,14 @@ from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel,
 from PySide6.QtCore import Qt
 import csv
 
+
 class DataTab(QWidget):
     def __init__(self, file_path:str="./utils/data/game_stats.csv") -> None:
+        """ Initilaizes the game stats Tab
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
         super().__init__()
         self.setStyleSheet(GameStyle().get_stylesheet())
         
@@ -40,25 +46,36 @@ class DataTab(QWidget):
         self.main_layout.addItem(spacer)
         self.setLayout(self.main_layout)
     
-    # give it a paramter with default none; if its not none then change that button backgorund to blue
     def populateHeaders(self) -> None:
+        """ Populate the headers with clickable buttons for sorting
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
         self.headerButtons = []
         with open(self.file_path, 'r') as data_file:
             csv_reader = csv.reader(data_file)
             for i, row in enumerate(csv_reader):
                 for col, var in enumerate(row):
                     if i == 0:
-                        header_button = QPushButton(self.mapping[var])  # Use QPushButton
+                        header_button = QPushButton(self.mapping[var]) 
                         header_button.setCheckable(True)
                         header_button.clicked.connect(lambda _, v=var, btn=header_button: self.headerClicked(v, btn))
 
                         # Set default dark purple for all header buttons
-                        header_button.setStyleSheet("background-color: #5A3D8A; color: white;")  # Slightly lighter dark purple
+                        header_button.setStyleSheet("background-color: #5A3D8A; color: white;") 
                         self.grid_layout.addWidget(header_button, 0, col)
                         self.headerButtons.append(header_button)
 
     def populateGameStats(self) -> None:
-        """ Populate the values of the data tab"""
+        """ Populate the values of the data tab
+        Time Complexity:
+            Worst Case: O(n * m)
+            Avg Case: O(n * m)
+            
+            Where n is the number of rows in the CSV file 
+            and m is the number of elements being deleted from main_layout
+        """
         self.clearData()
         self.firstHeaderPop = False
         for i, element in enumerate(self.headerButtons):
@@ -88,30 +105,27 @@ class DataTab(QWidget):
         self.setLayout(self.main_layout)
     
     def populateSortedValues(self, arr:list) -> None:
+        """ Receives a sorted list of tuples representing it's index in self.data 
+            and appends each row to a new list in order
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
         sortedOutput = []
         for element in arr:
             currIndex = element[0]
-            # binary search
-            sortedOutput.append(self.data[self.binarySearch(currIndex)])
+            sortedOutput.append(self.data[currIndex])
         if sortedOutput is not None:
-            #print(f"SortedOutput {sortedOutput}\n")
             self.displaySortedValues(sortedOutput)
         return "Error" 
 
-    def binarySearch(self, index:int) -> int:
-        low = 1 #skip headers
-        high = len(self.data) - 1
-        while low <= high:
-            mid = (low + high) // 2
-            if int(self.data[mid][0]) == index:
-                return mid
-            elif int(self.data[mid][0]) < index:
-                low = mid + 1
-            else:
-                high = mid - 1
-        return "Error"
-    
     def displaySortedValues(self, arr:list) -> None:
+        """ Displays a sorted list
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        Since the amount of columns is fixed (7) we can ignore it in our time complexity analysis
+        """
         self.clearData()
         for row, rowData in enumerate(arr):
                 for col, var in enumerate(rowData):
@@ -128,19 +142,31 @@ class DataTab(QWidget):
         self.setLayout(self.main_layout)
 
     def headerClicked(self, v:str, button:QPushButton) -> None:
+        """ Describes process when a user has clicked on a head button
+        Time Complexity:
+            Worst Case: O(n log n)
+            Avg Case: O(n log n)
+        Merge sort dominates time complexity here.
+        """
         if not self.firstHeaderPop:  # Check if data is already displayed
             for element in self.headerButtons:
                 # Reset all buttons to default dark purple
-                element.setStyleSheet("background-color: #4B0082; color: white;")  # Lighter dark purple
+                element.setStyleSheet("background-color: #4B0082; color: white;")
 
             # Set the clicked button to a darker purple
-            button.setStyleSheet("background-color: #2E0854; color: white;")  # Darker purple for the active header
+            button.setStyleSheet("background-color: #2E0854; color: white;")
 
             arr = self.createArr(v)
             sorted = self.mergeSort(arr, 0, len(arr) - 1)
             self.populateSortedValues(sorted)
 
     def clearData(self) -> None:
+        """ Iterates through all elements on the tab and deletes them
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+            Where n is the number of elements in main_layout
+        """
         for i in reversed(range(self.main_layout.count(), 1)):
             item = self.main_layout.itemAt(i)
             if item.widget() is not None:
@@ -149,9 +175,15 @@ class DataTab(QWidget):
                 self.main_layout.removeItem(item)
     
     def createArr(self, header:str) -> list:
+        """ Creates an array of tuples according to clicked header
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        Since the amount of columns is fixed (7) we can ignore it in our time complexity analysis
+        """
         arr = []
-        ourCol = None
         win = False
+        ourCol = None
         if header == 'win':
             win = True
         
@@ -175,13 +207,23 @@ class DataTab(QWidget):
         return arr
     
     def stringToInt(self, element:str) -> int:
-        # only for win as of right now
+        """ Converts the boolean values representing win or loss to text
+        Time Complexity:
+            Worst Case: O(1)
+            Avg Case: O(1)
+        """
         if element == 'Win':
             return 1
         else:
             return 0
 
-    def merge(self, arr, start, mid, end): 
+    def merge(self, arr, start, mid, end):
+        """ Merge component of merge sort
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        Where n is the number of elements between start and end
+        """ 
         # Start indexes for the two halves
         left_index = start
         right_index = mid + 1
@@ -209,7 +251,12 @@ class DataTab(QWidget):
                 mid += 1
     
     def mergeSort(self, arr, start, end): # **sorts from smallest --> largest**
-        """ Called for the sorting of the buttons """
+        """ Merge sort implementation for a list of tuples
+        Time Complexity:
+            Worst Case: O(n log n)
+            Avg Case: O(n log n)
+        Where n is the number of elements in arr
+        """
         if start < end:
             mid = (start + end) // 2
 
