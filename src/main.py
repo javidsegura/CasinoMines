@@ -311,17 +311,7 @@ class CasinoMines(QWidget, GameStyle):
         msg_box.exec()
 
     def reset_game_after_gameover(self) -> None:
-        """ 
-        Description: Resets the game after the pop-up is dismissed 
-        Time Complexity: O(n)
-        Inner Functions:
-            activate_btns: O(n)
-            reset_bet: O(1)
-            reset_buttons: O(n)
-            reset_for_new_game: O(1)
-            disable_cash_out_button: O(1)
-            restart_cash_out_button: O(1)
-        """
+        """ Resets the game after the pop-up is dismissed """
         self.settingsClass.activate_btns()
         self.settingsClass.reset_bet()
         self.game_in_progress = False

@@ -44,11 +44,6 @@ class Settings():
         self.header.update_user(username)
 
     def set_up_panel(self) -> tuple[QVBoxLayout, QPushButton]:
-        """
-        Description: invokes the different componenents of the configuration panel
-        Time Complexity:
-            - O(1): All operations run in constant time
-        """
         self.bet_panel()
         self.mines_panel()
         self.cash_out_btn()
