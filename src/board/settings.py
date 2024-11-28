@@ -34,7 +34,6 @@ class Settings():
         self.header.update_user(username)
 
     def set_up_panel(self) -> tuple[QVBoxLayout, QPushButton]:
-        """ Invokes the different componenents of the configuration panel"""
         self.bet_panel()
         self.mines_panel()
         self.cash_out_btn()

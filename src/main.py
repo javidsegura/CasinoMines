@@ -241,7 +241,19 @@ class CasinoMines(QWidget, GameStyle):
         msg_box.exec()
 
     def reset_game_after_gameover(self) -> None:
-        """ Resets the game after the pop-up is dismissed """
+        """ 
+        Description: Resets the game after the pop-up is dismissed 
+        Time Complexity: 
+        Inner Functions:
+            activate_btns:
+            reset_bet:
+            reset_buttons:
+            reset_for_new_game:
+            setDisabled:
+            disable_grid:
+            disable_cash_out_button:
+            restart_cash_out_button:
+        """
         self.settingsClass.activate_btns()
         self.settingsClass.reset_bet()
         self.game_in_progress = False
@@ -253,22 +265,46 @@ class CasinoMines(QWidget, GameStyle):
         self.settingsClass.restart_cash_out_button()
     
     def show_userPopup(self) -> str:
-        """ Defines log in element popup"""
+        """ 
+        Description: Defines log in element popup
+        Time Complexity: O(1)
+        Inner Functions:
+            show_login_dialog: Generally O(1)
+            defineUsername: O(1)
+        """
         username = show_login_dialog(self)
         self.settingsClass.defineUsername(username)
         return username
 
     def returnUser(self) -> str:
+        """
+        Time Complexity: O(1)
+        """
         return self.username
 
     def calcProfit(self) -> float:
+        """
+        Time Complexity: O(1)
+        Inner Functions:
+            getBet: O(1)
+            getProfit: O(1)
+        """
         if self.bombHit:
             return - self.settingsClass.getBet()
         else:
             return self.settingsClass.getProfit()
 
     def add_user_data(self, win:bool) -> None:
-        """ Update databases with user data"""
+        """
+        Description:  Update databases with user data
+        Time Complexity: O(n * m), where n and m are the dimensions relevant to the operations inside populateGameStats()
+        Inner Functions:
+            calcProfit: O(1)
+            add_user_data: O(n)
+            populateGameStats: O(n * m)
+            add_leaderboard_data: O(nlogn)
+            populateRanking: O(n)
+        """
         profit = self.calcProfit()
 
         self.user_data.add_user_data(win=win, game_id=self.gamesPlayed, bet=self.settingsClass.getBet(),
