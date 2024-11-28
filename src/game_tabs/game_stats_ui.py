@@ -31,6 +31,16 @@ class DataTab(QWidget):
             "balanceAfter": "Balance After",
             "profit": "Profit"
         }
+        # gameId,win,betAmount,numMines,balanceBefore,balanceAfter,profit
+        self.stringToIndex = {
+            "gameId": 0,
+            "win": 1,
+            "betAmount": 2,
+            "numMines": 3,
+            "balanceBefore": 4,
+            "balanceAfter": 5,
+            "profit": 6
+        }
 
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(20, 20, 20, 20)
@@ -106,12 +116,12 @@ class DataTab(QWidget):
             - O(n^2): where n is the number of rows in the CSV file
             - O(n): when appending is amortized to constant time
         """
-        sortedOutput = []
-        for element in arr:
-            currIndex = element[0]
-            sortedOutput.append(self.data[currIndex]) # 
-        if sortedOutput is not None:
-            self.displaySortedValues(sortedOutput)
+        # sortedOutput = []
+        # for element in arr:
+        #     currIndex = element[0]
+        #     sortedOutput.append(self.data[currIndex]) # 
+        if arr is not None:
+            self.displaySortedValues(arr)
         return "Error" 
 
     def displaySortedValues(self, arr:list) -> None:
@@ -147,12 +157,15 @@ class DataTab(QWidget):
 
             # Set the clicked button to a darker purple
             button.setStyleSheet("background-color: #2E0854; color: white;")
-
-            arr = self.createArr(v)
-            MySorting(1, ascending=False).mergeSort(arr, 0, len(arr) - 1) # O(n * log n) 
-            print(arr)
+            
+            # arr = self.createArr(v)
+            print(f"Index: {self.stringToIndex[v]}")
+            sorted = self.data[1:] #Exclude headers
+            print(sorted)
+            MySorting(self.stringToIndex[v], ascending=False).mergeSort(sorted, 0, len(sorted)) # O(n * log n) 
+            print(sorted)
             #sorted = self.mergeSort(arr, 0, len(arr) - 1)
-            self.populateSortedValues(arr)
+            self.populateSortedValues(sorted)
 
     def clearData(self) -> None:
         """ Iterates through all elements on the tab and deletes them
