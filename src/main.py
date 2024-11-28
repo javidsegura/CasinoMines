@@ -22,6 +22,11 @@ from PySide6.QtCore import Qt
 class CasinoMines(QWidget, GameStyle):
     """ Controls the main window of the game"""
     def __init__(self) -> None:
+        """
+        Time Complexity (this function calls other function which in a cascade-like effects end up calling all functions in the game):
+            - Worst Case: O(n^3):  setup_grid func in GridLogic, has the highest order of growth and dominates asymptotically
+            - Average Case: O(n^2): where n is the number of rows in the CSV file
+        """
         super().__init__()
 
         # vars for game components
@@ -96,7 +101,11 @@ class CasinoMines(QWidget, GameStyle):
         self.leaderboard.defineUsername(self.username)
 
     def start_game(self) -> None:
-        """Function executed when the user clicks on the start button"""
+        """Function executed when the user clicks on the start button
+        Time Complexity:
+            - Worst Case: O(n^2): create_minefield func
+            - Average Case: O(n): create_minefield func
+        """
         self.num_mines = self.settingsClass.get_num_mines()
         self.game_in_progress = True 
         self.gamesPlayed += 1
@@ -109,7 +118,11 @@ class CasinoMines(QWidget, GameStyle):
         self.num_mines = self.settingsClass.get_num_mines()
 
     def create_minefield(self) -> None:
-        """Create set of mines in the grid"""
+        """Create set of mines in the grid
+        Time Complexity:
+            - Worst Case: O(n^2): invoking get_mines_set func in MinesLogic class
+            - Average Case: O(n): invoking get_mines_set func in MinesLogic class
+        """
         self.gridClass.reset_buttons() # Reset the grid
         self.minesClass.get_mines_set(self.num_mines) # Create set of mines
    
@@ -145,7 +158,11 @@ class CasinoMines(QWidget, GameStyle):
                 self.settingsClass.increase_cash_out_button()
     
     def configuration_panel(self) -> QVBoxLayout:
-        """ Defines left-most menu. """
+        """ Defines left-most menu. 
+        Time Complexity:
+            - O(n*m): where n is the number of rows in the CSV file and m is the number of columns in the CSV file. 
+                Occurs in handle_cash_out func
+        """
         left_layout, self.cash_out_button = self.settingsClass.set_up_panel()
         self.cash_out_button.clicked.connect(self.handle_cash_out)
 
@@ -160,7 +177,10 @@ class CasinoMines(QWidget, GameStyle):
         return left_layout
 
     def handle_cash_out(self) -> None:
-        """ Controls what happens when the user clicks on the cash out button"""
+        """ Controls what happens when the user clicks on the cash out button
+        Time Complexity:
+            - O(n*m): where n is the number of rows in the CSV file and m is the number of columns in the CSV file. Occurs in add_user_data func
+        """
         self.add_user_data(win=True)
         if self.game_in_progress and len(self.clicked_cells) > 0:
             self.gridClass.reveal_cells(self.minesClass.set_of_mines(), self.clicked_cells)
@@ -169,7 +189,10 @@ class CasinoMines(QWidget, GameStyle):
             self.game_in_progress = False
             
     def game_over(self) -> None:
-        """ Defines behavior after user clicked on a cell with a mine"""
+        """ Defines behavior after user clicked on a cell with a mine
+        Time Complexity:
+            - O(n*m): where n is the number of rows in the CSV file and m is the number of columns in the CSV file. Occurs in add_user_data func
+        """
         self.game_in_progress = False
         if self.bombHit:
             self.add_user_data(win=False)
@@ -177,7 +200,10 @@ class CasinoMines(QWidget, GameStyle):
             self.show_GameOver_screen()
 
     def show_CashOut_screen(self) -> None:
-        """ Shows a game over pop-up and resets the game when dismissed """
+        """ Shows a game over pop-up and resets the game when dismissed
+        Time Complexity:
+            - O(n): maximum order of growth. The confetti animation start is O(n)
+        """
         self.confetti.resize(self.size())
         self.confetti.raise_()
         self.confetti.start_animation()
@@ -209,7 +235,10 @@ class CasinoMines(QWidget, GameStyle):
         msg_box.exec()
 
     def reset_game_after_cash_out(self) -> None:
-        """ Resets the game after cashing out """
+        """ Resets the game after cashing out
+        Time Complexity:
+            - O(n): maximum order of growth
+        """
         self.game_in_progress = False
         self.start_button.setDisabled(True)
         self.gridClass.disable_grid(True)
@@ -220,7 +249,10 @@ class CasinoMines(QWidget, GameStyle):
         self.settingsClass.disable_cash_out_button()
 
     def show_GameOver_screen(self) -> None:
-        """ Shows a game over pop-up and resets the game when dismissed """
+        """ Shows a game over pop-up and resets the game when dismissed
+        Time Complexity:
+            - O(n): maximum order of growth
+        """
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("You clicked on a bomb!")
 
@@ -241,7 +273,10 @@ class CasinoMines(QWidget, GameStyle):
         msg_box.exec()
 
     def reset_game_after_gameover(self) -> None:
-        """ Resets the game after the pop-up is dismissed """
+        """ Resets the game after the pop-up is dismissed
+        Time Complexity:
+            - O(n): maximum order of growth
+        """
         self.settingsClass.activate_btns()
         self.settingsClass.reset_bet()
         self.game_in_progress = False
@@ -253,22 +288,36 @@ class CasinoMines(QWidget, GameStyle):
         self.settingsClass.restart_cash_out_button()
     
     def show_userPopup(self) -> str:
-        """ Defines log in element popup"""
+        """ Defines log in element popup
+        Time Complexity:
+            - O(1): defineUsername func in Settings class
+        """
         username = show_login_dialog(self)
         self.settingsClass.defineUsername(username)
         return username
 
     def returnUser(self) -> str:
+        """ Returns the username
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         return self.username
 
     def calcProfit(self) -> float:
+        """ Calculates the profit
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         if self.bombHit:
             return - self.settingsClass.getBet()
         else:
             return self.settingsClass.getProfit()
 
     def add_user_data(self, win:bool) -> None:
-        """ Update databases with user data"""
+        """ Update databases with user data
+        Time Complexity:
+            - O(n*m): where n is the number of rows in the CSV file and m is the number of columns in the CSV file. Occurs in populateRanking func in LeaderBoardTab class
+        """
         profit = self.calcProfit()
 
         self.user_data.add_user_data(win=win, game_id=self.gamesPlayed, bet=self.settingsClass.getBet(),

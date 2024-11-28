@@ -20,7 +20,7 @@ class MinesLogic():
         Description: creates the set with the mines coordinates
         Time Complexity:
             - Worst case: O(n^2): where n is the number of the mines and the second n is given by a very poor hashing function that collision every time it tries to insert 
-            - Best case: O(n): where n is the number of the mines and the second n is given by a very good hashing function that never collides (O(1) insertion on set)
+            - Average case: O(n): where n is the number of the mines and the second n is given by a very good hashing function that never collides (O(1) insertion on set)
         """
         self.num_mines = num_mines
         self.mines.clear() # Remove all elements in the set
