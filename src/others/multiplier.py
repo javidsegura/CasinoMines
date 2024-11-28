@@ -9,9 +9,11 @@ class MultiplierFunc():
     The multiplier function is a function of the frequency function and the house advantage.
     
     """
-    # O(1)
     def __init__(self, n:int, r:int, b:int = 1, M:int = .03) -> None:
         """
+        Description: initializes the MultiplierFunc class
+        Time Complexity:
+            - O(1): All operations run in constant time
         Parameters:
             - n = number of cells
             - r = number of bombs in the cell
@@ -19,18 +21,21 @@ class MultiplierFunc():
             - M = house advantage (in percentage)
 
         Returns:
-            None """
+            None 
+        
+        """
         
         self.n = n
         self.r = r
         self.b = b
         self.M = M
 
-    #O(1) where n is the number of cells, which will never be grater than 25
     def probability_distribution(self, x:int) -> int:
         """
         Definition:
             Computes the probability of clearing x space in the given setup of the game (refer to 1.1 in the presence of doubt)
+        Time Complexity:
+            - O(1): All operations run in constant time
         Parameters:
             - x = number of spaces to clean
         Returns:
@@ -41,11 +46,13 @@ class MultiplierFunc():
 
         return numerator / denominator # Frequency
 
-    #O(1) where n is the number of cells, which will never be grater than 25
     def frequency_table(self) -> pd.DataFrame:
         """
         Definition:
             Computes all the possible cell clean-ups scenarios.
+        Time Complexity:
+            - O(n): where n is the number of cells. Please note that this is asymptotic growth, 
+            ignoring the fact that self.n is a constant value.
         Parameters:
             None
         Returns:
@@ -62,10 +69,13 @@ class MultiplierFunc():
         
         return self.results_table.round(2) # Round up all cols' values to 2 decimals
     
-    #O(1)
     def get_next_multiplier(self,index) -> float:
         """
-        Get the next multiplier for the given index.
+        Description:
+            Get the next multiplier for the given index.
+        Time Complexity:
+            - O(n): where n is the number of cells. Please note that this is asymptotic growth, 
+            ignoring the fact that self.n is a constant value.
         """
         frequency_table = self.frequency_table()[1:]
 
