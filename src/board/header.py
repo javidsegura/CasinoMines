@@ -3,12 +3,14 @@ from PySide6.QtGui import QFont
 
 class Header:
     """ Defines the header element of the game"""
+    #O(1): it creates only 4 Qlabel objects
     def __init__(self) -> None:
         self.username_label = QLabel()
         self.wallet_label = QLabel()
         self.multiplier_label = QLabel()
         self.profit_label = QLabel()
 
+     # O(1): it always creates same number of operations
     def setup_header(self) -> QFrame:
         header_layout = QHBoxLayout()  # Horizontal layout
         header_layout.setContentsMargins(10, 5, 10, 5)  # Set explicit margins
@@ -65,14 +67,18 @@ class Header:
 
         return header_frame
 
+    #O(1)
     def update_balance(self, new_balance: float) -> None:
         self.wallet_label.setText(f"Balance: {round(new_balance, 2)}$")
 
+    #O(1)
     def update_multiplier(self, new_multiplier: float) -> None:
         self.multiplier_label.setText(f"Multiplier: {round(new_multiplier, 2)}x")
 
+    #O(1)
     def update_profit(self, new_profit: float) -> None:
         self.profit_label.setText(f"Profit: {round(new_profit, 2)}$")
 
+    #O(1)
     def update_user(self, user: str) -> None:
         self.username_label.setText(f"User: {user}")
