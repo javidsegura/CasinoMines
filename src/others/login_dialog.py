@@ -8,6 +8,7 @@ from PySide6.QtCore import Qt, QTimer
 
 
 class ShimmerButton(QPushButton):
+    # O(1):Every operation runs in constant time
     def __init__(self, text, parent=None):
         super().__init__(text, parent)
         self.shimmer_pos = 0
@@ -16,11 +17,13 @@ class ShimmerButton(QPushButton):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_shimmer)
         self.timer.start(50)  # Update every 50ms
-        
+    
+    # O(1): Both operations runs in constant time    
     def update_shimmer(self):
         self.shimmer_pos = (self.shimmer_pos + 10) % (self.width() + 200)
         self.update()
-        
+
+    # O(1): Every operation runs in constant time     
     def paintEvent(self, event):
         super().paintEvent(event)
         painter = QPainter(self)
@@ -37,6 +40,7 @@ class ShimmerButton(QPushButton):
         painter.fillRect(0, 0, self.width(), self.height(), gradient)
 
 class LoginDialog(QDialog):
+    #O(1): All operations run in constant time 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Log-in")
@@ -165,10 +169,11 @@ class LoginDialog(QDialog):
         
         self.login_button.clicked.connect(self.accept)
 
+    # O(n): n is length of string
     def get_username(self):
         return self.username_input.text().strip()
 
-
+# O(n): where n is the length of the username string
 def show_login_dialog(parent=None) -> str:
     """Show login dialog and return username"""
     while True:

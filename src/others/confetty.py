@@ -3,6 +3,7 @@ from PySide6.QtCore import Qt, QTimer, QPointF
 from PySide6.QtGui import QPainter, QColor, QBrush
 import random
 
+# O(1):Every operation runs in constant time
 class ConfettiParticle:
     def __init__(self, x, y):
         self.x = x
@@ -22,6 +23,7 @@ class ConfettiParticle:
         self.rotation_speed = random.uniform(-5, 5)
 
 class ConfettiEffect(QWidget):
+    # O(1):Every operation runs in constant time
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(Qt.WA_TransparentForMouseEvents)
@@ -31,7 +33,8 @@ class ConfettiEffect(QWidget):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_particles)
         self.gravity = 0.5
-        
+
+    # O(1): Despite loop, the number of iterations is fixed to 100, making it constant
     def start_animation(self):
         self.show()
         self.particles = []
@@ -41,7 +44,8 @@ class ConfettiEffect(QWidget):
             self.particles.append(ConfettiParticle(x, y))
         
         self.timer.start(16)
-        
+
+    # O(n):where n is the number of particles   
     def update_particles(self):
         for particle in self.particles:
             particle.vy += self.gravity
@@ -58,6 +62,7 @@ class ConfettiEffect(QWidget):
             
         self.update()
         
+    # O(n):where n is the number of particles    
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)

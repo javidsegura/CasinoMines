@@ -9,6 +9,7 @@ class MultiplierFunc():
     The multiplier function is a function of the frequency function and the house advantage.
     
     """
+    # O(1)
     def __init__(self, n:int, r:int, b:int = 1, M:int = .03) -> None:
         """
         Parameters:
@@ -25,6 +26,7 @@ class MultiplierFunc():
         self.b = b
         self.M = M
 
+    #O(1) where n is the number of cells, which will never be grater than 25
     def probability_distribution(self, x:int) -> int:
         """
         Definition:
@@ -39,6 +41,7 @@ class MultiplierFunc():
 
         return numerator / denominator # Frequency
 
+    #O(1) where n is the number of cells, which will never be grater than 25
     def frequency_table(self) -> pd.DataFrame:
         """
         Definition:
@@ -59,6 +62,7 @@ class MultiplierFunc():
         
         return self.results_table.round(2) # Round up all cols' values to 2 decimals
     
+    #O(1)
     def get_next_multiplier(self,index) -> float:
         """
         Get the next multiplier for the given index.

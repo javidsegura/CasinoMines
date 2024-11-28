@@ -5,6 +5,7 @@ from PySide6.QtMultimedia import QSoundEffect
 
 class SoundEffects():
     """ Controls the sound effects of the game """
+    # O(1): all operations run in constant time
     def __init__(self) -> None:
         self.sounds = {
             'click': self.load_sound("./utils/sound_effects/click.wav"),
@@ -12,7 +13,7 @@ class SoundEffects():
             'lose': self.load_sound("./utils/sound_effects/error.wav"),
             # Add more sound effects here
         }
-
+    # O(1): all operations run in constant time
     def load_sound(self, file_path) -> QSoundEffect:
         sound = QSoundEffect()
         sound.setSource(QUrl.fromLocalFile(file_path))
@@ -20,6 +21,7 @@ class SoundEffects():
         sound.setLoopCount(1)
         return sound
 
+    # O(1)
     def play_sound(self, sound_name) -> None:
         """ Plays a sound effect among the collection of sounds"""
         if sound_name in self.sounds:
@@ -32,11 +34,14 @@ class SoundEffects():
         else:
             raise Exception(f"Sound effect '{sound_name}' not found")
 
+    # O(1)
     def play_click(self) -> None:
         self.play_sound('click')
 
+    # O(1)
     def play_win(self) -> None:
         self.play_sound('win')
 
+    # O(1)
     def play_lose(self) -> None:
         self.play_sound('lose')
