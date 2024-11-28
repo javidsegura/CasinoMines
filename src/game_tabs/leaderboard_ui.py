@@ -9,7 +9,7 @@ import pandas as pd
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
                                 QSpacerItem, QSizePolicy, QMessageBox, QGridLayout)
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics
+from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor, QPen
 
 
 class LeaderBoardTab(QWidget):
@@ -45,29 +45,37 @@ class LeaderBoardTab(QWidget):
         self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.contWidth = self.grid_container.width()
 
-        # Left layout - Ranking
+        # Left layout and container - Ranking
         self.left_layout = QGridLayout()
         self.left_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.left_layout.setHorizontalSpacing(50)
         self.left_layout.setVerticalSpacing(40)
+        self.left_container = QWidget()
+        self.left_container.setLayout(self.left_layout)
+        self.left_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.contHeight = self.left_container.height()
 
-        # Right layout - Podium
+        # Right layout and container - Podium
         self.right_layout = QVBoxLayout()
-        self.right_layout.addStretch()
+        self.right_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+
+        self.right_container = QWidget()
+        self.right_container.setLayout(self.right_layout)
         self.populatePodium()
-        self.right_layout.addStretch()
+        self.right_container.setMaximumHeight(self.contHeight // 1.5)
+        self.right_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
 
         # Left and right layout (compacted to the grid container)
         self.left_right_layout = QHBoxLayout()
-        self.left_right_layout.addLayout(self.left_layout)
-        self.left_right_layout.addLayout(self.right_layout)
-
-        self.grid_container.setLayout(self.left_right_layout)
+        self.left_right_layout.addWidget(self.left_container, stretch=1)
+        self.left_right_layout.addWidget(self.right_container, stretch=1)
 
         # Connecting to the main layout
         self.main_layout.addLayout(self.top_layout)
         self.main_layout.addLayout(self.buttonContainer)
-        self.main_layout.addWidget(self.grid_container)
+        self.main_layout.addLayout(self.left_right_layout)
+
         self.main_layout.addStretch()
 
         self.setLayout(self.main_layout)
@@ -161,8 +169,12 @@ class LeaderBoardTab(QWidget):
 
         try:
             ogPixmap = QPixmap("./utils/imgs/podium.png")
-            pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio)
+            scaled_pixmap = ogPixmap.scaled(int(self.contWidth), 500, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            black_image = QPixmap(scaled_pixmap.width(), 100) #dummy pixmap to write text above "scaled_pixmap"
+            black_image.fill(QColor(10, 0, 26))
+
             self.image_label = QLabel()
+            self.fill_label = QLabel()
         except FileNotFoundError:
             print("Podium image not found")
 
@@ -170,40 +182,54 @@ class LeaderBoardTab(QWidget):
         df = pd.read_csv(self.user_data.leaderboardPath)
         podium_ranking = df.values.tolist()
 
-        painter = QPainter(pixmap)
-        painter.setPen("white")
-        shiftUnit = self.contWidth // 10 
+        pen = QPen(QColor("#ffcc00"))
+        firstPlace = QPainter(black_image)
+        firstPlace.setRenderHint(QPainter.Antialiasing)
+        firstPlace.setRenderHint(QPainter.SmoothPixmapTransform)
+        firstPlace.setPen(pen)
 
-        for i in range(len(podium_ranking)):
+        painter = QPainter(scaled_pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+
+        painter.setPen(pen)
+        shiftUnit = self.contWidth / 9 
+
+        for i in range(len(podium_ranking)-1):
             if i == 0:
                 font = QFont("Arial", 35)
-                fontMetrics = QFontMetrics(font)
-                firstPlace_username = podium_ranking[0][1]
-                firstPlace_textWidth = fontMetrics.horizontalAdvance(firstPlace_username)
-                painter.setFont(font)
-                painter.drawText((shiftUnit * 5) - (firstPlace_textWidth // 2), 25, firstPlace_username) #finding string width in pixels and adjusting position on image
+                firstPlace_username = self.leaderboard_pd.iloc[0]['username']
+                firstPlace.setFont(font)
+                firstPlace.drawText(black_image.rect(), Qt.AlignCenter | Qt.AlignBottom, firstPlace_username)
 
             elif i == 1:
-                font = QFont("Arial", 30)
+                font = QFont("Arial", 35)
                 fontMetrics = QFontMetrics(font)
-                secondPlace_username = podium_ranking[1][1]
+                secondPlace_username = self.leaderboard_pd.iloc[1]['username']
                 secondPlace_textWidth = fontMetrics.horizontalAdvance(secondPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit * 2) - (secondPlace_textWidth // 2), 25, secondPlace_username)
+                painter.drawText((shiftUnit * 8) - (secondPlace_textWidth // 2) - 40, 65, secondPlace_username)
 
             elif i == 2:
-                font = QFont("Arial", 20)
+                font = QFont("Arial", 25)
                 fontMetrics = QFontMetrics(font)
-                thirdPlace_username = podium_ranking[2][1]
+                thirdPlace_username = self.leaderboard_pd.iloc[2]['username']
                 thirdPlace_textWidth = fontMetrics.horizontalAdvance(thirdPlace_username)
                 painter.setFont(font)
-                painter.drawText((shiftUnit*8.5) - (thirdPlace_textWidth // 2), 32, thirdPlace_username)
+                painter.drawText((shiftUnit*2) - (thirdPlace_textWidth // 2) - 25, 110, thirdPlace_username)
             else:
                 break
 
         painter.end()
-        self.image_label.setPixmap(pixmap)
-        self.right_layout.addWidget(self.image_label, alignment=Qt.AlignCenter | Qt.AlignVCenter)
+        firstPlace.end()
+
+        self.image_label.setPixmap(scaled_pixmap)
+        self.fill_label.setPixmap(black_image)
+        self.image_label.setScaledContents(False)
+        self.fill_label.setScaledContents(False)
+
+        self.right_layout.addWidget(self.fill_label, alignment=Qt.AlignVCenter)
+        self.right_layout.addWidget(self.image_label, alignment=Qt.AlignVCenter)
 
     # 3. Auxiliary functions
     def search(self) -> None:

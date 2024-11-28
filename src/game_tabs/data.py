@@ -10,6 +10,11 @@ import pandas as pd
 
 class UserData():
     def __init__(self, game_stats_path:str="utils/data/game_stats.csv", leaderboardPath:str="utils/data/leaderboard.csv") -> None:
+        """ Initilaize game data objects
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
         self.game_stats_path = game_stats_path
         self.leaderboardPath = leaderboardPath
         self.leaderboardList = []
@@ -19,7 +24,11 @@ class UserData():
     
     # 0) GAME STATS CSV
     def initialize_game_stats(self) -> pd.DataFrame:
-        """ Create game stats csv"""
+        """ Create game stats csv
+        Time Complexity:
+            Worst Case: O(1)
+            Avg Case: O(1)
+        """
         with open(self.game_stats_path, 'w', newline='') as data_file:
             csv_writer = csv.writer(data_file)
             csv_writer.writerow(["gameId", "win","betAmount", "numMines", "balanceBefore", "balanceAfter", "profit"])
@@ -27,7 +36,11 @@ class UserData():
     
     def add_user_data(self, win:bool, game_id:int, bet:float, mines:int,
                      balanceBefore:float, balanceAfter:float, profit:float) -> None:
-        """ Add user data to GAME STATS csv. Invoked at the end of each game"""
+        """ Add user data to GAME STATS csv. Invoked at the end of each game
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
 
         # Add game stats to game_stats_pd
         new_row = pd.DataFrame([[game_id, win, bet, mines,
@@ -39,7 +52,11 @@ class UserData():
 
     # 1) LEADERBOARD CSV
     def initialize_leaderboard(self) -> pd.DataFrame:
-        """ Start leaderboard pandas dataframe"""
+        """ Initializes leaderboard data
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
         if not os.path.isfile(self.leaderboardPath):
             with open(self.leaderboardPath, 'w', newline='') as data_file:
                 csv_writer = csv.writer(data_file)
@@ -47,9 +64,10 @@ class UserData():
         return pd.read_csv(self.leaderboardPath)
     
     def add_leaderboard_data(self, user:str, balance:float) -> None:
-        """ Add user data to LEADERBOARD csv and sorted based on balance
-        
-        Invoked at the end of each game.
+        """ Add user data to LEADERBOARD csv and sorted based on balance. Invoked at the end of each game.
+        Time Complexity:
+            Worst Case: O(n log n)
+            Avg Case: O(n log n)
         """
         # Find if user has already played:
         all_users_names = self.leaderboard_pd["username"].tolist()
@@ -82,6 +100,9 @@ class UserData():
     # 2) Auxiliary functions
     def find_highest_balance(self, user:str, balance:float) -> bool:
         """ Returns True if current balance is the highest balance for the user and its prior rank.
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
         """
        
         # Find the index of the user in the leaderboard
@@ -92,24 +113,48 @@ class UserData():
             return True, user_index
 
     def return_leaderboard_list(self) -> list:
+        """ Transforms pandas DF to list
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
         return self.leaderboard_pd.values.tolist()    
 
     def return_numPlayers(self) -> int:
+        """ Defines number of players on leaderboard
+        Time Complexity:
+            Worst Case: O(1)
+            Avg Case: O(1)
+        """
         if self.leaderboard_pd is not None:
             return self.leaderboard_pd.shape[0] - 1
         else:
             return 0
     
     def empty_csv(self, filepath: str) -> None:
-        """Empty the contents of a CSV file while preserving it"""
+        """ Empty the contents of a CSV file
+        Time Complexity:
+            Worst Case: O(1)
+            Avg Case: O(1)
+        """
         with open(filepath, 'w', newline=''):
             pass
     
     def write_leaderboard_pd(self) -> None:
+        """ Writes leaderboard data to leaderboard.csv
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
         self.leaderboard_pd["rank"] = range(1, len(self.leaderboard_pd) + 1)
         self.leaderboard_pd.to_csv(self.leaderboardPath, index=False)
     
     def write_game_stats_pd(self) -> None:
+        """ Writes game data to game_stats.csv
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
         self.game_stats_pd.to_csv(self.game_stats_path, index=False)
     
 
