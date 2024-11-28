@@ -127,7 +127,12 @@ class CasinoMines(QWidget, GameStyle):
         self.minesClass.get_mines_set(self.num_mines) # Create set of mines
    
     def on_cell_click(self, row:int, col:int) -> None:
-        """Function executed when the user clicks on a cell"""
+        """Function executed when the user clicks on a cell
+        Time Complexity:
+            - Worst Case: O(n*m): where n is the number of rows in the CSV file and m is the number of columns in the CSV file. 
+                Occurs in game_over func. Happens when user clicked on a bomb
+            - Average Case: O(n): Happens when user clicked on a cell that is not a bomb. update_multiplier is invoked
+        """
         if not self.game_in_progress:
             raise Exception("Game is not in progress. You cannot click on cells")
         self.clicked_cells.add((row, col))

@@ -32,7 +32,8 @@ class MinesLogic():
     def is_mine(self, row:int, col:int) -> bool: 
         """ Determines if the given cell is a mine or not
         Time Complexity:
-            - O(1): All operations run in constant time
+            - O(1): average case: All operations run in constant time
+            - O(n): worst case: where n is the number of the mines and the second n is given by a very poor hashing function that collision every time it tries to insert 
         """
         return (row, col) in self.mines
 
