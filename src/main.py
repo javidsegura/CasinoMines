@@ -22,6 +22,9 @@ from PySide6.QtCore import Qt
 class CasinoMines(QWidget, GameStyle):
     """ Controls the main window of the game"""
     def __init__(self) -> None:
+        """
+        Time Complexity: O(1)
+        """
         super().__init__()
 
         # vars for game components
@@ -96,7 +99,17 @@ class CasinoMines(QWidget, GameStyle):
         self.leaderboard.defineUsername(self.username)
 
     def start_game(self) -> None:
-        """Function executed when the user clicks on the start button"""
+        """ 
+        Description: Function executed when the user clicks on the start
+        Time Complexity: 
+            Avg Case: O(n)
+            Worst Case: O(n^2)
+        Inner Functions:
+            get_num_mines: O(1)
+            reset_for_new_game: O(1)
+            create_mineField: O(n) or  O(n^2) 
+            disable_cash_out_button: O(1)
+        """
         self.num_mines = self.settingsClass.get_num_mines()
         self.game_in_progress = True 
         self.gamesPlayed += 1
@@ -109,12 +122,33 @@ class CasinoMines(QWidget, GameStyle):
         self.num_mines = self.settingsClass.get_num_mines()
 
     def create_minefield(self) -> None:
-        """Create set of mines in the grid"""
+        """
+        Description: Create set of mines in the grid
+        Time Complexity: 
+            Avg Case: O(n)
+            Worst Case: O(n^2)
+        Inner Functions:
+            reset_buttons: O(n)
+            get_mines_set: O(n) or  O(n^2) 
+        """
         self.gridClass.reset_buttons() # Reset the grid
         self.minesClass.get_mines_set(self.num_mines) # Create set of mines
    
     def on_cell_click(self, row:int, col:int) -> None:
-        """Function executed when the user clicks on a cell"""
+        """
+        Description: Function executed when the user clicks on a cell
+        Time Complexity: O(n * m)
+        Inner Functions:
+            is_mine: O(1)
+            play_lose: O(1)
+            game_over: O(n * m)
+            play_click: O(1)
+            disable_button: O(1)
+            update_multiplier: O(n)
+            update_profit: O(1)
+            activate_cash_out_button: O(1)
+            increase_cash_out_button: O(1)
+        """
         if not self.game_in_progress:
             raise Exception("Game is not in progress. You cannot click on cells")
         self.clicked_cells.add((row, col))
@@ -145,7 +179,12 @@ class CasinoMines(QWidget, GameStyle):
                 self.settingsClass.increase_cash_out_button()
     
     def configuration_panel(self) -> QVBoxLayout:
-        """ Defines left-most menu. """
+        """ 
+        Description: Defines left-most menu. 
+        Time Complexity: O(1)
+        Inner Functions:
+            set_start_button: O(1)
+        """
         left_layout, self.cash_out_button = self.settingsClass.set_up_panel()
         self.cash_out_button.clicked.connect(self.handle_cash_out)
 
@@ -160,7 +199,15 @@ class CasinoMines(QWidget, GameStyle):
         return left_layout
 
     def handle_cash_out(self) -> None:
-        """ Controls what happens when the user clicks on the cash out button"""
+        """ 
+        Description: Controls what happens when the user clicks on the cash out button
+        Time Complexity: O(n * m)
+        Inner Functions:
+            add_user_data: O(n * m)
+            reveal_cells: O(n)
+            show_CashOut_screen: O(1)
+            cash_out: O(1)
+        """
         self.add_user_data(win=True)
         if self.game_in_progress and len(self.clicked_cells) > 0:
             self.gridClass.reveal_cells(self.minesClass.set_of_mines(), self.clicked_cells)
@@ -169,7 +216,14 @@ class CasinoMines(QWidget, GameStyle):
             self.game_in_progress = False
             
     def game_over(self) -> None:
-        """ Defines behavior after user clicked on a cell with a mine"""
+        """ 
+        Description: Defines behavior after user clicked on a cell with a mine
+        Time Complexity: O(n * m)
+        Inner Functions:
+            add_user_data: O(n * m)
+            reveal_cells: O(n)
+            show_Gameover_screen: O(1)
+        """
         self.game_in_progress = False
         if self.bombHit:
             self.add_user_data(win=False)
@@ -177,7 +231,10 @@ class CasinoMines(QWidget, GameStyle):
             self.show_GameOver_screen()
 
     def show_CashOut_screen(self) -> None:
-        """ Shows a game over pop-up and resets the game when dismissed """
+        """ 
+        Description: Shows a game over pop-up and resets the game when dismissed 
+        Time Complexity: O(1)
+        """
         self.confetti.resize(self.size())
         self.confetti.raise_()
         self.confetti.start_animation()
@@ -209,7 +266,17 @@ class CasinoMines(QWidget, GameStyle):
         msg_box.exec()
 
     def reset_game_after_cash_out(self) -> None:
-        """ Resets the game after cashing out """
+        """ 
+        Description: Resets the game after cashing out 
+        Time Complexity: O(n) 
+        Inner Functions:
+            activate_btns: O(n)
+            reset_bet: O(1)
+            reset_buttons: O(n)
+            reset_for_new_game: O(1)
+            disable_cash_out_button: O(1)
+            disable_cash_out_button: (1)
+        """
         self.game_in_progress = False
         self.start_button.setDisabled(True)
         self.gridClass.disable_grid(True)
@@ -220,7 +287,10 @@ class CasinoMines(QWidget, GameStyle):
         self.settingsClass.disable_cash_out_button()
 
     def show_GameOver_screen(self) -> None:
-        """ Shows a game over pop-up and resets the game when dismissed """
+        """  
+        Description: Shows a game over pop-up and resets the game when dismissed
+        Time Complexity: O(1)
+        """
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("You clicked on a bomb!")
 
@@ -241,7 +311,17 @@ class CasinoMines(QWidget, GameStyle):
         msg_box.exec()
 
     def reset_game_after_gameover(self) -> None:
-        """ Resets the game after the pop-up is dismissed """
+        """ 
+        Description: Resets the game after the pop-up is dismissed 
+        Time Complexity: O(n)
+        Inner Functions:
+            activate_btns: O(n)
+            reset_bet: O(1)
+            reset_buttons: O(n)
+            reset_for_new_game: O(1)
+            disable_cash_out_button: O(1)
+            restart_cash_out_button: O(1)
+        """
         self.settingsClass.activate_btns()
         self.settingsClass.reset_bet()
         self.game_in_progress = False
@@ -253,22 +333,46 @@ class CasinoMines(QWidget, GameStyle):
         self.settingsClass.restart_cash_out_button()
     
     def show_userPopup(self) -> str:
-        """ Defines log in element popup"""
+        """ 
+        Description: Defines log in element popup
+        Time Complexity: O(1)
+        Inner Functions:
+            show_login_dialog: Generally O(1)
+            defineUsername: O(1)
+        """
         username = show_login_dialog(self)
         self.settingsClass.defineUsername(username)
         return username
 
     def returnUser(self) -> str:
+        """
+        Time Complexity: O(1)
+        """
         return self.username
 
     def calcProfit(self) -> float:
+        """
+        Time Complexity: O(1)
+        Inner Functions:
+            getBet: O(1)
+            getProfit: O(1)
+        """
         if self.bombHit:
             return - self.settingsClass.getBet()
         else:
             return self.settingsClass.getProfit()
 
     def add_user_data(self, win:bool) -> None:
-        """ Update databases with user data"""
+        """
+        Description:  Update databases with user data
+        Time Complexity: O(n * m), where n and m are the dimensions relevant to the operations inside populateGameStats()
+        Inner Functions:
+            calcProfit: O(1)
+            add_user_data: O(n)
+            populateGameStats: O(n * m)
+            add_leaderboard_data: O(nlogn)
+            populateRanking: O(n)
+        """
         profit = self.calcProfit()
 
         self.user_data.add_user_data(win=win, game_id=self.gamesPlayed, bet=self.settingsClass.getBet(),
