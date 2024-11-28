@@ -14,7 +14,11 @@ from PySide6.QtGui import QFont, QPixmap, QPainter, QFontMetrics, QColor, QPen
 
 class LeaderBoardTab(QWidget):
     def __init__(self, user_data:UserData) -> None:
-
+        """ Initilaizes the leaderboard stats Tab
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        """
         super().__init__()
 
         self.user_data = user_data
@@ -65,7 +69,6 @@ class LeaderBoardTab(QWidget):
         self.right_container.setMaximumHeight(self.contHeight // 1.5)
         self.right_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-
         # Left and right layout (compacted to the grid container)
         self.left_right_layout = QHBoxLayout()
         self.left_right_layout.addWidget(self.left_container, stretch=1)
@@ -82,7 +85,11 @@ class LeaderBoardTab(QWidget):
     
     # 0. Top-bar (top layout)
     def populateTopBar(self) -> None:
-        """ Populate the headers of the leaderboard tab"""
+        """ Populate the headers of the leaderboard tab
+        Time Complexity:
+            Worst Case: O(1)
+            Avg Case: O(1)
+        """
 
         title = QLabel("LeaderBoard")
         title.setAlignment(Qt.AlignCenter)
@@ -105,11 +112,13 @@ class LeaderBoardTab(QWidget):
             limit (int): The ending row to filter to
             username (str): The username of the user
             searchRank (bool): Whether the ranking is being searched or not
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
         """
         
         self.clearData()
         
-        # Are these two lines necessary?
         leaderData = pd.read_csv(self.user_data.leaderboardPath)
         leaderDataList = leaderData.values.tolist()
         numPlayers = leaderData.shape[0]
@@ -136,7 +145,7 @@ class LeaderBoardTab(QWidget):
 
         # Populate the ranking values
         for row_idx, data_row in enumerate(range(start, limit)):
-            if data_row < numPlayers:  # Changed <= to < to prevent index out of range
+            if data_row < numPlayers: 
                 rowData = leaderDataList[data_row]
                 for col, value in enumerate(rowData):
                     value_label = QLabel(str(value)) 
@@ -162,7 +171,12 @@ class LeaderBoardTab(QWidget):
     
     # 2. Podium (right layout)
     def populatePodium(self) -> None:
-        """ Invoked from populateRanking()"""
+        """ Draws the top 3 users in the leaderboard onto the podium image
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        Where n is the number of players in the leaderboard.csv file
+        """
 
         # Clear the right layout
         self.clearData(False)
@@ -233,7 +247,12 @@ class LeaderBoardTab(QWidget):
 
     # 3. Auxiliary functions
     def search(self) -> None:
-        """ Search for the user in the leaderboard and populate the ranking """
+        """ Search for the user in the sorted leaderboard (by name) using binary search 
+            and populate the ranking
+        Time Complexity:
+            Worst Case: O(n log n)
+            Avg Case: O(n log n)
+        """
 
         sortedByName = self.leaderboardSortedByName()
 
@@ -257,6 +276,10 @@ class LeaderBoardTab(QWidget):
         """ Remove users from podium
         Parameters:
             left (bool): Whether to clear the left layout or the right layout
+        Time Complexity:
+            Worst Case: O(n)
+            Avg Case: O(n)
+        Where n is number of elements in specified layout (left or right)
         """
 
         if left:
@@ -271,22 +294,21 @@ class LeaderBoardTab(QWidget):
                     item.widget().deleteLater()
     
     def defineUsername(self, user:str) -> None:
-        """ comes given after the user logs in"""
+        """ Called after username defined at initilization of main.py
+        Time Complexity:
+            Worst Case: O(1)
+            Avg Case: O(1)
+        """
         self.username = user
 
     def leaderboardSortedByName(self) -> list[list]:
-        """ Returns the leaderboard sorted by name"""
+        """ Sorts the leaderboard by name and returns it
+        Time Complexity:
+            Worst Case: O(n log n)
+            Avg Case: O(n log n)
+        """
         sortedByName = self.user_data.leaderboard_pd.values.tolist()
 
         MySorting(1, ascending=False).mergeSort(sortedByName, 0, len(sortedByName))
 
         return sortedByName
-
-
-                        
-
-                    
-
-
-    
-    
