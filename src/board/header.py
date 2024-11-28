@@ -1,17 +1,26 @@
+""" Controls the header of the game (top element of the GUI)"""
+
 from PySide6.QtWidgets import (QHBoxLayout, QLabel, QFrame)
 from PySide6.QtGui import QFont
 
 class Header:
     """ Defines the header element of the game"""
-    #O(1): it creates only 4 Qlabel objects
     def __init__(self) -> None:
+        """ Initializes the header
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.username_label = QLabel()
         self.wallet_label = QLabel()
         self.multiplier_label = QLabel()
         self.profit_label = QLabel()
 
-     # O(1): it always creates same number of operations
     def setup_header(self) -> QFrame:
+        """
+        Description: sets up the header
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         header_layout = QHBoxLayout()  # Horizontal layout
         header_layout.setContentsMargins(10, 5, 10, 5)  # Set explicit margins
         header_layout.setSpacing(15)  # Adjusted for consistent spacing
@@ -67,18 +76,34 @@ class Header:
 
         return header_frame
 
-    #O(1)
     def update_balance(self, new_balance: float) -> None:
+        """
+        Description: updates the balance
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.wallet_label.setText(f"Balance: {round(new_balance, 2)}$")
 
-    #O(1)
     def update_multiplier(self, new_multiplier: float) -> None:
+        """
+        Description: updates the multiplier
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.multiplier_label.setText(f"Multiplier: {round(new_multiplier, 2)}x")
 
-    #O(1)
     def update_profit(self, new_profit: float) -> None:
+        """
+        Description: updates the profit
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.profit_label.setText(f"Profit: {round(new_profit, 2)}$")
 
-    #O(1)
     def update_user(self, user: str) -> None:
+        """
+        Description: updates the username
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.username_label.setText(f"User: {user}")
