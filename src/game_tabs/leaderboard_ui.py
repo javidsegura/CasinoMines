@@ -16,8 +16,7 @@ class LeaderBoardTab(QWidget):
     def __init__(self, user_data:UserData) -> None:
         """ Initilaizes the leaderboard stats Tab
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
+            - O(n): because of the populatePodium() call
         """
         super().__init__()
 
@@ -35,7 +34,7 @@ class LeaderBoardTab(QWidget):
         # Top layout
         self.top_layout = QVBoxLayout()
         self.title_layout = QHBoxLayout()
-        self.populateTopBar()
+        self.populateTopBar() # O(1)
         self.top_layout.addWidget(self.small_text, alignment=Qt.AlignCenter)
 
         # Button container
@@ -65,7 +64,7 @@ class LeaderBoardTab(QWidget):
 
         self.right_container = QWidget()
         self.right_container.setLayout(self.right_layout)
-        self.populatePodium()
+        self.populatePodium() # O(n)
         self.right_container.setMaximumHeight(self.contHeight // 1.5)
         self.right_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
@@ -87,8 +86,7 @@ class LeaderBoardTab(QWidget):
     def populateTopBar(self) -> None:
         """ Populate the headers of the leaderboard tab
         Time Complexity:
-            Worst Case: O(1)
-            Avg Case: O(1)
+            - O(1): All operations run in constant time
         """
 
         title = QLabel("LeaderBoard")
@@ -113,8 +111,7 @@ class LeaderBoardTab(QWidget):
             username (str): The username of the user
             searchRank (bool): Whether the ranking is being searched or not
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
+            - O(n*m): where one n is the number of rows in the leaderboard and m is the number of columns in the leaderboard
         """
         
         self.clearData()
@@ -144,10 +141,10 @@ class LeaderBoardTab(QWidget):
             start -= 1
 
         # Populate the ranking values
-        for row_idx, data_row in enumerate(range(start, limit)):
+        for row_idx, data_row in enumerate(range(start, limit)): # O(n)
             if data_row < numPlayers: 
                 rowData = leaderDataList[data_row]
-                for col, value in enumerate(rowData):
+                for col, value in enumerate(rowData): # O(n)
                     value_label = QLabel(str(value)) 
                     value_label.setAlignment(Qt.AlignCenter)
                     value_label.setFont(self.valueFont)
@@ -158,8 +155,6 @@ class LeaderBoardTab(QWidget):
 
                     # Use row_idx + 1 to place data right below headers
                     self.left_layout.addWidget(value_label, row_idx + 1, col)
-
-            
 
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.main_layout.addItem(spacer)
@@ -173,9 +168,8 @@ class LeaderBoardTab(QWidget):
     def populatePodium(self) -> None:
         """ Draws the top 3 users in the leaderboard onto the podium image
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
-        Where n is the number of players in the leaderboard.csv file
+            - O(n): for the clearData() call and the setting in the podium. The latter relies on pure asymtotic analysis
+                and ignores that the podium has a fixed size.
         """
 
         # Clear the right layout
@@ -250,23 +244,19 @@ class LeaderBoardTab(QWidget):
         """ Search for the user in the sorted leaderboard (by name) using binary search 
             and populate the ranking
         Time Complexity:
-            Worst Case: O(n log n)
-            Avg Case: O(n log n)
+            - O(n * log n): where n is the number of rows in the leaderboard
         """
-
         sortedByName = self.leaderboardSortedByName()
 
         search = MySearching()
         userRank = search.binary_search_leaderboard(sortedByName, self.username)
 
         if userRank != -1:
-
             username = self.username
             start = 1
             if userRank > 5: 
                 start = userRank - 4
             limit = start + 9
-
 
             self.populateRanking(start, limit, username, searchRank=True)
         else:
@@ -277,9 +267,7 @@ class LeaderBoardTab(QWidget):
         Parameters:
             left (bool): Whether to clear the left layout or the right layout
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
-        Where n is number of elements in specified layout (left or right)
+            - O(n): where n is the number of elements in specified layout (left or right)
         """
 
         if left:
@@ -296,19 +284,17 @@ class LeaderBoardTab(QWidget):
     def defineUsername(self, user:str) -> None:
         """ Called after username defined at initilization of main.py
         Time Complexity:
-            Worst Case: O(1)
-            Avg Case: O(1)
+            - O(1): All operations run in constant time
         """
         self.username = user
 
-    def leaderboardSortedByName(self) -> list[list]:
+    def leaderboardSortedByName(self) -> list[tuple]:
         """ Sorts the leaderboard by name and returns it
         Time Complexity:
-            Worst Case: O(n log n)
-            Avg Case: O(n log n)
+            - O(n * log n): where n is the number of rows in the leaderboard
         """
         sortedByName = self.user_data.leaderboard_pd.values.tolist()
 
-        MySorting(1, ascending=False).mergeSort(sortedByName, 0, len(sortedByName))
+        MySorting(1, ascending=False).mergeSort(sortedByName, 0, len(sortedByName)) # sorts in-place
 
         return sortedByName

@@ -1,5 +1,6 @@
 """ Controls the data tab of the game """
 
+from others.algorithms.sorting import MySorting
 from design.game_css import GameStyle
 from PySide6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel,
                                 QSpacerItem, QSizePolicy, QGridLayout)
@@ -11,8 +12,7 @@ class DataTab(QWidget):
     def __init__(self, file_path:str="./utils/data/game_stats.csv") -> None:
         """ Initilaizes the game stats Tab
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
+            - O(n^m): where n is the number of rows in the CSV file and m is the number of columns in the CSV file
         """
         super().__init__()
         self.setStyleSheet(GameStyle().get_stylesheet())
@@ -49,8 +49,7 @@ class DataTab(QWidget):
     def populateHeaders(self) -> None:
         """ Populate the headers with clickable buttons for sorting
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
+            - O(n^m): where n is the number of rows in the CSV file and m is the number of columns in the CSV file
         """
         self.headerButtons = []
         with open(self.file_path, 'r') as data_file:
@@ -70,11 +69,7 @@ class DataTab(QWidget):
     def populateGameStats(self) -> None:
         """ Populate the values of the data tab
         Time Complexity:
-            Worst Case: O(n * m)
-            Avg Case: O(n * m)
-            
-            Where n is the number of rows in the CSV file 
-            and m is the number of elements being deleted from main_layout
+            - O(n*m): where n is the number of rows in the CSV file and m is the number of elements being deleted from main_layout
         """
         self.clearData()
         self.firstHeaderPop = False
@@ -108,13 +103,13 @@ class DataTab(QWidget):
         """ Receives a sorted list of tuples representing it's index in self.data 
             and appends each row to a new list in order
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
+            - O(n^2): where n is the number of rows in the CSV file
+            - O(n): when appending is amortized to constant time
         """
         sortedOutput = []
         for element in arr:
             currIndex = element[0]
-            sortedOutput.append(self.data[currIndex])
+            sortedOutput.append(self.data[currIndex]) # 
         if sortedOutput is not None:
             self.displaySortedValues(sortedOutput)
         return "Error" 
@@ -122,9 +117,7 @@ class DataTab(QWidget):
     def displaySortedValues(self, arr:list) -> None:
         """ Displays a sorted list
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
-        Since the amount of columns is fixed (7) we can ignore it in our time complexity analysis
+            - O(n^2): where n is the number of rows in the CSV file
         """
         self.clearData()
         for row, rowData in enumerate(arr):
@@ -144,8 +137,7 @@ class DataTab(QWidget):
     def headerClicked(self, v:str, button:QPushButton) -> None:
         """ Describes process when a user has clicked on a head button
         Time Complexity:
-            Worst Case: O(n log n)
-            Avg Case: O(n log n)
+            - O(n * log n): where n is the number of rows in the CSV file
         Merge sort dominates time complexity here.
         """
         if not self.firstHeaderPop:  # Check if data is already displayed
@@ -157,15 +149,15 @@ class DataTab(QWidget):
             button.setStyleSheet("background-color: #2E0854; color: white;")
 
             arr = self.createArr(v)
-            sorted = self.mergeSort(arr, 0, len(arr) - 1)
-            self.populateSortedValues(sorted)
+            MySorting(1, ascending=False).mergeSort(arr, 0, len(arr) - 1) # O(n * log n) 
+            print(arr)
+            #sorted = self.mergeSort(arr, 0, len(arr) - 1)
+            self.populateSortedValues(arr)
 
     def clearData(self) -> None:
         """ Iterates through all elements on the tab and deletes them
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
-            Where n is the number of elements in main_layout
+            - O(n): where n is the number of elements in main_layout
         """
         for i in reversed(range(self.main_layout.count(), 1)):
             item = self.main_layout.itemAt(i)
@@ -177,9 +169,7 @@ class DataTab(QWidget):
     def createArr(self, header:str) -> list:
         """ Creates an array of tuples according to clicked header
         Time Complexity:
-            Worst Case: O(n)
-            Avg Case: O(n)
-        Since the amount of columns is fixed (7) we can ignore it in our time complexity analysis
+            - O(n^2): where n is the number of rows in the CSV file
         """
         arr = []
         win = False
@@ -209,8 +199,7 @@ class DataTab(QWidget):
     def stringToInt(self, element:str) -> int:
         """ Converts the boolean values representing win or loss to text
         Time Complexity:
-            Worst Case: O(1)
-            Avg Case: O(1)
+            - O(1): All operations run in constant time
         """
         if element == 'Win':
             return 1

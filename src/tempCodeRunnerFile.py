@@ -1,0 +1,2 @@
+
+class CasinoMines(QWidget, GameStyle):
