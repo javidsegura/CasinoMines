@@ -6,15 +6,21 @@ import random
 
 class MinesLogic():
     """ Controls the logic of the mines """
-    # O(1)
+
     def __init__(self, grid_size:int=5) -> None:
+        """ Initializes the mines logic
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.grid_size = grid_size
         self.mines = set() # Here we will set the coordinates of the mines
 
-    # O(n), where n is the number of mines
     def get_mines_set(self, num_mines:int) -> None:
         """
-        Creates the set with the mines coordinates
+        Description: creates the set with the mines coordinates
+        Time Complexity:
+            - Worst case: O(n^2): where n is the number of the mines and the second n is given by a very poor hashing function that collision every time it tries to insert 
+            - Best case: O(n): where n is the number of the mines and the second n is given by a very good hashing function that never collides (O(1) insertion on set)
         """
         self.num_mines = num_mines
         self.mines.clear() # Remove all elements in the set
@@ -23,15 +29,18 @@ class MinesLogic():
             col = random.randint(0, self.grid_size - 1)
             self.mines.add((row, col))
 
-    # O(1): lookup with sets is constant
     def is_mine(self, row:int, col:int) -> bool: 
         """ Determines if the given cell is a mine or not
+        Time Complexity:
+            - O(1): All operations run in constant time
         """
         return (row, col) in self.mines
 
-     # O(1): it only returns a set
     def set_of_mines(self) -> set:
-        """ Returns the set of mines"""
+        """ Returns the set of mines
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         return self.mines
     
 
