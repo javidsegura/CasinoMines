@@ -8,8 +8,12 @@ from PySide6.QtCore import Qt, QTimer
 
 
 class ShimmerButton(QPushButton):
-    # O(1):Every operation runs in constant time
-    def __init__(self, text, parent=None):
+    def __init__(self, text:str, parent=None) -> None:
+        """
+        Description: initializes the ShimmerButton class
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         super().__init__(text, parent)
         self.shimmer_pos = 0
         
@@ -18,13 +22,21 @@ class ShimmerButton(QPushButton):
         self.timer.timeout.connect(self.update_shimmer)
         self.timer.start(50)  # Update every 50ms
     
-    # O(1): Both operations runs in constant time    
-    def update_shimmer(self):
+    def update_shimmer(self) -> None:
+        """
+        Description: updates the shimmer
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.shimmer_pos = (self.shimmer_pos + 10) % (self.width() + 200)
         self.update()
 
-    # O(1): Every operation runs in constant time     
-    def paintEvent(self, event):
+    def paintEvent(self, event) -> None:
+        """
+        Description: paints the event
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         super().paintEvent(event)
         painter = QPainter(self)
         
@@ -40,8 +52,12 @@ class ShimmerButton(QPushButton):
         painter.fillRect(0, 0, self.width(), self.height(), gradient)
 
 class LoginDialog(QDialog):
-    #O(1): All operations run in constant time 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
+        """
+        Description: initializes the LoginDialog class
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         super().__init__(parent)
         self.setWindowTitle("Log-in")
         self.setFixedSize(1000, 600)
@@ -169,13 +185,20 @@ class LoginDialog(QDialog):
         
         self.login_button.clicked.connect(self.accept)
 
-    # O(n): n is length of string
-    def get_username(self):
+    def get_username(self) -> str:
+        """
+        Description: gets the username
+        Time Complexity:
+            - O(n): where n is the length of the username string. This is because you have to iterate through the string, check for separator and append to array
+        """
         return self.username_input.text().strip()
 
-# O(n): where n is the length of the username string
 def show_login_dialog(parent=None) -> str:
-    """Show login dialog and return username"""
+    """
+    Description: shows the login dialog and returns the username
+    Time Complexity:
+        - Does not apply (it depends on the number of times it takes for the user to input a valid username; usually O(1))
+    """
     while True:
         dialog = LoginDialog(parent)
         result = dialog.exec()

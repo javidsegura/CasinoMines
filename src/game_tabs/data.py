@@ -64,10 +64,9 @@ class UserData():
         return pd.read_csv(self.leaderboardPath)
     
     def add_leaderboard_data(self, user:str, balance:float) -> None:
-        """ Add user data to LEADERBOARD csv and sorted based on balance. Invoked at the end of each game.
-        Time Complexity:
-            Worst Case: O(n log n)
-            Avg Case: O(n log n)
+        """ Add user data to LEADERBOARD csv and sorted based on balance
+        
+        Invoked at the end of each game.
         """
         # Find if user has already played:
         all_users_names = self.leaderboard_pd["username"].tolist()
@@ -92,10 +91,7 @@ class UserData():
                                                                                                  0, 
                                                                                                  len(leaderboard_list)) 
         self.sortedLeaderboardList = leaderboard_list
-        self.leaderboard_pd = pd.DataFrame(leaderboard_list, 
-                                            columns=self.leaderboard_pd.columns)
-        
-        self.write_leaderboard_pd()
+        self.write_leaderboard_pd(self.sortedLeaderboardList)
 
     # 2) Auxiliary functions
     def find_highest_balance(self, user:str, balance:float) -> bool:
@@ -157,9 +153,17 @@ class UserData():
         """
         self.game_stats_pd.to_csv(self.game_stats_path, index=False)
     
+    def write_leaderboard_pd(self, leaderboard_pd: pd.DataFrame) -> None:
+        self.leaderboard_pd = pd.DataFrame(leaderboard_pd, 
+                                            columns=self.leaderboard_pd.columns)
+        self.leaderboard_pd["rank"] = range(1, len(self.leaderboard_pd) + 1)
+        self.leaderboard_pd.to_csv(self.leaderboardPath, index=False)
+    
 
 
 if __name__ == "__main__":
+      # Testing
       temp = UserData()
       temp.add_leaderboard_data("javi", -10000)
       print(f"Leaderboard: {temp.return_leaderboard_list()}")
+      

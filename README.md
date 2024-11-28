@@ -9,7 +9,8 @@ https://github.com/user-attachments/assets/d20b3373-fe8c-4f84-82d2-c6023975c602
 
 ## Algorithms & Data Structures
 
-- Binary search and merge sort. Find their implementations in src/others/algorithms.
+Binary search and merge sort. Find their implementations in src/others/algorithms. Additionaly, all functions in src/ have had their time
+complexity analyzed
 
 
 ## Features

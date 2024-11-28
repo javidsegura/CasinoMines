@@ -1,7 +1,7 @@
 
 
 class MySearching():
-    def binary_search_leaderboard(self, leaderboard_data: list[list], userName: str) -> int:
+    def binary_search_leaderboard(self, leaderboard_data: list[tuple], userName: str) -> int:
         """ 
             Analysis (for binary search):
                 - Time complexity:
@@ -14,7 +14,6 @@ class MySearching():
             Returns:
                 - int: the rank of the user if found, -1 otherwise
         """
-
 
         left, right = 0, len(leaderboard_data) - 1
         

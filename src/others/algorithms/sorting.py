@@ -23,7 +23,7 @@ class MySorting():
             else:
                   return l[self.index] <= r[self.index]
 
-      def mergeSort(self, arr: list[list], left: int, right: int) -> None:
+      def mergeSort(self, arr: list[tuple], left: int, right: int) -> None:
             """ Sorts array in place"""
 
             if left < right - 1:
@@ -32,7 +32,7 @@ class MySorting():
                   self.mergeSort(arr, mid, right)
                   self.merge(arr, left, mid, right)
 
-      def merge(self, arr: list[list], left: int, mid: int, right: int) -> None:
+      def merge(self, arr: list[tuple], left: int, mid: int, right: int) -> None:
             """ Merges two halves of the array """
             # Create temporary subarrays
             n_l = mid - left

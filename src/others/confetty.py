@@ -5,7 +5,12 @@ import random
 
 # O(1):Every operation runs in constant time
 class ConfettiParticle:
-    def __init__(self, x, y):
+    def __init__(self, x:float, y:float) -> None:
+        """
+        Description: initializes the ConfettiParticle class
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.x = x
         self.y = y
         self.vx = random.uniform(-2, 2)
@@ -23,8 +28,12 @@ class ConfettiParticle:
         self.rotation_speed = random.uniform(-5, 5)
 
 class ConfettiEffect(QWidget):
-    # O(1):Every operation runs in constant time
-    def __init__(self, parent=None):
+    def __init__(self, parent:QWidget=None) -> None:
+        """
+        Description: initializes the ConfettiEffect class
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         super().__init__(parent)
         self.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -34,8 +43,13 @@ class ConfettiEffect(QWidget):
         self.timer.timeout.connect(self.update_particles)
         self.gravity = 0.5
 
-    # O(1): Despite loop, the number of iterations is fixed to 100, making it constant
-    def start_animation(self):
+    # O(n): as for a loop iterating n times. Note this is asymtotical growth and not fixed to the 100 values set there
+    def start_animation(self) -> None:
+        """
+        Description: starts the animation
+        Time Complexity:
+            - O(n): as for a loop iterating n times. Note this is asymtotical growth and not fixed to the 100 values set there
+        """
         self.show()
         self.particles = []
         for _ in range(100):
@@ -46,14 +60,20 @@ class ConfettiEffect(QWidget):
         self.timer.start(16)
 
     # O(n):where n is the number of particles   
-    def update_particles(self):
+    def update_particles(self) -> None:
+        """
+        Description: updates the particles
+        Time Complexity:
+            - O(n):where n is the number of particles (again, note this is asymptotic growth, 
+            ignoring the fact that self.particles is an arr of fixed size 100)
+        """
         for particle in self.particles:
             particle.vy += self.gravity
             particle.x += particle.vx
             particle.y += particle.vy
             particle.rotation += particle.rotation_speed
             
-        # Remove particles that are off screen
+        # Remove particles that are off screen; O(n) too
         self.particles = [p for p in self.particles if p.y < self.height() + 50]
         
         if not self.particles:
@@ -62,8 +82,13 @@ class ConfettiEffect(QWidget):
             
         self.update()
         
-    # O(n):where n is the number of particles    
-    def paintEvent(self, event):
+    def paintEvent(self, event) -> None:
+        """
+        Description: paints the particles
+        Time Complexity:
+            - O(n):where n is the number of particles (again, note this is asymptotic growth, 
+            ignoring the fact that self.particles is an arr of fixed size 100)
+        """
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         
