@@ -5,25 +5,36 @@ from PySide6.QtMultimedia import QSoundEffect
 
 class SoundEffects():
     """ Controls the sound effects of the game """
-    # O(1): all operations run in constant time
     def __init__(self) -> None:
+        """
+        Description: initializes the SoundEffects class
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.sounds = {
             'click': self.load_sound("./utils/sound_effects/click.wav"),
             'win': self.load_sound("./utils/sound_effects/win.wav"),
             'lose': self.load_sound("./utils/sound_effects/error.wav"),
-            # Add more sound effects here
         }
-    # O(1): all operations run in constant time
+
     def load_sound(self, file_path) -> QSoundEffect:
+        """
+        Description: loads a sound effect from the given file path
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         sound = QSoundEffect()
         sound.setSource(QUrl.fromLocalFile(file_path))
         sound.setVolume(1)
         sound.setLoopCount(1)
         return sound
 
-    # O(1)
     def play_sound(self, sound_name) -> None:
-        """ Plays a sound effect among the collection of sounds"""
+        """
+        Description: plays a sound effect among the collection of sounds
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         if sound_name in self.sounds:
             sound = self.sounds[sound_name]
             if sound.isLoaded():
@@ -34,14 +45,23 @@ class SoundEffects():
         else:
             raise Exception(f"Sound effect '{sound_name}' not found")
 
-    # O(1)
     def play_click(self) -> None:
+        """
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.play_sound('click')
 
-    # O(1)
     def play_win(self) -> None:
+        """
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.play_sound('win')
 
-    # O(1)
     def play_lose(self) -> None:
+        """
+        Time Complexity:
+            - O(1): All operations run in constant time
+        """
         self.play_sound('lose')
